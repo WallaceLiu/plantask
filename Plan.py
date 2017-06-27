@@ -97,7 +97,7 @@ class Plan:
         while b < minmax[1]:
             e = b + step
             v.append((b, e, 0, 0, 0))
-            b = e
+            b = e+1
         return v
 
     '''
