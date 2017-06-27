@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<tasks> 
+  <task id="213414" name="app_sfs_forecast_prestd_export_rdc_kpi" desc="" type="" executeRule="" nextExecuteDateTime="" timeout="0" retryFrequency="0" retryInterval="0" bDateTimeThreshold="" eDateTimeThreshold=""> 
+    <t id="264121" name="exe_ipc_sfs_forecast_monitor_before_7" />  
+    <t id="232699" name="exe_ipc_app_sfs_metrics_monitor_rdc" />  
+    <t id="213034" name="hive2mysql_sfs_kpi_rdc" /> 
+  </task>  
+  <task id="203408" name="exe_fdm_forecasting_similar_ware_info_chain" desc="" type="" executeRule="" nextExecuteDateTime="" timeout="0" retryFrequency="0" retryInterval="0" bDateTimeThreshold="" eDateTimeThreshold=""> 
+    <t id="298593" name="jdw2cmo_ipc_fdm_forecasting_similar_ware_info_chain" />  
+    <t id="205064" name="exe_ipc_sfs_forecasting_similar_ware_info_chain" />  
+    <t id="293112" name="jdw2druid_fdm_forecasting_similar_ware_info_chain" /> 
+  </task>  
+  <task id="206033" name="exe_ipc_sfs_rdc_metrics" desc="" type="" executeRule="" nextExecuteDateTime="" timeout="0" retryFrequency="0" retryInterval="0" bDateTimeThreshold="" eDateTimeThreshold=""> 
+    <t id="243699" name="exe_ipc_sfs_app_metrics_detail" />  
+    <t id="213414" name="app_sfs_forecast_prestd_export_rdc_kpi" /> 
+  </task> 
+</tasks>
