@@ -19,9 +19,7 @@ def DoTest():
     LoadParameters(g)
     g.printGraph()
     p=Plan(g)
-    np =p.sort()
-    #g.printRootTasks()
-    print(p.getMinMax(np))
+    np =p.stat(10)
     
 
 if __name__ == '__main__':

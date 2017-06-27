@@ -5,6 +5,7 @@ Created on Tue Jun 27 09:23:23 2017
 @author: liuning11
 """
 from TaskAdjMatrix import TaskAdjMatrix
+import DateTimeUtil
 
 
 class Plan:
@@ -30,6 +31,8 @@ class Plan:
 
     def __init__(self, g):
         self._graph = g
+        self._seqMatrix = []
+        self._steps = [100, 200, 300, 400, 500, 600]
 
     # 开始
     def go(self):
@@ -56,17 +59,50 @@ class Plan:
     def __min(self):
         pass
 
-    # 排序
+    # 统计每时刻任务数据和任务类型数量
+    # step 步进时间，单位为分钟
+    def stat(self, step):
+        tasks = self.__sort()
+        minmax = self.__getMinMax(tasks)
+        print(self._steps)
+        self.__createSeqMatrix(minmax, self._steps)
+        self.printSeqMatrix()
+        
+        
+        # 统计
+
+    # 任务排序
     # 按开始时间排序
-    def sort(self):
+    def __sort(self):
         return sorted(self._graph.tasks.tasks, key=lambda x: x.bDateTime)
 
     # 获得任务中最小和最大时间
-    def getMinMax(self, t):
+    def __getMinMax(self, t):
         l = len(t)
         return (t[0].bDateTime, t[l - 1].bDateTime)
 
-    # 统计每时刻任务数据和任务类型数量
-    # step 步进时间，单位为分钟
-    def __stat(self, step):
-        ts = self._graph.tasks
+    # 创建时间序列矩阵
+    def __createSeqMatrix(self, minmax, step):
+        for s in step:
+            self._seqMatrix.append(self.__createSeqVector(minmax, s))
+
+    # 创建时间序列向量
+    # minmax 最小最大日期
+    # step   步长,单位为秒
+    def __createSeqVector(self, minmax, step):
+        v = []
+        b = minmax[0]
+        e = None
+        while b < minmax[1]:
+            e = b + step
+            v.append((b, e))
+            b = e
+        return v
+    
+    '''
+    打印
+    '''
+    # 打印时间矩阵
+    def printSeqMatrix(self):
+        for s in self._seqMatrix:
+            print(s)
