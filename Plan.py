@@ -62,9 +62,9 @@ class Plan:
         return sorted(self._graph.tasks.tasks, key=lambda x: x.bDateTime)
 
     # 获得任务中最小和最大时间
-    def __getMinMax(self, g):
-        l = len(g.tasks.tasks)
-        return (g.tasks.tasks[0].bDateTime, g.tasks.tasks[l - 1].bDateTime)
+    def getMinMax(self, t):
+        l = len(t)
+        return (t[0].bDateTime, t[l - 1].bDateTime)
 
     # 统计每时刻任务数据和任务类型数量
     # step 步进时间，单位为分钟

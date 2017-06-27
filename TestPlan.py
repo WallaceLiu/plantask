@@ -20,9 +20,9 @@ def DoTest():
     g.printGraph()
     p=Plan(g)
     np =p.sort()
-    for t in np:
-        print(t.toString(True))
     #g.printRootTasks()
+    print(p.getMinMax(np))
+    
 
 if __name__ == '__main__':
     DoTest()
