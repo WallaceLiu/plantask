@@ -67,16 +67,17 @@ class Plan:
         print(self._steps)
         self.__createSeqMatrix(minmax, self._steps)
         self.printSeqMatrix()
-        
-        
-        # 统计
+
+    # 统计
 
     # 任务排序
     # 按开始时间排序
+
     def __sort(self):
         return sorted(self._graph.tasks.tasks, key=lambda x: x.bDateTime)
 
     # 获得任务中最小和最大时间
+
     def __getMinMax(self, t):
         l = len(t)
         return (t[0].bDateTime, t[l - 1].bDateTime)
@@ -95,13 +96,14 @@ class Plan:
         e = None
         while b < minmax[1]:
             e = b + step
-            v.append((b, e))
+            v.append((b, e, 0, 0, 0))
             b = e
         return v
-    
+
     '''
     打印
     '''
+
     # 打印时间矩阵
     def printSeqMatrix(self):
         for s in self._seqMatrix:
