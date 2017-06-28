@@ -45,21 +45,16 @@ class Plan:
         self.__readyEstimate(self._steps)
         self.__count()
         self.__printPlan()
+        self.__tuning()
 
     # 调优阶段
+    # 根据每个时间段的任务数量调优
+    # 根据每个时间段的任务类型调优
     def __tuning(self):
         pass
 
-    # 根据每个时间段的任务数量调优
-    def __tunningByTaskNum(self):
-        pass
-
-    # 根据每个时间段的任务类型调优
-    def __tunningByTaskType(self):
-        pass
-
     # 取最早的时间
-    def __min(self):
+    def __max(self):
         pass
 
     def __count(self):
@@ -69,7 +64,12 @@ class Plan:
                     t = self._graph.findRootTask(self._graph.tasksIndex[i])
                     t_bDt = DateTimeUtil.addSec2ts(c.bDateTime, -1 * t.consume)
                     t_eDt = DateTimeUtil.addSec2ts(t_bDt, t.consume)
-                    plan[i].append((t_bDt, t_eDt, t.consume))
+                    plan[i].append({
+                        'b': t_bDt,
+                        'e': t_eDt,
+                        'c': t.consume,
+                        't': t.type
+                    })
                     cnt(self, i, t, m, plan)
 
         print('终端节点：')
@@ -81,7 +81,12 @@ class Plan:
             if self._graph.tTask[i] == 0:
                 c = self._graph.findRootTask(self._graph.tasksIndex[i])
                 if c.bDateTime != None:
-                    self._plan[i].append((c.bDateTime, c.eDateTime, c.consume))
+                    self._plan[i].append({
+                        'b': c.bDateTime,
+                        'e': c.eDateTime,
+                        'c': c.consume,
+                        't': c.type
+                    })
                     cnt(self, i, c, self._graph.map, self._plan)
 
     # 初始化评估矩阵 
@@ -152,7 +157,7 @@ class Plan:
         for r in self._plan:
             l = []
             for c in r:
-                l.append('(' + DateTimeUtil.timestamp_datetime(c[0]) + ',' +
-                         DateTimeUtil.timestamp_datetime(c[1]) + ',' + str(c[
-                             2]) + ')')
+                l.append('(' + DateTimeUtil.timestamp_datetime(c.get(
+                    'b')) + ',' + DateTimeUtil.timestamp_datetime(c.get('e')) +
+                         ',' + str(c.get('c')) + ',' + str(c.get('t')) + ')')
             print(l)

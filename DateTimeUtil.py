@@ -25,6 +25,7 @@ def datetimeStr_timestamp(dtStr, format='%Y-%m-%d %H:%M:%S'):
     s = time.mktime(time.strptime(dtStr, format))
     return s
 
+
 # 日期转换成时间戳 
 # dt 为日期
 # format 日期格式，例如：%Y-%m-%d %H:%M:%S
@@ -33,13 +34,14 @@ def datetime_timestamp(dt, format='%Y-%m-%d %H:%M:%S'):
     return s
 
 
-
 # 字符串转换成日期
 def str_datetime(str, format='%Y-%m-%d %H:%M:%S'):
     return datetime.strptime(str, format)
 
-def datetime_str(dt,format='%Y-%m-%d %H:%M:%S'):
-    return dt.strftime(format);
+
+def datetime_str(dt, format='%Y-%m-%d %H:%M:%S'):
+    return dt.strftime(format)
+
 
 def addDay(dt, d):
     aDay = timedelta(days=d)
@@ -54,7 +56,7 @@ def addSec2ts(ts, s):
                  dt.tm_sec)
     aSec = timedelta(seconds=s)
     now = d + aSec
-    return  time.mktime(now.timetuple())
+    return time.mktime(now.timetuple())
 
 
 # 昨天
