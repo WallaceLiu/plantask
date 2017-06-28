@@ -32,7 +32,7 @@ class Plan:
     def __init__(self, g):
         self._graph = g
         self._seqMatrix = []
-        self._steps = [100, 200, 300, 400, 500, 600]
+        self._steps = [600, 1200, 1800, 2400, 3000, 3600]
 
     # 开始
     def go(self):
@@ -64,7 +64,11 @@ class Plan:
     def stat(self, step):
         tasks = self.__sort()
         minmax = self.__getMinMax(tasks)
+        print('时间步长：')
         print(self._steps)
+        print('任务最早/最晚时间：')
+        print(minmax)
+        print('时间序列：')
         self.__createSeqMatrix(minmax, self._steps)
         self.printSeqMatrix()
 
@@ -97,7 +101,7 @@ class Plan:
         while b < minmax[1]:
             e = b + step
             v.append((b, e, 0, 0, 0))
-            b = e+1
+            b = e + 1
         return v
 
     '''
@@ -106,5 +110,12 @@ class Plan:
 
     # 打印时间矩阵
     def printSeqMatrix(self):
-        for s in self._seqMatrix:
-            print(s)
+        for r in self._seqMatrix:
+            l = []
+            for c in r:
+                s = '(' + DateTimeUtil.timestamp_datetime(c[
+                    0]) + ',' + DateTimeUtil.timestamp_datetime(c[
+                        1]) + ',' + str(c[2]) + ',' + str(c[3]) + ',' + str(c[
+                            4]) + ')'
+                l.append(s)
+            print(l)

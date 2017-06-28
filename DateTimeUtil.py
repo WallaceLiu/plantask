@@ -12,7 +12,7 @@ import time
 # 时间戳转换成日期
 # value 为时间戳，整型
 # format 为日期格式，例如：%Y-%m-%d %H:%M:%S
-def timestamp_datetime(value, format):
+def timestamp_datetime(value, format='%Y-%m-%d %H:%M:%S'):
     value = time.localtime(value)
     dt = time.strftime(format, value)
     return dt
