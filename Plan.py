@@ -33,15 +33,18 @@ class Plan:
         self._graph = g
         self._seqMatrix = []
         self._steps = [600, 1200, 1800, 2400, 3000, 3600]
+        self._plan = []
 
     # 开始
     def go(self):
-        self.__estimate()
+        self.estimate()
         self.__tuning()
 
     # 评估阶段
-    def __estimate(self):
-        pass
+    def estimate(self):
+        self.__readyEstimate(self._steps)
+        self.__count()
+        self.__printPlan()
 
     # 调优阶段
     def __tuning(self):
@@ -59,9 +62,37 @@ class Plan:
     def __min(self):
         pass
 
+    def __count(self):
+        def cnt(self, r, c, m, plan):
+            for i in range(self._graph.getNodeNum()):
+                print('edge=' + str(m[r][i]))
+                if m[i][r] == 1:
+                    t = self._graph.findRootTask(self._graph.tasksIndex[i])
+                    t_bDt = DateTimeUtil.addSec2ts(c.bDateTime, -1 * t.consume)
+                    t_eDt = DateTimeUtil.addSec2ts(t_bDt, t.consume)
+                    plan[i].append((t_bDt, t_eDt, t.consume))
+                    cnt(self, i, t, m, plan)
+
+        print('终端节点：')
+        print(self._graph.tTask)
+
+        self.__initPlan()
+
+        for i in range(self._graph.getNodeNum()):
+            if self._graph.tTask[i] == 0:
+                c = self._graph.findRootTask(self._graph.tasksIndex[i])
+                if c.bDateTime != None:
+                    self._plan[i].append((c.bDateTime, c.eDateTime, c.consume))
+                    cnt(self, i, c, self._graph.map, self._plan)
+
+    # 初始化评估矩阵 
+    def __initPlan(self):
+        for i in range(self._graph.getNodeNum()):
+            self._plan.append([])
+
     # 统计每时刻任务数据和任务类型数量
     # step 步进时间，单位为分钟
-    def stat(self, step):
+    def __readyEstimate(self, step):
         tasks = self.__sort()
         minmax = self.__getMinMax(tasks)
         print('时间步长：')
@@ -70,18 +101,14 @@ class Plan:
         print(minmax)
         print('时间序列：')
         self.__createSeqMatrix(minmax, self._steps)
-        self.printSeqMatrix()
-
-    # 统计
+        self.__printSeqMatrix()
 
     # 任务排序
     # 按开始时间排序
-
     def __sort(self):
         return sorted(self._graph.tasks.tasks, key=lambda x: x.bDateTime)
 
     # 获得任务中最小和最大时间
-
     def __getMinMax(self, t):
         l = len(t)
         return (t[0].bDateTime, t[l - 1].bDateTime)
@@ -109,7 +136,7 @@ class Plan:
     '''
 
     # 打印时间矩阵
-    def printSeqMatrix(self):
+    def __printSeqMatrix(self):
         for r in self._seqMatrix:
             l = []
             for c in r:
@@ -118,4 +145,15 @@ class Plan:
                         1]) + ',' + str(c[2]) + ',' + str(c[3]) + ',' + str(c[
                             4]) + ')'
                 l.append(s)
+            print(l)
+
+    # 打印评估时间
+    def __printPlan(self):
+        print('评估结果：')
+        for r in self._plan:
+            l = []
+            for c in r:
+                l.append('(' + DateTimeUtil.timestamp_datetime(c[0]) + ',' +
+                         DateTimeUtil.timestamp_datetime(c[1]) + ',' + str(c[
+                             2]) + ')')
             print(l)

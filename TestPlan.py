@@ -19,7 +19,7 @@ def DoTest():
     LoadParameters(g)
     g.printGraph()
     p=Plan(g)
-    np =p.stat(10)
+    np =p.estimate()
     
 
 if __name__ == '__main__':

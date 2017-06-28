@@ -12,6 +12,20 @@ from Graph import Graph
 
 class TaskAdjMatrix(Graph):
     '''
+    
+    tasksIndex  所有节点ID
+    tasks       所有节点实例
+    rTask       根节点
+    tTask       终端节点
+    nodenum     节点数量
+    edgenum     边数量
+    map         邻接矩阵
+    path        节点配置文件
+    file        节点配置文件
+    
+    
+    
+    
     邻接矩阵
     
     a->b->c

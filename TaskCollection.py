@@ -57,7 +57,11 @@ class TaskCollection:
                     r = find(self, t.childs.tasks, no)
                     if r != None:
                         return r
-
+    
+    '''
+    打印
+    '''
+    # 输出
     def printer(self):
         def p(self, p, i):
             s = ''

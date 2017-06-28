@@ -5,5 +5,5 @@
     <task id="30" name="c" bDateTime="2017-6-25 9:20:00" eDateTime="2017-6-25 9:40:00" consume="1200" />
     <task id="40" name="d" bDateTime="2017-6-25 9:20:00" eDateTime="2017-6-25 10:20:00" consume="3600" />
     <task id="50" name="e" bDateTime="2017-6-25 10:20:00" eDateTime="2017-6-25 10:30:00" consume="600" iskey="True"/>
-    <task id="60" name="f" bDateTime="2017-6-25 10:10:00" eDateTime="2017-6-25 10:20:00" consume="600" />
+    <task id="60" name="f" bDateTime="2017-6-25 9:20:00" eDateTime="2017-6-25 10:20:00" consume="3600" />
 </tasks>

@@ -21,15 +21,25 @@ def timestamp_datetime(value, format='%Y-%m-%d %H:%M:%S'):
 # 日期转换成时间戳 
 # dt 为日期字符串
 # format 日期格式，例如：%Y-%m-%d %H:%M:%S
-def datetime_timestamp(dt, format):
-    s = time.mktime(time.strptime(dt, format))
+def datetimeStr_timestamp(dtStr, format='%Y-%m-%d %H:%M:%S'):
+    s = time.mktime(time.strptime(dtStr, format))
+    return s
+
+# 日期转换成时间戳 
+# dt 为日期
+# format 日期格式，例如：%Y-%m-%d %H:%M:%S
+def datetime_timestamp(dt, format='%Y-%m-%d %H:%M:%S'):
+    s = time.mktime(dt.timetuple())
     return s
 
 
+
 # 字符串转换成日期
-def str_datetime(str, format):
+def str_datetime(str, format='%Y-%m-%d %H:%M:%S'):
     return datetime.strptime(str, format)
 
+def datetime_str(dt,format='%Y-%m-%d %H:%M:%S'):
+    return dt.strftime(format);
 
 def addDay(dt, d):
     aDay = timedelta(days=d)
@@ -38,13 +48,13 @@ def addDay(dt, d):
 
 
 # 增加秒
-def addSecond2ts(ts, s):
+def addSec2ts(ts, s):
     dt = time.localtime(ts)
     d = datetime(dt.tm_year, dt.tm_mon, dt.tm_mday, dt.tm_hour, dt.tm_min,
                  dt.tm_sec)
     aSec = timedelta(seconds=s)
     now = d + aSec
-    return now
+    return  time.mktime(now.timetuple())
 
 
 # 昨天
