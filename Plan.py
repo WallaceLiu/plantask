@@ -65,7 +65,6 @@ class Plan:
     def __count(self):
         def cnt(self, r, c, m, plan):
             for i in range(self._graph.getNodeNum()):
-                print('edge=' + str(m[r][i]))
                 if m[i][r] == 1:
                     t = self._graph.findRootTask(self._graph.tasksIndex[i])
                     t_bDt = DateTimeUtil.addSec2ts(c.bDateTime, -1 * t.consume)
