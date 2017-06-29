@@ -65,8 +65,9 @@ class Plan:
         异常:
         """
         self.__readyEstimate(self._steps)
-        self.__compute()
+        self.__computePlan()
         self.__printPlan()
+        self.__count()
         self.__tuning()
 
     # 调优阶段
@@ -96,7 +97,7 @@ class Plan:
                 pl.clear()
                 pl.append(p)
 
-    def __compute(self):
+    def __computePlan(self):
         """计算所有任务的最晚时间
 
         参数:
@@ -106,7 +107,7 @@ class Plan:
         异常:
             
         """
-        def cnt(self, r, c, m, plan):
+        def compute(self, r, c, m, plan):
             """计算所有任务的最晚时间
     
             参数:
@@ -132,7 +133,7 @@ class Plan:
                         't': t.type
                     })
 
-                    cnt(self, i, t, m, plan)
+                    compute(self, i, t, m, plan)
 
         print('终端节点：')
         print(self._graph.tTask)
@@ -150,8 +151,20 @@ class Plan:
                         't': c.type
                     })
 
-                    cnt(self, i, c, self._graph.map, self._plan)
+                    compute(self, i, c, self._graph.map, self._plan)
 
+    def __count(self):
+        """计算时间间隔内的任务数量
+
+        参数:
+                
+        返回:
+    
+        异常:
+            
+        """
+        pass
+    
     def __initPlan(self):
         """初始化评估矩阵
 
@@ -162,7 +175,6 @@ class Plan:
         异常:
             
         """
-
         for i in range(self._graph.nodenum):
             self._plan.append([])
 
