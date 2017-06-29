@@ -47,9 +47,6 @@ class Plan:
     def estimate(self):
         """评估阶段
 
-        参数:
-        返回:
-        异常:
         """
         self.__computePlan()
 
@@ -60,14 +57,7 @@ class Plan:
     def __computePlan(self):
         """计算所有任务的最晚时间
 
-        参数:
-                
-        返回:
-    
-        异常:
-            
         """
-
         def compute(self, r, c, m, plan):
             """计算所有任务的最晚时间
     
@@ -86,14 +76,8 @@ class Plan:
                 if m[i][r] == 1:
                     t = self._graph.findRootTask(self._graph.tasksIndex[i])
 
-                    self.__setTask(t, c.bDateTime - t.consume - 1,
-                                   c.bDateTime - 1)
-                    self.__addPlan(plan[i], {
-                        'b': t.bDateTime,
-                        'e': t.eDateTime,
-                        'c': t.consume,
-                        't': t.type
-                    })
+                    self.__deal(t, c.bDateTime - t.consume - 1,
+                                c.bDateTime - 1, plan[i])
 
                     compute(self, i, t, m, plan)
 
@@ -103,12 +87,8 @@ class Plan:
             if self._graph.tTask[i] == 0:
                 c = self._graph.findRootTask(self._graph.tasksIndex[i])
                 if c.bDateTime != None:
-                    self.__addPlan(self._plan[i], {
-                        'b': c.bDateTime,
-                        'e': c.bDateTime + c.consume,
-                        'c': c.consume,
-                        't': c.type
-                    })
+                    self.__deal(c, c.bDateTime, c.bDateTime + c.consume,
+                                self._plan[i])
 
                     compute(self, i, c, self._graph.map, self._plan)
 
@@ -132,7 +112,6 @@ class Plan:
         异常:
             
         """
-
         def tunning(self, weight, interval, plan):
             """调优阶段
     
@@ -150,35 +129,33 @@ class Plan:
             weight = int(nodenum / interval[i])
             tunning(self, weight, interval, plan)
 
-    def __addPlan(self, pl, p):
-        """添加评估时间
-        
-        取最晚的时间
-
-        参数:
-            pl: 评估时间
-            p: 新估计时间
-                
-        返回:
-    
-        异常:
-            
-        """
-        if len(pl) <= 0:
-            pl.append(p)
-        else:
-            if pl[0].get('b') <= p.get('b'):
-                pl.clear()
-                pl.append(p)
-
-    def __setTask(self, t, bDt, eDt):
-        if t.bDateTime == None:
-            t.bDateTime = bDt
-            t.eDateTime = eDt
-        else:
-            if t.bDateTime < bDt:
+    def __deal(self, t, bDt, eDt, pl):
+        def setTask(self, t, bDt, eDt):
+            if t.bDateTime == None:
                 t.bDateTime = bDt
                 t.eDateTime = eDt
+            else:
+                if t.bDateTime < bDt:
+                    t.bDateTime = bDt
+                    t.eDateTime = eDt
+                    pl.clear()
+
+        def addPlan(self, pl, p):
+            if len(pl) <= 0:
+                pl.append(p)
+            else:
+                if pl[0].get('b') <= p.get('b'):
+                    pl.clear()
+                    pl.append(p)
+
+        setTask(self, t, bDt, eDt)
+
+        addPlan(self, pl, {
+            'b': t.bDateTime,
+            'e': t.eDateTime,
+            'c': t.consume,
+            't': t.type
+        })
 
     def __initPlan(self):
         """初始化评估矩阵
@@ -230,7 +207,7 @@ class Plan:
         for step in steps:
             self._interval.append(int((minmax[1] - minmax[0]) / step) + 1)
 
-        print('时间间隔序列：')
+        print('时间间隔序列长度：')
         print(self._interval)
 
     def __minmaxMoving(self, minmax, step):
