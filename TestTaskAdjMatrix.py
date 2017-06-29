@@ -8,6 +8,7 @@ Created on Wed Jun 21 09:19:45 2017
 from TaskAdjMatrix import TaskAdjMatrix
 from Loader import Loader
 
+
 def DoTest():
     l = Loader("conf/conf.xml")
     g = l.graph
@@ -20,7 +21,7 @@ def DoTest():
     #print(p)
     #p = g.findPathByStr('1')
     #print(p)
-    
+
 #    print("广度优先遍历")
 #    g.BreadthFirstSearch()
 #    print("深度优先遍历")

@@ -39,7 +39,7 @@ class Plan:
         异常:
         """
         self._graph = g
-        self._seqMatrix = []
+        self._IntervalMatrix = []
         self._steps = [600, 1200, 1800, 2400, 3000, 3600]
         self._plan = []
 
@@ -183,7 +183,7 @@ class Plan:
         print(minmax)
         print('时间间隔序列：')
         self.__createIntervalMatrix(minmax, self._steps)
-        self.__printSeqMatrix()
+        self._printIntervalMatrix()
 
     def __getMinMax(self, tasks):
         """获得任务中最小和最大时间
@@ -213,7 +213,7 @@ class Plan:
             
         """
         for s in step:
-            self._seqMatrix.append(self.__createIntervalVector(minmax, s))
+            self._IntervalMatrix.append(self.__createIntervalVector(minmax, s))
 
     def __createIntervalVector(self, minmax, step):
         """创建时间序列向量
@@ -264,11 +264,11 @@ class Plan:
     打印
     '''
 
-    def __printSeqMatrix(self):
+    def _printIntervalMatrix(self):
         """打印时间矩阵
             
         """
-        for r in self._seqMatrix:
+        for r in self._IntervalMatrix:
             l = []
             for c in r:
                 s = '(' + DateTimeUtil.timestamp_datetime(c.get(

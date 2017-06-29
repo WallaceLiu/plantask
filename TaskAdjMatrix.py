@@ -5,28 +5,12 @@ Created on Wed Jun 21 09:15:48 2017
 @author: liuning11
 """
 
-from Task import Task
 from TaskCollection import TaskCollection
 from Graph import Graph
 
 
 class TaskAdjMatrix(Graph):
-    """
-    
-    tasksIndex  所有节点ID
-    tasks       所有节点实例
-    rTask       根节点
-    tTask       终端节点
-    nodenum     节点数量
-    edgenum     边数量
-    map         邻接矩阵
-    path        节点配置文件
-    file        节点配置文件
-    
-    
-    
-    
-    邻接矩阵
+    """邻接矩阵
     
     a->b->c
     a->b->d->e
@@ -51,12 +35,25 @@ class TaskAdjMatrix(Graph):
     f_(t_f,d_f)->e_(t_f+d_f,d_e)
     
     先标记所有父任务大于1的任务    
-
-    
     
     """
 
     def __init__(self):
+        """构造函数
+
+        参数:
+            tasksIndex  所有节点ID
+            tasks       所有节点实例
+            rTask       根节点
+            tTask       终端节点
+            nodenum     节点数量
+            edgenum     边数量
+            map         邻接矩阵
+            path        节点配置文件
+            file        节点配置文件
+        返回:
+        异常:
+        """
         self.tasksIndex = []
         self.tasks = TaskCollection()
         self.rTask = []
@@ -67,36 +64,69 @@ class TaskAdjMatrix(Graph):
         self.map = []
         self.file = None
 
-    # 添加任务ID 
     def addTasksIndex(self, taskId):
-        if self.isExistOfTaskIndex(taskId) == False:
+        """添加任务ID 
+
+        参数:
+            taskId:  任务Id
+        返回:
+        异常:
+        """
+        if self.__isExistOfTaskIndex(taskId) == False:
             self.tasksIndex.append(taskId)
 
-    # 判断任务Id是否已经存在
-    def isExistOfTaskIndex(self, taskId):
+    def addTask(self, t):
+        """添加任务
+
+        参数:
+            t:  添加任务
+        返回:
+        异常:
+        """
+        self.tasks.add(t)
+
+    def createMap(self):
+        """创建邻接矩阵
+
+        参数:
+        返回:
+        异常:
+        """
+        self.__beforeMap()
+        self.__goMap()
+        self.__afterMap()
+
+    def __isExistOfTaskIndex(self, taskId):
+        """判断任务Id是否已经存在
+
+        参数:
+            taskId:  任务Id
+        返回:
+        异常:
+        """
         for id in self.tasksIndex:
             if id == taskId:
                 return True
         return False
 
-    # 添加任务
-    def addTask(self, t):
-        self.tasks.add(t)
-
-    # 创建邻接矩阵
-    def createMap(self):
-        self.__beforeMap()
-        self.__goMap()
-        self.__afterMap()
-
-    # 初始化邻接矩阵
-
     def __beforeMap(self):
+        """初始化邻接矩阵
+
+        参数:
+        返回:
+        异常:
+        """
         for i in range(self.nodenum):
             m = [0] * self.nodenum
             self.map.append(m)
 
     def __goMap(self):
+        """创建邻接矩阵
+
+        参数:
+        返回:
+        异常:
+        """
         self.rTask = [0] * self.nodenum
         self.tTask = [0] * self.nodenum
         for x in self.tasks.tasks:
@@ -109,6 +139,12 @@ class TaskAdjMatrix(Graph):
                 self.rTask[v] = 1
 
     def __afterMap(self):
+        """在邻接矩阵行-列追加所有任务ID
+
+        参数:
+        返回:
+        异常:
+        """
         for i in range(self.nodenum):
             self.map[i].append(self.tasksIndex[i])
 
@@ -122,27 +158,47 @@ class TaskAdjMatrix(Graph):
                 break
         return j
 
-    def isOutRange(self, x):
+    def __isOutRange(self, x):
         try:
             if x >= self.nodenum or x <= 0:
                 raise IndexError
         except IndexError:
             print("节点下标出界")
 
-    # 添加边
     def addEdge(self, x, y):
+        """添加边
+
+        参数:
+            x:  row
+            y:  column
+        返回:
+        异常:
+        """
         if self.map[x][y] is 0:
             self.map[x][y] = 1
             self.edgenum = self.edgenum + 1
 
-    # 删除边
     def removeEdge(self, x, y):
+        """删除边
+
+        参数:
+            x:  row
+            y:  column
+        返回:
+        异常:
+        """
         if self.map[x][y] is 0:
             self.map[x][y] = 1
             self.edgenum = self.edgenum + 1
 
-    # 查找邻接矩阵所有的路径
     def searchPath(self):
+        """查找邻接矩阵所有的路径
+
+        参数:
+        返回:
+        异常:
+        """
+
         def path(self, s, r):
             for i in range(self.nodenum):
                 if self.map[r][i] == 1:
@@ -162,8 +218,14 @@ class TaskAdjMatrix(Graph):
                 s.append(self.tasksIndex[r])
                 path(self, s, r)
 
-    # 查找指定节点的所有子节点
     def findChildByMatrix(self, id):
+        """查找指定节点的所有直接子节点
+
+        参数:
+            id:     任务Id
+        返回:
+        异常:
+        """
         n = []
         r = self.__findIndex(id)
         for i in range(self.getNodeNum()):
@@ -172,8 +234,14 @@ class TaskAdjMatrix(Graph):
 
         return n
 
-    # 查找指定节点的父节点
     def findParentByMatrix(self, id):
+        """查找指定节点的直接父节点
+
+        参数:
+            id:     任务Id
+        返回:
+        异常:
+        """
         n = []
         r = self.__findIndex(id)
         for i in range(self.getNodeNum()):
@@ -203,7 +271,7 @@ class TaskAdjMatrix(Graph):
     # 查找任务
     def findTask(self, id):
         return self.tasks.findTask(id)
-    
+
     # 是否为路径
     def __isPath(self, path):
         for p in self.path:
@@ -211,9 +279,6 @@ class TaskAdjMatrix(Graph):
                 return True
         return False
 
-    def sort(self):
-        pass
-    
     # 广度遍历
     def BreadthFirstSearch(self):
         def BFS(self, i):
@@ -280,7 +345,7 @@ class TaskAdjMatrix(Graph):
         for t in self.tasks.tasks:
             print(t.toString(True))
         print('\n')
-        
+
     # 打印邻接矩阵信息
     def printMap(self):
         print('Matrix:')
