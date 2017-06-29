@@ -40,24 +40,22 @@ class Plan:
         异常:
         """
         self._graph = g
-        self._IntervalMatrix = []
         self._steps = [600, 1200, 1800, 2400, 3000, 3600]
+        self._interval = []
         self._plan = []
 
     def estimate(self):
         """评估阶段
 
         参数:
-                
         返回:
-    
         异常:
         """
         self.__computePlan()
 
-        self.__createIntervalMatrix(self._steps, self._graph)
+        self.__createWeight(self._steps, self._graph)
 
-        self.__tunning(self._IntervalMatrix, self._graph.nodenum, self._plan)
+        self.__tunning(self._interval, self._graph.nodenum, self._plan)
 
     def __computePlan(self):
         """计算所有任务的最晚时间
@@ -116,7 +114,7 @@ class Plan:
 
         self.__printPlan(True)
 
-    def __tunning(self, intervalMatrix, nodenum, plan):
+    def __tunning(self, interval, nodenum, plan):
         """调优阶段
             动态规划
             
@@ -126,7 +124,8 @@ class Plan:
 
         参数:
             intervalMatrix:     时间间隔矩阵
-            
+            nodenum:            
+            plan:       
                 
         返回:
     
@@ -134,7 +133,7 @@ class Plan:
             
         """
 
-        def tunning(self, weight, vector, plan):
+        def tunning(self, weight, interval, plan):
             """调优阶段
     
             参数:
@@ -147,9 +146,9 @@ class Plan:
             """
             pass
 
-        for vec in intervalMatrix:
-            weight = int(nodenum / len(vec))
-            tunning(self, weight, vec, plan)
+        for i in range(len(interval)):
+            weight = int(nodenum / interval[i])
+            tunning(self, weight, interval, plan)
 
     def __addPlan(self, pl, p):
         """添加评估时间
@@ -209,59 +208,30 @@ class Plan:
         l = len(tk)
         return (tk[0].bDateTime, tk[l - 1].bDateTime)
 
-    def __createIntervalMatrix(self, steps, g):
+    def __createWeight(self, steps, g):
         """创建时间序列矩阵
-        
-            按开始时间排序
-        
-        参数:
-            step:   步进时间，单位为秒
-            g:      任务图
-        返回:
-    
-        异常:
             
-        """
+                按开始时间排序
+            
+            参数:
+                step:   步进时间，单位为秒
+                g:      任务图
+            返回:
+        
+            异常:
+                
+            """
         print('时间步长：')
         print(steps)
         minmax = self.__getMinMax(g.tasks.tasks)
         print('任务最早/最晚时间：')
         print(minmax)
 
-        for s in steps:
-            self._IntervalMatrix.append(self.__createIntervalVector(minmax, s))
+        for step in steps:
+            self._interval.append(int((minmax[1] - minmax[0]) / step) + 1)
 
         print('时间间隔序列：')
-        self.__printIntervalMatrix(True)
-
-    def __createIntervalVector(self, minmax, step):
-        """创建时间序列向量
-
-        参数:
-            minmax: 最小最大日期.
-            step:步长,单位为秒.
-                
-        返回:
-            {'bt': b, 'et': e, 'na': 0, 'nk': 0, 'ng': 0}
-            
-            bt - 开始时间
-            et - 结束时间
-            na - 任务数量
-            nk - 关键任务数量
-            ng - 非关键任务数量
-    
-        异常:
-            
-        """
-        mm = self.__minmaxMoving(minmax, step)
-        v = []
-        b = mm[0]
-        e = None
-        while b < mm[1]:
-            e = b + step
-            v.append({'bdt': b, 'edt': e, 'na': 0, 'nk': 0, 'ng': 0})
-            b = e + 1
-        return v
+        print(self._interval)
 
     def __minmaxMoving(self, minmax, step):
         """平移时间-折半平移，便于任务落在哪个时间段
@@ -298,11 +268,67 @@ class Plan:
     打印
     '''
 
-    def __printIntervalMatrix(self, isReadable):
+    def printIntervalMatrix(self, isReadable):
+        def createMatrix(self, steps, g):
+            """创建时间序列矩阵
+            
+                按开始时间排序
+            
+            参数:
+                step:   步进时间，单位为秒
+                g:      任务图
+            返回:
+        
+            异常:
+                
+            """
+            print('时间步长：')
+            print(steps)
+            minmax = self.__getMinMax(g.tasks.tasks)
+            print('任务最早/最晚时间：')
+            print(minmax)
+
+            matrix = []
+            for s in steps:
+                matrix.append(createVector(self, minmax, s))
+
+            return matrix
+
+        def createVector(self, minmax, step):
+            """创建时间序列向量
+    
+            参数:
+                minmax: 最小最大日期.
+                step:步长,单位为秒.
+                    
+            返回:
+                {'bt': b, 'et': e, 'na': 0, 'nk': 0, 'ng': 0}
+                
+                bt - 开始时间
+                et - 结束时间
+                na - 任务数量
+                nk - 关键任务数量
+                ng - 非关键任务数量
+        
+            异常:
+                
+            """
+            mm = self.__minmaxMoving(minmax, step)
+            v = []
+            b = mm[0]
+            e = None
+            while b < mm[1]:
+                e = b + step
+                v.append({'bdt': b, 'edt': e, 'na': 0, 'nk': 0, 'ng': 0})
+                b = e + 1
+            return v
+
         """打印时间矩阵
             
         """
-        for r in self._IntervalMatrix:
+        print('时间间隔矩阵：')
+        matrix = createMatrix(self, self._steps, self._graph)
+        for r in matrix:
             l = []
             for c in r:
                 if isReadable:

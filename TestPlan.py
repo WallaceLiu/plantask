@@ -18,6 +18,7 @@ def DoTest():
     g.printGraph()
     p = Plan(g)
     p.estimate()
+    p.printIntervalMatrix(True)
 
 
 if __name__ == '__main__':
