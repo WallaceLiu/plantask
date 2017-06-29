@@ -203,8 +203,9 @@ class Plan:
         """
         print('时间步长：')
         print(steps)
-        print('任务最早/最晚时间：')
         minmax = self.__getMinMax(g.tasks.tasks)
+        print('任务最早/最晚时间：')
+        print(minmax)
         
         for s in steps:
             self._IntervalMatrix.append(self.__createIntervalVector(minmax, s))
@@ -257,6 +258,8 @@ class Plan:
         v = int(step / 2)
         return (minmax[0] - v, minmax[1] + v)
 
+    def __random(self,step):
+        pass
     '''
     打印
     '''
