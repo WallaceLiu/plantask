@@ -48,6 +48,7 @@ class Loader:
 
     # 创建任务
     def __createTask(self, e, no):
+        
         t = Task(no)
         if e.hasAttribute('id'):
             t.id = e.getAttribute('id')

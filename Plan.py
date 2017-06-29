@@ -43,18 +43,6 @@ class Plan:
         self._steps = [600, 1200, 1800, 2400, 3000, 3600]
         self._plan = []
 
-    def go(self):
-        """
-
-        参数:
-                
-        返回:
-    
-        异常:
-        """
-        self.estimate()
-        self.__tuning()
-
     def estimate(self):
         """评估阶段
 
@@ -64,17 +52,83 @@ class Plan:
     
         异常:
         """
-        self.__readyEstimate(self._steps)
         self.__computePlan()
-        self.__printPlan()
-        self.__count()
+
+        self.__createIntervalMatrix(self._steps, self._graph)
+
         self.__tuning()
 
-    # 调优阶段
-    # 根据每个时间段的任务数量调优
-    # 根据每个时间段的任务类型调优
     def __tuning(self):
+        """调优阶段
+        计算时间间隔内的任务数量
+        根据每个时间段的任务数量调优
+        根据每个时间段的任务类型调优
+
+        参数:
+                
+        返回:
+    
+        异常:
+            
+        """
         pass
+
+    def __computePlan(self):
+        """计算所有任务的最晚时间
+
+        参数:
+                
+        返回:
+    
+        异常:
+            
+        """
+
+        def compute(self, r, c, m, plan):
+            """计算所有任务的最晚时间
+    
+            参数:
+                r:      节点索引
+                c:      节点
+                m:      邻接矩阵
+                plan:   评估时间
+                    
+            返回:
+        
+            异常:
+                
+            """
+            for i in range(self._graph.nodenum):
+                if m[i][r] == 1:
+                    t = self._graph.findRootTask(self._graph.tasksIndex[i])
+
+                    self.__setTask(t, c.bDateTime - t.consume - 1,
+                                   c.bDateTime - 1)
+                    self.__addPlan(plan[i], {
+                        'b': t.bDateTime,
+                        'e': t.eDateTime,
+                        'c': t.consume,
+                        't': t.type
+                    })
+
+                    compute(self, i, t, m, plan)
+
+        self.__initPlan()
+
+        for i in range(self._graph.nodenum):
+            if self._graph.tTask[i] == 0:
+                c = self._graph.findRootTask(self._graph.tasksIndex[i])
+                if c.bDateTime != None:
+                    self.__addPlan(self._plan[i], {
+                        'b': c.bDateTime,
+                        'e': c.bDateTime + c.consume,
+                        'c': c.consume,
+                        't': c.type
+                    })
+
+                    compute(self, i, c, self._graph.map, self._plan)
+
+        self.__printPlan(True)
 
     def __addPlan(self, pl, p):
         """添加评估时间
@@ -97,74 +151,15 @@ class Plan:
                 pl.clear()
                 pl.append(p)
 
-    def __computePlan(self):
-        """计算所有任务的最晚时间
+    def __setTask(self, t, bDt, eDt):
+        if t.bDateTime == None:
+            t.bDateTime = bDt
+            t.eDateTime = eDt
+        else:
+            if t.bDateTime < bDt:
+                t.bDateTime = bDt
+                t.eDateTime = eDt
 
-        参数:
-                
-        返回:
-    
-        异常:
-            
-        """
-        def compute(self, r, c, m, plan):
-            """计算所有任务的最晚时间
-    
-            参数:
-                r:
-                c: 
-                m:
-                plan
-                    
-            返回:
-        
-            异常:
-                
-            """
-            for i in range(self._graph.nodenum):
-                if m[i][r] == 1:
-                    t = self._graph.findRootTask(self._graph.tasksIndex[i])
-                    t_bDt = DateTimeUtil.addSec2ts(c.bDateTime, -1 * t.consume)
-                    t_eDt = DateTimeUtil.addSec2ts(t_bDt, t.consume)
-                    self.__addPlan(plan[i], {
-                        'b': t_bDt,
-                        'e': t_eDt,
-                        'c': t.consume,
-                        't': t.type
-                    })
-
-                    compute(self, i, t, m, plan)
-
-        print('终端节点：')
-        print(self._graph.tTask)
-
-        self.__initPlan()
-
-        for i in range(self._graph.nodenum):
-            if self._graph.tTask[i] == 0:
-                c = self._graph.findRootTask(self._graph.tasksIndex[i])
-                if c.bDateTime != None:
-                    self.__addPlan(self._plan[i], {
-                        'b': c.bDateTime,
-                        'e': c.eDateTime,
-                        'c': c.consume,
-                        't': c.type
-                    })
-
-                    compute(self, i, c, self._graph.map, self._plan)
-
-    def __count(self):
-        """计算时间间隔内的任务数量
-
-        参数:
-                
-        返回:
-    
-        异常:
-            
-        """
-        pass
-    
     def __initPlan(self):
         """初始化评估矩阵
 
@@ -178,27 +173,8 @@ class Plan:
         for i in range(self._graph.nodenum):
             self._plan.append([])
 
-    def __readyEstimate(self, step):
-        """评估时间的初始化准备
-
-        参数:
-            step: 步进时间，单位为分钟                
-        返回:
-    
-        异常:
-            
-        """
-        print('时间步长：')
-        print(self._steps)
-        print('任务最早/最晚时间：')
-        minmax = self.__getMinMax(self._graph.tasks.tasks)
-        print(minmax)
-        print('时间间隔序列：')
-        self.__createIntervalMatrix(minmax, self._steps)
-        self._printIntervalMatrix()
-
     def __getMinMax(self, tasks):
-        """获得任务中最小和最大时间
+        """获得任务中最早最晚时间
         
             按开始时间排序
         
@@ -212,20 +188,29 @@ class Plan:
         l = len(tk)
         return (tk[0].bDateTime, tk[l - 1].bDateTime)
 
-    # 创建时间序列矩阵
-    def __createIntervalMatrix(self, minmax, step):
-        """获得任务中最小和最大时间
+    def __createIntervalMatrix(self, steps, g):
+        """创建时间序列矩阵
         
             按开始时间排序
         
         参数:
+            step:   步进时间，单位为秒
+            g:      任务图
         返回:
     
         异常:
             
         """
-        for s in step:
+        print('时间步长：')
+        print(steps)
+        print('任务最早/最晚时间：')
+        minmax = self.__getMinMax(g.tasks.tasks)
+        
+        for s in steps:
             self._IntervalMatrix.append(self.__createIntervalVector(minmax, s))
+
+        print('时间间隔序列：')
+        self.__printIntervalMatrix(True)
 
     def __createIntervalVector(self, minmax, step):
         """创建时间序列向量
@@ -276,21 +261,24 @@ class Plan:
     打印
     '''
 
-    def _printIntervalMatrix(self):
+    def __printIntervalMatrix(self, isReadable):
         """打印时间矩阵
             
         """
         for r in self._IntervalMatrix:
             l = []
             for c in r:
-                s = '(' + DateTimeUtil.timestamp_datetime(c.get(
-                    'bdt')) + ',' + DateTimeUtil.timestamp_datetime(
-                        c.get('edt')) + ',' + str(c.get('na')) + ',' + str(
-                            c.get('nk')) + ',' + str(c.get('ng')) + ')'
-                l.append(s)
+                if isReadable:
+                    l.append('(' + DateTimeUtil.timestamp_datetime(
+                        c.get('bdt')) + ',' + DateTimeUtil.timestamp_datetime(
+                            c.get('edt')) + ',' + str(c.get('na')) + ',' + str(
+                                c.get('nk')) + ',' + str(c.get('ng')) + ')')
+                else:
+                    l.append(c)
+
             print(l)
 
-    def __printPlan(self):
+    def __printPlan(self, isReadable):
         """打印评估时间
             
         """
@@ -298,7 +286,12 @@ class Plan:
         for r in self._plan:
             l = []
             for c in r:
-                l.append('(' + DateTimeUtil.timestamp_datetime(c.get(
-                    'b')) + ',' + DateTimeUtil.timestamp_datetime(c.get('e')) +
-                         ',' + str(c.get('c')) + ',' + str(c.get('t')) + ')')
+                if isReadable:
+                    l.append('(' + DateTimeUtil.timestamp_datetime(
+                        c.get('b')) + ',' + DateTimeUtil.timestamp_datetime(
+                            c.get('e')) + ',' + str(c.get('c')) + ',' + str(
+                                c.get('t')) + ')')
+                else:
+                    l.append(c)
+
             print(l)

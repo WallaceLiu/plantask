@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <tasks>
-    <task id="10" name="a" bDateTime="2017-6-25 9:00:00" eDateTime="2017-6-25 9:10:00" consume="600" />
-    <task id="20" name="b" bDateTime="2017-6-25 9:10:00" eDateTime="2017-6-25 9:20:00" consume="600" />
-    <task id="30" name="c" bDateTime="2017-6-25 9:20:00" eDateTime="2017-6-25 9:40:00" consume="1200" />
-    <task id="40" name="d" bDateTime="2017-6-25 9:20:00" eDateTime="2017-6-25 10:20:00" consume="3600" />
-    <task id="50" name="e" bDateTime="2017-6-25 10:20:00" eDateTime="2017-6-25 10:30:00" consume="600" iskey="True"/>
-    <task id="60" name="f" bDateTime="2017-6-25 9:20:00" eDateTime="2017-6-25 10:20:00" consume="3600" />
+    <task id="10" name="a" bDateTime="" eDateTime="" consume="600" />
+    <task id="20" name="b" bDateTime="" eDateTime="" consume="600" />
+    <task id="30" name="c" bDateTime="2017-6-25 9:20:00" eDateTime="" consume="600" />
+    <task id="40" name="d" bDateTime="" eDateTime="" consume="600" />
+    <task id="50" name="e" bDateTime="2017-6-25 9:30:00" eDateTime="" consume="600" iskey="True"/>
+    <task id="60" name="f" bDateTime="" eDateTime="" consume="600" />
 </tasks>
