@@ -9,8 +9,7 @@ import DateTimeUtil
 
 
 class Plan:
-    '''
-    时间规划
+    """时间规划
     
     分两个阶段：
     1，评估阶段
@@ -27,23 +26,46 @@ class Plan:
             任务至少具备两种类型：
             a，CPU密集型
             b，IO密集型
-    '''
+    """
 
     def __init__(self, g):
+        """构造函数
+
+        参数:
+            g: 图
+                
+        返回:
+    
+        异常:
+        """
         self._graph = g
         self._seqMatrix = []
         self._steps = [600, 1200, 1800, 2400, 3000, 3600]
         self._plan = []
 
-    # 开始
     def go(self):
+        """
+
+        参数:
+                
+        返回:
+    
+        异常:
+        """
         self.estimate()
         self.__tuning()
 
-    # 评估阶段
     def estimate(self):
+        """评估阶段
+
+        参数:
+                
+        返回:
+    
+        异常:
+        """
         self.__readyEstimate(self._steps)
-        self.__count()
+        self.__compute()
         self.__printPlan()
         self.__tuning()
 
@@ -53,23 +75,63 @@ class Plan:
     def __tuning(self):
         pass
 
-    # 取最早的时间
-    def __max(self):
-        pass
+    def __addPlan(self, pl, p):
+        """添加评估时间
+        
+        取最晚的时间
 
-    def __count(self):
+        参数:
+            pl: 评估时间
+            p: 新估计时间
+                
+        返回:
+    
+        异常:
+            
+        """
+        if len(pl) <= 0:
+            pl.append(p)
+        else:
+            if pl[0].get('b') <= p.get('b'):
+                pl.clear()
+                pl.append(p)
+
+    def __compute(self):
+        """计算所有任务的最晚时间
+
+        参数:
+                
+        返回:
+    
+        异常:
+            
+        """
         def cnt(self, r, c, m, plan):
-            for i in range(self._graph.getNodeNum()):
+            """计算所有任务的最晚时间
+    
+            参数:
+                r:
+                c: 
+                m:
+                plan
+                    
+            返回:
+        
+            异常:
+                
+            """
+            for i in range(self._graph.nodenum):
                 if m[i][r] == 1:
                     t = self._graph.findRootTask(self._graph.tasksIndex[i])
                     t_bDt = DateTimeUtil.addSec2ts(c.bDateTime, -1 * t.consume)
                     t_eDt = DateTimeUtil.addSec2ts(t_bDt, t.consume)
-                    plan[i].append({
+                    self.__addPlan(plan[i], {
                         'b': t_bDt,
                         'e': t_eDt,
                         'c': t.consume,
                         't': t.type
                     })
+
                     cnt(self, i, t, m, plan)
 
         print('终端节点：')
@@ -77,82 +139,149 @@ class Plan:
 
         self.__initPlan()
 
-        for i in range(self._graph.getNodeNum()):
+        for i in range(self._graph.nodenum):
             if self._graph.tTask[i] == 0:
                 c = self._graph.findRootTask(self._graph.tasksIndex[i])
                 if c.bDateTime != None:
-                    self._plan[i].append({
+                    self.__addPlan(self._plan[i], {
                         'b': c.bDateTime,
                         'e': c.eDateTime,
                         'c': c.consume,
                         't': c.type
                     })
+
                     cnt(self, i, c, self._graph.map, self._plan)
 
-    # 初始化评估矩阵 
     def __initPlan(self):
-        for i in range(self._graph.getNodeNum()):
+        """初始化评估矩阵
+
+        参数:
+                
+        返回:
+    
+        异常:
+            
+        """
+
+        for i in range(self._graph.nodenum):
             self._plan.append([])
 
-    # 统计每时刻任务数据和任务类型数量
-    # step 步进时间，单位为分钟
     def __readyEstimate(self, step):
-        tasks = self.__sort()
-        minmax = self.__getMinMax(tasks)
+        """评估时间的初始化准备
+
+        参数:
+            step: 步进时间，单位为分钟                
+        返回:
+    
+        异常:
+            
+        """
         print('时间步长：')
         print(self._steps)
         print('任务最早/最晚时间：')
+        minmax = self.__getMinMax(self._graph.tasks.tasks)
         print(minmax)
-        print('时间序列：')
-        self.__createSeqMatrix(minmax, self._steps)
+        print('时间间隔序列：')
+        self.__createIntervalMatrix(minmax, self._steps)
         self.__printSeqMatrix()
 
-    # 任务排序
-    # 按开始时间排序
-    def __sort(self):
-        return sorted(self._graph.tasks.tasks, key=lambda x: x.bDateTime)
-
-    # 获得任务中最小和最大时间
-    def __getMinMax(self, t):
-        l = len(t)
-        return (t[0].bDateTime, t[l - 1].bDateTime)
+    def __getMinMax(self, tasks):
+        """获得任务中最小和最大时间
+        
+            按开始时间排序
+        
+        参数:
+        返回:
+    
+        异常:
+            
+        """
+        tk = sorted(tasks, key=lambda x: x.bDateTime)
+        l = len(tk)
+        return (tk[0].bDateTime, tk[l - 1].bDateTime)
 
     # 创建时间序列矩阵
-    def __createSeqMatrix(self, minmax, step):
+    def __createIntervalMatrix(self, minmax, step):
+        """获得任务中最小和最大时间
+        
+            按开始时间排序
+        
+        参数:
+        返回:
+    
+        异常:
+            
+        """
         for s in step:
-            self._seqMatrix.append(self.__createSeqVector(minmax, s))
+            self._seqMatrix.append(self.__createIntervalVector(minmax, s))
 
-    # 创建时间序列向量
-    # minmax 最小最大日期
-    # step   步长,单位为秒
-    def __createSeqVector(self, minmax, step):
+    def __createIntervalVector(self, minmax, step):
+        """创建时间序列向量
+
+        参数:
+            minmax: 最小最大日期.
+            step:步长,单位为秒.
+                
+        返回:
+            {'bt': b, 'et': e, 'na': 0, 'nk': 0, 'ng': 0}
+            
+            bt - 开始时间
+            et - 结束时间
+            na - 任务数量
+            nk - 关键任务数量
+            ng - 非关键任务数量
+    
+        异常:
+            
+        """
+        mm = self.__minmaxMoving(minmax, step)
         v = []
-        b = minmax[0]
+        b = mm[0]
         e = None
-        while b < minmax[1]:
+        while b < mm[1]:
             e = b + step
-            v.append((b, e, 0, 0, 0))
+            v.append({'bdt': b, 'edt': e, 'na': 0, 'nk': 0, 'ng': 0})
             b = e + 1
         return v
+
+    def __minmaxMoving(self, minmax, step):
+        """平移时间-折半平移，便于任务落在哪个时间段
+
+        参数:
+            minmax:最早最晚时间
+            step:步长,单位为秒
+                
+        返回:
+            (最早时间, 最晚时间)
+            
+        异常:
+            
+        """
+        v = int(step / 2)
+        return (minmax[0] - v, minmax[1] + v)
 
     '''
     打印
     '''
 
-    # 打印时间矩阵
     def __printSeqMatrix(self):
+        """打印时间矩阵
+            
+        """
         for r in self._seqMatrix:
             l = []
             for c in r:
-                s = '(' + DateTimeUtil.timestamp_datetime(c[
-                    0]) + ',' + DateTimeUtil.timestamp_datetime(c[
-                        1]) + ',' + str(c[2]) + ',' + str(c[3]) + ',' + str(c[
-                            4]) + ')'
+                s = '(' + DateTimeUtil.timestamp_datetime(c.get(
+                    'bdt')) + ',' + DateTimeUtil.timestamp_datetime(
+                        c.get('edt')) + ',' + str(c.get('na')) + ',' + str(
+                            c.get('nk')) + ',' + str(c.get('ng')) + ')'
                 l.append(s)
             print(l)
 
-    # 打印评估时间
     def __printPlan(self):
+        """打印评估时间
+            
+        """
         print('评估结果：')
         for r in self._plan:
             l = []

@@ -10,30 +10,35 @@ import time
 
 
 class Task:
-    '''
-    任务类
+    """任务类
     
-    no,整型,序号,唯一
-    id,整型,标识
-    name,字符串,名称
-    type,枚举,类型
-    desc,字符串,描述
-    executeRule,字符串,执行规则,例如：0 10 17 * * ?
-    nextExecuteDateTime,下次执行时间,例如：20170621171000
-    timeout,整型,超时时间,单位分
-    retryFrequency,整型,重试次数
-    retryInterval,整型,重试时间间隔,单位秒
-    bDateTime,时间类型,开始时间阈值
-    eDateTime,时间类型,结束时间阈值
-    consume,时间类型,耗时,单位秒
-    bDateTimeThreshold,时间类型,开始时间阈值,例如：21:00
-    eDateTimeThreshold,时间类型,结束时间阈值,例如：22:00
-    childs,子任务集合
-    isKey,是否为关键任务
-    
-    '''
+    """
 
     def __init__(self, no):
+        """构造函数
+
+        参数:
+            no:                     整型,序号,唯一
+            id:                     整型,标识
+            name:                   字符串,名称
+            type:                   枚举,类型
+            desc:                   字符串,描述
+            executeRule:            字符串,执行规则,例如：0 10 17 * * ?
+            nextExecuteDateTime:    下次执行时间,例如：20170621171000
+            timeout:                整型,超时时间,单位分
+            retryFrequency:         整型,重试次数
+            retryInterval:          整型,重试时间间隔,单位秒
+            bDateTime:              时间类型,开始时间阈值
+            eDateTime:              时间类型,结束时间阈值
+            consume:                时间类型,耗时,单位秒
+            bDateTimeThreshold:     时间类型,开始时间阈值,例如：21:00
+            eDateTimeThreshold:     时间类型,结束时间阈值,例如：22:00
+            childs:                 子任务集合
+            isKey:                  是否为关键任务
+                
+        返回:
+        异常:
+        """
         self.no = no
         self.id = ''
         self.name = ''
@@ -51,6 +56,21 @@ class Task:
         self.eDateTimeThreshold = ''
         self.childs = TaskCollection()
         self.isKey = False
+
+    def findTask(self, id):
+        """查找任务
+
+        参数:
+            id:     整型,标识
+                
+        返回:
+    
+        异常:
+        """
+        if len(self.childs.tasks) > 0:
+            return self.childs.findTask(id)
+
+        return None
 
     def toString(self, bl):
         s = '<' + str(self.no) + '>'
@@ -88,10 +108,3 @@ class Task:
     def printer(self):
         print(self.toString())
         print('\t' + self.childs.printer())
-
-    # 查找任务
-    def findTask(self, id):
-        if len(self.childs.tasks) > 0:
-            return self.childs.findTask(id)
-
-        return None

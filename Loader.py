@@ -41,7 +41,10 @@ class Loader:
                     self.graph.addTasksIndex(tc.id)
 
             self.graph.addTask(t)
-            self.graph.file = self.__path
+
+        self.graph.file = self.__path
+        self.graph.nodenum = self.__getNodeNum()
+        self.graph.edgenum = self.__getEdgeNum()
 
     # 创建任务
     def __createTask(self, e, no):
@@ -82,3 +85,25 @@ class Loader:
             t.eDateTimeThreshold = e.getAttribute('eDateTimeThreshold')
 
         return t
+
+    # 
+    def __getNodeNum(self):
+        """节点数量
+
+        参数:
+        返回:
+        异常:
+        """
+        return len(self.graph.tasksIndex)
+
+    def __getEdgeNum(self):
+        """边数量
+
+        参数:
+        返回:
+        异常:
+        """
+        n = 0
+        for t in self.graph.tasks.tasks:
+            n += len(t.childs.tasks)
+        return n

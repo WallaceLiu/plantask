@@ -11,7 +11,7 @@ from Graph import Graph
 
 
 class TaskAdjMatrix(Graph):
-    '''
+    """
     
     tasksIndex  所有节点ID
     tasks       所有节点实例
@@ -54,7 +54,7 @@ class TaskAdjMatrix(Graph):
 
     
     
-    '''
+    """
 
     def __init__(self):
         self.tasksIndex = []
@@ -92,13 +92,13 @@ class TaskAdjMatrix(Graph):
     # 初始化邻接矩阵
 
     def __beforeMap(self):
-        for i in range(self.getNodeNum()):
-            m = [0] * self.getNodeNum()
+        for i in range(self.nodenum):
+            m = [0] * self.nodenum
             self.map.append(m)
 
     def __goMap(self):
-        self.rTask = [0] * self.getNodeNum()
-        self.tTask = [0] * self.getNodeNum()
+        self.rTask = [0] * self.nodenum
+        self.tTask = [0] * self.nodenum
         for x in self.tasks.tasks:
             for y in x.childs.tasks:
                 w = self.__findIndex(x.id)
@@ -109,7 +109,7 @@ class TaskAdjMatrix(Graph):
                 self.rTask[v] = 1
 
     def __afterMap(self):
-        for i in range(self.getNodeNum()):
+        for i in range(self.nodenum):
             self.map[i].append(self.tasksIndex[i])
 
         self.map.append(self.tasksIndex)
@@ -124,25 +124,10 @@ class TaskAdjMatrix(Graph):
 
     def isOutRange(self, x):
         try:
-            if x >= self.getNodeNum() or x <= 0:
+            if x >= self.nodenum or x <= 0:
                 raise IndexError
         except IndexError:
             print("节点下标出界")
-
-    # 节点数量
-    def getNodeNum(self):
-        if self.nodenum == 0:
-            self.nodenum = len(self.tasksIndex)
-
-        return self.nodenum
-
-    # 边数量
-    def getEdgeNum(self):
-        n = 0
-        for t in self.tasks.tasks:
-            n += len(t.childs.tasks)
-
-        return n
 
     # 添加边
     def addEdge(self, x, y):
@@ -159,13 +144,13 @@ class TaskAdjMatrix(Graph):
     # 查找邻接矩阵所有的路径
     def searchPath(self):
         def path(self, s, r):
-            for i in range(self.getNodeNum()):
+            for i in range(self.nodenum):
                 if self.map[r][i] == 1:
                     s.append(self.tasksIndex[i])
                     path(self, s, i)
                     s.pop()
                 else:
-                    if i >= self.getNodeNum() - 1:
+                    if i >= self.nodenum - 1:
                         p = '->'.join(s)
                         if self.__isPath(p) == False:
                             self.path.append(p)
@@ -276,9 +261,9 @@ class TaskAdjMatrix(Graph):
     # 打印概述信息
     def printSummary(self):
         print("the Number Of Task: ")
-        print("\t" + str(self.getNodeNum()))
+        print("\t" + str(self.nodenum))
         print("the Number Of Edge:")
-        print("\t" + str(self.getEdgeNum()))
+        print("\t" + str(self.edgenum))
 
     # 打印任务信息    
     def printTasks(self):
