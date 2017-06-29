@@ -6,6 +6,7 @@ Created on Tue Jun 27 09:23:23 2017
 """
 from TaskAdjMatrix import TaskAdjMatrix
 import DateTimeUtil
+import random
 
 
 class Plan:
@@ -56,22 +57,7 @@ class Plan:
 
         self.__createIntervalMatrix(self._steps, self._graph)
 
-        self.__tuning()
-
-    def __tuning(self):
-        """调优阶段
-        计算时间间隔内的任务数量
-        根据每个时间段的任务数量调优
-        根据每个时间段的任务类型调优
-
-        参数:
-                
-        返回:
-    
-        异常:
-            
-        """
-        pass
+        self.__tunning(self._IntervalMatrix, self._graph.nodenum, self._plan)
 
     def __computePlan(self):
         """计算所有任务的最晚时间
@@ -129,6 +115,41 @@ class Plan:
                     compute(self, i, c, self._graph.map, self._plan)
 
         self.__printPlan(True)
+
+    def __tunning(self, intervalMatrix, nodenum, plan):
+        """调优阶段
+            动态规划
+            
+            计算时间间隔内的任务数量
+            根据每个时间段的任务数量调优
+            根据每个时间段的任务类型调优
+
+        参数:
+            intervalMatrix:     时间间隔矩阵
+            
+                
+        返回:
+    
+        异常:
+            
+        """
+
+        def tunning(self, weight, vector, plan):
+            """调优阶段
+    
+            参数:
+                weight:     权重
+                vector:     时间间隔向量
+                plan:       任务评估时间
+            返回:
+        
+            异常:
+            """
+            pass
+
+        for vec in intervalMatrix:
+            weight = int(nodenum / len(vec))
+            tunning(self, weight, vec, plan)
 
     def __addPlan(self, pl, p):
         """添加评估时间
@@ -206,7 +227,7 @@ class Plan:
         minmax = self.__getMinMax(g.tasks.tasks)
         print('任务最早/最晚时间：')
         print(minmax)
-        
+
         for s in steps:
             self._IntervalMatrix.append(self.__createIntervalVector(minmax, s))
 
@@ -246,8 +267,8 @@ class Plan:
         """平移时间-折半平移，便于任务落在哪个时间段
 
         参数:
-            minmax:最早最晚时间
-            step:步长,单位为秒
+            minmax:     最早最晚时间
+            step:       步长,单位为秒
                 
         返回:
             (最早时间, 最晚时间)
@@ -258,8 +279,21 @@ class Plan:
         v = int(step / 2)
         return (minmax[0] - v, minmax[1] + v)
 
-    def __random(self,step):
-        pass
+    def __random(self, step):
+        """随机时间
+            避免在移动任务时，都聚集在一个时间点
+            
+        参数:
+            step:   时间间隔
+                
+        返回:
+            随机时间
+            
+        异常:
+        """
+        seed = random.randint(0, 100)
+        return int(step * (1 + seed / 100))
+
     '''
     打印
     '''
