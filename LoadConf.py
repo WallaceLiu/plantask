@@ -137,7 +137,5 @@ class LoadConf:
             print("graph is None.")
 
     def __printer(self):
-        print("Conf File: <%s>, Task Number:<%u>, Edge Number:<%u>" %
-              (self.graph.file, self.graph.nodenum, self.graph.edgenum))
-        print('Task Id:')
-        print(self.graph.tasksIndex)
+        self.graph.printSummary()
+        self.graph.printTasksIndex()

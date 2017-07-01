@@ -4,9 +4,7 @@ Created on Tue Jun 27 09:23:23 2017
 
 @author: liuning11
 """
-from TaskAdjMatrix import TaskAdjMatrix
 import DateTimeUtil
-import random
 from ModelBase import ModelBase
 
 
@@ -30,7 +28,7 @@ class Plan:
             b，IO密集型
     """
 
-    def __init__(self, g, model=None):
+    def __init__(self, g):
         """构造函数
 
         参数:
@@ -49,7 +47,6 @@ class Plan:
 
     def estimate(self):
         """评估阶段
-
         """
         self.__computePlan()
 
@@ -57,14 +54,11 @@ class Plan:
 
         self.__initWeight(self._steps, self._graph)
 
-        self.__model(self._weights, self._graph.nodenum, self._plan,
-                     self._intervalMatrix)
+        #self.__model()
 
     def __computePlan(self):
         """计算所有任务的最晚时间
-
         """
-
         def compute(self, r, c, m, plan):
             """计算所有任务的最晚时间
     
@@ -101,21 +95,6 @@ class Plan:
 
         self.__printPlan(True)
 
-    def __model(self, weights, nodenum, plan, intervalMatrix):
-        """调优阶段
-            动态规划
-        参数:
-            weights:     时间间隔向量
-            nodenum:     任务节点数量       
-            plan:        任务评估时间最晚时间矩阵
-                
-        返回:
-    
-        异常:
-            
-        """
-        return self._model.model(weights, nodenum, plan, intervalMatrix)
-
     def __deal(self, t, bDt, eDt, pl):
         """计算任务最晚时间
 
@@ -125,12 +104,10 @@ class Plan:
             eDt:    结束时间
             pl:     最晚时间
             
-            
         返回:
     
         异常:
         """
-
         def setTask(self, t, bDt, eDt):
             if t.bDateTime == None:
                 t.bDateTime = bDt
@@ -160,15 +137,14 @@ class Plan:
             't': t.type
         })
 
+    def __model(self):
+        """调优阶段
+        动态规划
+        """
+        return self._model.model()
+
     def __initPlan(self):
         """初始化评估矩阵
-
-        参数:
-                
-        返回:
-    
-        异常:
-            
         """
         for i in range(self._graph.nodenum):
             self._plan.append([])
@@ -195,16 +171,16 @@ class Plan:
     def __initWeight(self, steps, g):
         """创建时间序列矩阵
             
-                按开始时间排序
-            
-            参数:
-                step:   步进时间，单位为秒
-                g:      任务图
-            返回:
+            按开始时间排序
         
-            异常:
+        参数:
+            step:   步进时间，单位为秒
+            g:      任务图
+        返回:
+    
+        异常:
                 
-            """
+        """
         print('时间步长：')
         print(steps)
         minmax = self.__getMinMax(g.tasks.tasks)
@@ -237,21 +213,6 @@ class Plan:
         print(meta)
 
         return meta
-
-    def __random(self, step):
-        """随机时间
-            避免在移动任务时，都聚集在一个时间点
-            
-        参数:
-            step:   时间间隔
-                
-        返回:
-            随机时间
-            
-        异常:
-        """
-        seed = random.randint(0, 100)
-        return int(step * (1 + seed / 100))
 
     def __createMatrix(self, steps, g):
         """创建时间序列矩阵
@@ -302,13 +263,13 @@ class Plan:
         for s in self._steps:
             self._intervalMatrix.append(createVector(self, minmax, s))
 
-        self._printIntervalMatrix(True)
+        self.__printIntervalMatrix(True)
 
     '''
     打印
     '''
 
-    def _printIntervalMatrix(self, isReadable):
+    def __printIntervalMatrix(self, isReadable):
         """打印时间矩阵
         """
         print('时间间隔矩阵：')

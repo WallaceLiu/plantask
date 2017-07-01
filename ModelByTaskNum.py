@@ -5,7 +5,7 @@ Created on Fri Jun 30 11:43:31 2017
 @author: liuning11
 """
 from ModelBase import ModelBase
-
+import random
 
 class ModelByTaskNum(ModelBase):
     def __init__(self, g):
@@ -115,6 +115,20 @@ class ModelByTaskNum(ModelBase):
         t = w
         return t
 
+    def __random(self, step):
+        """随机时间
+            避免在移动任务时，都聚集在一个时间点
+            
+        参数:
+            step:   时间间隔
+                
+        返回:
+            随机时间
+            
+        异常:
+        """
+        seed = random.randint(0, 100)
+        return int(step * (1 + seed / 100))
 
 #    def model(self, minmax, weights, nodenum, plan, intervalMatrix):
 #        """调优阶段

@@ -138,12 +138,14 @@ class TaskAdjMatrix(Graph):
         self.map.append(self.tasksIndex)
 
     def __findIndex(self, id):
-        j = -1
+        """查找指定节点的行列索引
+        
+        参数:
+            id:     任务Id
+        """
         for i in range(len(self.tasksIndex)):
             if id == self.tasksIndex[i]:
-                j = i
-                break
-        return j
+                return i
 
     def __isOutRange(self, x):
         try:
@@ -179,12 +181,13 @@ class TaskAdjMatrix(Graph):
             self.edgenum = self.edgenum + 1
 
     def searchPath(self):
-        """查找邻接矩阵所有的路径
+        """查找邻接矩阵所有路径
 
         参数:
         返回:
         异常:
         """
+
         def path(self, s, r):
             for i in range(self.nodenum):
                 if self.map[r][i] == 1:
@@ -236,30 +239,37 @@ class TaskAdjMatrix(Graph):
 
         return n
 
-    # 根据路径集合检索
     def findPathByStr(self, id):
+        """根据路径集合检索
+        
+        参数:
+            id:     任务Id
+        """
         l = []
         for p in self.path:
             if '->' + id in p or id + '->' in p:
                 l.append(p)
         return l
 
-    # 查找指定节点的行列索引
-    def __findIndex(self, id):
-        for i in range(len(self.tasksIndex)):
-            if id == self.tasksIndex[i]:
-                return i
-
-    # 查找任务
     def findRootTask(self, id):
+        """查找Root任务
+        
+        参数:
+            id:     任务Id
+        """
         return self.tasks.findRootTask(id)
 
-    # 查找任务
     def findTask(self, id):
+        """查找任务
+        
+        参数:
+            id:     任务Id
+        """
         return self.tasks.findTask(id)
 
-    # 是否为路径
     def __isPath(self, path):
+        """是否为一个任务路径
+        """
         for p in self.path:
             if path in p:
                 return True
@@ -307,44 +317,44 @@ class TaskAdjMatrix(Graph):
         self.printSummary()
         self.printTasks()
         self.printMap()
-        print('\n')
 
     # 打印概述信息
     def printSummary(self):
-        print("the Number Of Task: ")
-        print("\t" + str(self.nodenum))
-        print("the Number Of Edge:")
-        print("\t" + str(self.edgenum))
+        print("Conf File: <%s>, Task Number:<%u>, Edge Number:<%u>" %
+              (self.file, self.nodenum, self.edgenum))
 
     # 打印任务信息    
     def printTasks(self):
-        print('Task: ')
-        print(self.tasksIndex)
-        print('Task List: ')
+        self.printTasksIndex()
+        print('Adj All Task: ')
         self.tasks.printer()
-        print('\n')
+
+    def printTasksIndex(self):
+        """打印任务ID
+        """
+        print('Task Index: ')
+        print(self.tasksIndex)
 
     def printRootTasks(self):
-        print('Task root: ')
-        print(self.tasksIndex)
-        print('Task List: ')
+        """打印所有ROOT任务
+        """
+        print('Adj Root Task: ')
         for t in self.tasks.tasks:
             print(t.toString(True))
-        print('\n')
 
-    # 打印邻接矩阵信息
     def printMap(self):
-        print('Matrix:')
+        """打印邻接矩阵信息
+        """
+        print('Adj Matrix:')
         for m in self.map:
             print(m)
-        print('\n')
 
-    # 打印全部路径
     def printPath(self):
-        print('All Path:' + str(len(self.path)))
+        """打印全部路径
+        """
+        print('Adj All Path:' + str(len(self.path)))
         for p in self.path:
             print(p)
-        print('\n')
 
     '''
     暂时不实现
