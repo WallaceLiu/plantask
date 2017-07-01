@@ -12,10 +12,10 @@ import time
 
 
 class LoadParameters:
-    '''
-    加载参数，
-    包括开始时间bDateTime，结束时间eDateTime，耗时consume
-    '''
+    """加载参数
+    
+    包括,开始时间bDateTime,结束时间eDateTime,耗时consume
+    """
 
     def __init__(self, g):
         self.__graph = g
@@ -23,12 +23,21 @@ class LoadParameters:
         self.__load()
 
     def __load(self):
+        try:
+            if self.__path == None:
+                raise NameError
+        except NameError:
+            print('Conf File is None')
+
+        print('Load Paramter...')
         DOMTree = xml.dom.minidom.parse(self.__path)
         es = DOMTree.getElementsByTagName("task")
 
-        print(self.__graph.tasksIndex)
         for e in es:
             self.__setParamter(e)
+
+        self.__printer()
+        print('Load Paramter Complete.')
 
         # 创建任务
     def __setParamter(self, e):
@@ -50,7 +59,7 @@ class LoadParameters:
             print('Find...Task <' + id + '>')
             t = self.__graph.findRootTask(id)
             if t == None:
-                raise IndexError
+                raise NameError
             else:
                 t.bDateTime = time.mktime(
                     time.strptime(bDt, '%Y-%m-%d %H:%M:%S')) if len(
@@ -60,10 +69,18 @@ class LoadParameters:
                         eDt) > 0 else None
                 t.consume = c
 
-        except IndexError:
+        except NameError:
             print('Task <' + id + '> No Found, is None')
 
     def __createFile(self):
+        if self.__graph == None:
+            return None
+
         p = self.__graph.file.rsplit('.')
         p[0] = p[0] + 'p'
         return '.'.join(p)
+
+    def __printer(self):
+        print('Task: ')
+        for t in self.__graph.tasks.tasks:
+            print(t.toStringParams())

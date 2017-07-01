@@ -8,22 +8,37 @@ import xml.dom.minidom
 from TaskAdjMatrix import TaskAdjMatrix
 from Task import Task
 from TaskType import TaskType
-#from datetime import datetime
 import time
 
 
-class Loader:
+class LoadConf:
 
     __path = ""
     __map = []
     graph = TaskAdjMatrix()
 
     def __init__(self, path="conf/conf.xml"):
-        self.__path = path
-        self.__loader()
+        """加载任务配置文件 
 
-    # 加载任务配置文件 
-    def __loader(self):
+        参数:
+            path:   任务配置文件，默认值为 conf/conf.xml
+        返回:
+        异常:
+        """
+        self.__path = path
+
+        self.__load()
+
+    def __load(self):
+        """加载任务配置文件 
+        """
+        print('Load Conf...')
+        try:
+            if self.__path == None:
+                raise NameError
+        except NameError:
+            print('Conf File is None')
+
         DOMTree = xml.dom.minidom.parse(self.__path)
         es = DOMTree.getElementsByTagName("task")
         no = 0
@@ -46,9 +61,18 @@ class Loader:
         self.graph.nodenum = self.__getNodeNum()
         self.graph.edgenum = self.__getEdgeNum()
 
-    # 创建任务
+        self.__printer()
+        print('Load Conf Complete.')
+
     def __createTask(self, e, no):
-        
+        """创建任务
+
+        参数:
+            e:      xml元素
+            no:     序列号，唯一    
+        返回:
+        异常:
+        """
         t = Task(no)
         if e.hasAttribute('id'):
             t.id = e.getAttribute('id')
@@ -87,24 +111,33 @@ class Loader:
 
         return t
 
-    # 
     def __getNodeNum(self):
         """节点数量
-
-        参数:
-        返回:
-        异常:
         """
-        return len(self.graph.tasksIndex)
+        try:
+            if self.graph == None:
+                raise AttributeError
+
+            return len(self.graph.tasksIndex)
+        except AttributeError:
+            print("graph is None.")
 
     def __getEdgeNum(self):
         """边数量
-
-        参数:
-        返回:
-        异常:
         """
-        n = 0
-        for t in self.graph.tasks.tasks:
-            n += len(t.childs.tasks)
-        return n
+        try:
+            if self.graph == None:
+                raise AttributeError
+
+            n = 0
+            for t in self.graph.tasks.tasks:
+                n += len(t.childs.tasks)
+            return n
+        except AttributeError:
+            print("graph is None.")
+
+    def __printer(self):
+        print("Conf File: <%s>, Task Number:<%u>, Edge Number:<%u>" %
+              (self.graph.file, self.graph.nodenum, self.graph.edgenum))
+        print('Task Id:')
+        print(self.graph.tasksIndex)

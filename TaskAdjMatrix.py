@@ -27,15 +27,6 @@ class TaskAdjMatrix(Graph):
     若列全为0，则表示为根节点
     若行全为0，则表示为终端节点，无子节点
     
-    规划时间：
-    采用markdown公式 
-    
-    a_(t_a,d_a)->b_(t_a+d_a,d_b)->c_(t_a+d_a+d_b,d_c)
-    a_(t_a,d_a)->b_(t_a+d_a,d_b)->d_(t_a+d_a+d_b,d_d)->e_(t_a+d_a+d_b+d_d,d_e)
-    f_(t_f,d_f)->e_(t_f+d_f,d_e)
-    
-    先标记所有父任务大于1的任务    
-    
     """
 
     def __init__(self):
@@ -87,10 +78,6 @@ class TaskAdjMatrix(Graph):
 
     def createMap(self):
         """创建邻接矩阵
-
-        参数:
-        返回:
-        异常:
         """
         self.__beforeMap()
         self.__goMap()
@@ -198,7 +185,6 @@ class TaskAdjMatrix(Graph):
         返回:
         异常:
         """
-
         def path(self, s, r):
             for i in range(self.nodenum):
                 if self.map[r][i] == 1:
@@ -355,7 +341,7 @@ class TaskAdjMatrix(Graph):
 
     # 打印全部路径
     def printPath(self):
-        print('All of Path:' + str(len(self.path)))
+        print('All Path:' + str(len(self.path)))
         for p in self.path:
             print(p)
         print('\n')

@@ -6,15 +6,14 @@ Created on Wed Jun 21 09:19:45 2017
 """
 
 from TaskAdjMatrix import TaskAdjMatrix
-from Loader import Loader
+from LoadWrapper import LoadWrapper
 
 
 def DoTest():
-    l = Loader("conf/conf.xml")
-    g = l.graph
+    l = LoadWrapper("conf/t1.xml")
+    g = l.load()
     g.createMap()
-    g.printGraph()
-    g.printTasks()
+    g.printMap()
     g.searchPath()
     g.printPath()
     #p = g.findPathByStr('5')

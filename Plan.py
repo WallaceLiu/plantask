@@ -7,6 +7,7 @@ Created on Tue Jun 27 09:23:23 2017
 from TaskAdjMatrix import TaskAdjMatrix
 import DateTimeUtil
 import random
+from ModelBase import ModelBase
 
 
 class Plan:
@@ -29,7 +30,7 @@ class Plan:
             b，IO密集型
     """
 
-    def __init__(self, g):
+    def __init__(self, g, model=None):
         """构造函数
 
         参数:
@@ -41,8 +42,10 @@ class Plan:
         """
         self._graph = g
         self._steps = [600, 1200, 1800, 2400, 3000, 3600]
-        self._interval = []
+        self._weights = []
+        self._intervalMatrix = []
         self._plan = []
+        self._model = ModelBase()
 
     def estimate(self):
         """评估阶段
@@ -50,14 +53,18 @@ class Plan:
         """
         self.__computePlan()
 
-        self.__createWeight(self._steps, self._graph)
+        self.__createMatrix(self._steps, self._graph)
 
-        self.__tunning(self._interval, self._graph.nodenum, self._plan)
+        self.__initWeight(self._steps, self._graph)
+
+        self.__model(self._weights, self._graph.nodenum, self._plan,
+                     self._intervalMatrix)
 
     def __computePlan(self):
         """计算所有任务的最晚时间
 
         """
+
         def compute(self, r, c, m, plan):
             """计算所有任务的最晚时间
     
@@ -94,42 +101,36 @@ class Plan:
 
         self.__printPlan(True)
 
-    def __tunning(self, interval, nodenum, plan):
+    def __model(self, weights, nodenum, plan, intervalMatrix):
         """调优阶段
             动态规划
-            
-            计算时间间隔内的任务数量
-            根据每个时间段的任务数量调优
-            根据每个时间段的任务类型调优
-
         参数:
-            intervalMatrix:     时间间隔矩阵
-            nodenum:            
-            plan:       
+            weights:     时间间隔向量
+            nodenum:     任务节点数量       
+            plan:        任务评估时间最晚时间矩阵
                 
         返回:
     
         异常:
             
         """
-        def tunning(self, weight, interval, plan):
-            """调优阶段
-    
-            参数:
-                weight:     权重
-                vector:     时间间隔向量
-                plan:       任务评估时间
-            返回:
-        
-            异常:
-            """
-            pass
-
-        for i in range(len(interval)):
-            weight = int(nodenum / interval[i])
-            tunning(self, weight, interval, plan)
+        return self._model.model(weights, nodenum, plan, intervalMatrix)
 
     def __deal(self, t, bDt, eDt, pl):
+        """计算任务最晚时间
+
+        参数:
+            t:      任务
+            bDt:    开始时间
+            eDt:    结束时间
+            pl:     最晚时间
+            
+            
+        返回:
+    
+        异常:
+        """
+
         def setTask(self, t, bDt, eDt):
             if t.bDateTime == None:
                 t.bDateTime = bDt
@@ -151,6 +152,8 @@ class Plan:
         setTask(self, t, bDt, eDt)
 
         addPlan(self, pl, {
+            'no': t.no,
+            'id': t.id,
             'b': t.bDateTime,
             'e': t.eDateTime,
             'c': t.consume,
@@ -182,10 +185,14 @@ class Plan:
             
         """
         tk = sorted(tasks, key=lambda x: x.bDateTime)
-        l = len(tk)
-        return (tk[0].bDateTime, tk[l - 1].bDateTime)
+        minmax = (tk[0].bDateTime, tk[len(tk) - 1].bDateTime)
 
-    def __createWeight(self, steps, g):
+        print('任务最早/最晚时间：')
+        print(minmax)
+
+        return minmax
+
+    def __initWeight(self, steps, g):
         """创建时间序列矩阵
             
                 按开始时间排序
@@ -205,10 +212,10 @@ class Plan:
         print(minmax)
 
         for step in steps:
-            self._interval.append(int((minmax[1] - minmax[0]) / step) + 1)
+            self._weights.append(int((minmax[1] - minmax[0]) / step) + 1)
 
         print('时间间隔序列长度：')
-        print(self._interval)
+        print(self._weights)
 
     def __minmaxMoving(self, minmax, step):
         """平移时间-折半平移，便于任务落在哪个时间段
@@ -224,7 +231,12 @@ class Plan:
             
         """
         v = int(step / 2)
-        return (minmax[0] - v, minmax[1] + v)
+        meta = (minmax[0] - v, minmax[1] + v)
+
+        print('任务最早/最晚时间-平移后：')
+        print(meta)
+
+        return meta
 
     def __random(self, step):
         """随机时间
@@ -241,35 +253,19 @@ class Plan:
         seed = random.randint(0, 100)
         return int(step * (1 + seed / 100))
 
-    '''
-    打印
-    '''
-
-    def printIntervalMatrix(self, isReadable):
-        def createMatrix(self, steps, g):
-            """创建时间序列矩阵
-            
-                按开始时间排序
-            
-            参数:
-                step:   步进时间，单位为秒
-                g:      任务图
-            返回:
+    def __createMatrix(self, steps, g):
+        """创建时间序列矩阵
         
-            异常:
-                
-            """
-            print('时间步长：')
-            print(steps)
-            minmax = self.__getMinMax(g.tasks.tasks)
-            print('任务最早/最晚时间：')
-            print(minmax)
-
-            matrix = []
-            for s in steps:
-                matrix.append(createVector(self, minmax, s))
-
-            return matrix
+            按开始时间排序
+        
+        参数:
+            step:   步进时间，单位为秒
+            g:      任务图
+        返回:
+    
+        异常:
+            
+        """
 
         def createVector(self, minmax, step):
             """创建时间序列向量
@@ -300,12 +296,23 @@ class Plan:
                 b = e + 1
             return v
 
+        print('时间步长：')
+        print(steps)
+        minmax = self.__getMinMax(g.tasks.tasks)
+        for s in self._steps:
+            self._intervalMatrix.append(createVector(self, minmax, s))
+
+        self._printIntervalMatrix(True)
+
+    '''
+    打印
+    '''
+
+    def _printIntervalMatrix(self, isReadable):
         """打印时间矩阵
-            
         """
         print('时间间隔矩阵：')
-        matrix = createMatrix(self, self._steps, self._graph)
-        for r in matrix:
+        for r in self._intervalMatrix:
             l = []
             for c in r:
                 if isReadable:
@@ -320,17 +327,17 @@ class Plan:
 
     def __printPlan(self, isReadable):
         """打印评估时间
-            
         """
         print('评估结果：')
         for r in self._plan:
             l = []
             for c in r:
                 if isReadable:
-                    l.append('(' + DateTimeUtil.timestamp_datetime(
-                        c.get('b')) + ',' + DateTimeUtil.timestamp_datetime(
-                            c.get('e')) + ',' + str(c.get('c')) + ',' + str(
-                                c.get('t')) + ')')
+                    l.append('(' + str(c.get('no')) + ',' + str(c.get(
+                        'id')) + ',' + DateTimeUtil.timestamp_datetime(
+                            c.get('b')) + ',' +
+                             DateTimeUtil.timestamp_datetime(c.get('e')) + ','
+                             + str(c.get('c')) + ',' + str(c.get('t')) + ')')
                 else:
                     l.append(c)
 

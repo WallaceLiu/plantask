@@ -105,6 +105,19 @@ class Task:
                                               0 else '-') + ')'
         return s
 
+    def toStringParams(self):
+        s = '<' + str(self.no) + '>'
+        s += '\t' + str(self.id)
+        s += '\t' + (self.name if len(self.name) > 0 else '-')
+        s += '\n\t\t' + '运行时间(' + (
+            time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(self.bDateTime))
+            if self.bDateTime != None else '-'
+        ) + ',' + (
+            time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(self.eDateTime))
+            if self.eDateTime != None else '-') + ',' + str(self.consume) + ')'
+
+        return s
+
     def printer(self):
         print(self.toString())
         print('\t' + self.childs.printer())
