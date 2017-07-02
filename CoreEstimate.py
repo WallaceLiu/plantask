@@ -5,28 +5,22 @@ Created on Tue Jun 27 09:23:23 2017
 @author: liuning11
 """
 import DateTimeUtil
-from ModelBase import ModelBase
 
 
-class Plan:
-    """时间规划
+class CoreEstimate:
+    """评估阶段
     
-    分两个阶段：
-    1，评估阶段
-        任务分为两种：
-        a，关键任务，该任务根据业务要求必须设置结束时间，并且在调优阶段不能改变
-        b，非关键任务，该任务给出的时间，可以改变
-        在整个任务的图结构中，至少给出一个任务的结束时间，规划才能开始
-        
-        评估图中每个任务的父任务和子任务的时间，这样，每个任务都会有时间，从中选择最早的时间
-        
-    2，调优阶段
-        1·）保证每个时间段的任务数量差不多
-        2）并在此基础上，保证任务类型的数量差不多
-            任务至少具备两种类型：
-            a，CPU密集型
-            b，IO密集型
+    包括，
+    1，计算所有任务最晚发生时间
+    2，计算时间间隔序列矩阵
+    3，计算时间间隔矩阵的平均任务数
+
     """
+
+    steps = [600, 1200, 1800, 2400, 3000, 3600]
+    timeSeq = []
+    avgTasksNum = []
+    plans = []
 
     def __init__(self, g):
         """构造函数
@@ -38,27 +32,28 @@ class Plan:
     
         异常:
         """
-        self._graph = g
-        self._steps = [600, 1200, 1800, 2400, 3000, 3600]
-        self._weights = []
-        self._intervalMatrix = []
-        self._plan = []
-        self._model = ModelBase()
+        self.graph = g
 
-    def estimate(self):
-        """评估阶段
-        """
+        self.__estimate()
+
+    def __estimate(self):
+
+        print('Estimate...')
+
         self.__computePlan()
 
-        self.__createMatrix(self._steps, self._graph)
+        minmax = self.__getMinMax(self.graph.tasks.tasks)
 
-        self.__initWeight(self._steps, self._graph)
+        self.__createTimeSeq(self.steps, minmax, self.graph)
 
-        #self.__model()
+        self.__initAvgTasksNum(self.steps, minmax, self.graph)
+
+        print('Estimate Complete.')
 
     def __computePlan(self):
         """计算所有任务的最晚时间
         """
+
         def compute(self, r, c, m, plan):
             """计算所有任务的最晚时间
     
@@ -73,9 +68,9 @@ class Plan:
             异常:
                 
             """
-            for i in range(self._graph.nodenum):
+            for i in range(self.graph.nodenum):
                 if m[i][r] == 1:
-                    t = self._graph.findRootTask(self._graph.tasksIndex[i])
+                    t = self.graph.findRootTask(self.graph.tasksIndex[i])
 
                     self.__deal(t, c.bDateTime - t.consume - 1,
                                 c.bDateTime - 1, plan[i])
@@ -84,14 +79,14 @@ class Plan:
 
         self.__initPlan()
 
-        for i in range(self._graph.nodenum):
-            if self._graph.tTask[i] == 0:
-                c = self._graph.findRootTask(self._graph.tasksIndex[i])
+        for i in range(self.graph.nodenum):
+            if self.graph.tTask[i] == 0:
+                c = self.graph.findRootTask(self.graph.tasksIndex[i])
                 if c.bDateTime != None:
                     self.__deal(c, c.bDateTime, c.bDateTime + c.consume,
-                                self._plan[i])
+                                self.plans[i])
 
-                    compute(self, i, c, self._graph.map, self._plan)
+                    compute(self, i, c, self.graph.map, self.plans)
 
         self.__printPlan(True)
 
@@ -108,6 +103,7 @@ class Plan:
     
         异常:
         """
+
         def setTask(self, t, bDt, eDt):
             if t.bDateTime == None:
                 t.bDateTime = bDt
@@ -137,17 +133,11 @@ class Plan:
             't': t.type
         })
 
-    def __model(self):
-        """调优阶段
-        动态规划
-        """
-        return self._model.model()
-
     def __initPlan(self):
         """初始化评估矩阵
         """
-        for i in range(self._graph.nodenum):
-            self._plan.append([])
+        for i in range(self.graph.nodenum):
+            self.plans.append([])
 
     def __getMinMax(self, tasks):
         """获得任务中最早最晚时间
@@ -163,12 +153,11 @@ class Plan:
         tk = sorted(tasks, key=lambda x: x.bDateTime)
         minmax = (tk[0].bDateTime, tk[len(tk) - 1].bDateTime)
 
-        print('任务最早/最晚时间：')
-        print(minmax)
+        print('Min And Max Task Time:', minmax)
 
         return minmax
 
-    def __initWeight(self, steps, g):
+    def __initAvgTasksNum(self, steps, minmax, g):
         """创建时间序列矩阵
             
             按开始时间排序
@@ -181,17 +170,11 @@ class Plan:
         异常:
                 
         """
-        print('时间步长：')
-        print(steps)
-        minmax = self.__getMinMax(g.tasks.tasks)
-        print('任务最早/最晚时间：')
-        print(minmax)
-
         for step in steps:
-            self._weights.append(int((minmax[1] - minmax[0]) / step) + 1)
+            self.avgTasksNum.append(int((minmax[1] - minmax[0]) / step) + 1)
 
-        print('时间间隔序列长度：')
-        print(self._weights)
+        print('Avg Task Number:')
+        print(self.avgTasksNum)
 
     def __minmaxMoving(self, minmax, step):
         """平移时间-折半平移，便于任务落在哪个时间段
@@ -209,12 +192,9 @@ class Plan:
         v = int(step / 2)
         meta = (minmax[0] - v, minmax[1] + v)
 
-        print('任务最早/最晚时间-平移后：')
-        print(meta)
-
         return meta
 
-    def __createMatrix(self, steps, g):
+    def __createTimeSeq(self, steps, minmax, g):
         """创建时间序列矩阵
         
             按开始时间排序
@@ -228,7 +208,7 @@ class Plan:
             
         """
 
-        def createVector(self, minmax, step):
+        def createTimeSeqVector(self, minmax, step):
             """创建时间序列向量
     
             参数:
@@ -257,40 +237,18 @@ class Plan:
                 b = e + 1
             return v
 
-        print('时间步长：')
+        print('Time Seq Step:')
         print(steps)
-        minmax = self.__getMinMax(g.tasks.tasks)
-        for s in self._steps:
-            self._intervalMatrix.append(createVector(self, minmax, s))
+        for s in self.steps:
+            self.timeSeq.append(createTimeSeqVector(self, minmax, s))
 
-        self.__printIntervalMatrix(True)
-
-    '''
-    打印
-    '''
-
-    def __printIntervalMatrix(self, isReadable):
-        """打印时间矩阵
-        """
-        print('时间间隔矩阵：')
-        for r in self._intervalMatrix:
-            l = []
-            for c in r:
-                if isReadable:
-                    l.append('(' + DateTimeUtil.timestamp_datetime(
-                        c.get('bdt')) + ',' + DateTimeUtil.timestamp_datetime(
-                            c.get('edt')) + ',' + str(c.get('na')) + ',' + str(
-                                c.get('nk')) + ',' + str(c.get('ng')) + ')')
-                else:
-                    l.append(c)
-
-            print(l)
+        self.__printTimeSeq(True)
 
     def __printPlan(self, isReadable):
         """打印评估时间
         """
-        print('评估结果：')
-        for r in self._plan:
+        print('Last Time When Occur:')
+        for r in self.plans:
             l = []
             for c in r:
                 if isReadable:
@@ -299,6 +257,23 @@ class Plan:
                             c.get('b')) + ',' +
                              DateTimeUtil.timestamp_datetime(c.get('e')) + ','
                              + str(c.get('c')) + ',' + str(c.get('t')) + ')')
+                else:
+                    l.append(c)
+
+            print(l)
+
+    def __printTimeSeq(self, isReadable):
+        """打印时间矩阵
+        """
+        print('Time Seq Matrix:')
+        for r in self.timeSeq:
+            l = []
+            for c in r:
+                if isReadable:
+                    l.append('(' + DateTimeUtil.timestamp_datetime(
+                        c.get('bdt')) + ',' + DateTimeUtil.timestamp_datetime(
+                            c.get('edt')) + ',' + str(c.get('na')) + ',' + str(
+                                c.get('nk')) + ',' + str(c.get('ng')) + ')')
                 else:
                     l.append(c)
 

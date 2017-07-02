@@ -4,95 +4,48 @@ Created on Fri Jun 30 11:43:31 2017
 
 @author: liuning11
 """
-from ModelBase import ModelBase
+from CoreModelBase import CoreModelBase
 import random
 
-class ModelByTaskNum(ModelBase):
-    def __init__(self, g):
-        ModelBase.__init__(self, g)
+
+class CoreModelByTaskNum(CoreModelBase):
+    def __init__(self, e):
+        CoreModelBase.__init__(self, e)
 
     def model(self):
-        """计算所有任务的最晚时间
-
-        """
-        def m(self, r, c, m, plan):
-            """计算所有任务的最晚时间
+        """查找邻接矩阵所有路径
     
-            参数:
-                r:      节点索引
-                c:      节点
-                m:      邻接矩阵
-                plan:   评估时间
-                    
-            返回:
-        
-            异常:
-                
-            """
-            for i in range(self._graph.nodenum):
-                if m[i][r] == 1:
-                    t = self._graph.findRootTask(self._graph.tasksIndex[i])
-
-                    self.__deal(t, c.bDateTime - t.consume - 1,
-                                c.bDateTime - 1, plan[i])
-
-                    m(self, i, t, m, plan)
-
-        self.__initPlan()
-
-        for i in range(self._graph.nodenum):
-            if self._graph.tTask[i] == 0:
-                c = self._graph.findRootTask(self._graph.tasksIndex[i])
-                if c.bDateTime != None:
-                    self.__deal(c, c.bDateTime, c.bDateTime + c.consume,
-                                self._estimate[i])
-
-                    m(self, i, c, self._graph.map, self._plan)
-
-        self.__printer()
-
-    def __deal(self, t, bDt, eDt, pl):
-        """计算任务最晚时间
-
         参数:
-            t:      任务
-            bDt:    开始时间
-            eDt:    结束时间
-            pl:     最晚时间
-            
         返回:
-    
         异常:
         """
 
-        def setTask(self, t, bDt, eDt):
-            if t.bDateTime == None:
-                t.bDateTime = bDt
-                t.eDateTime = eDt
-            else:
-                if t.bDateTime < bDt:
-                    t.bDateTime = bDt
-                    t.eDateTime = eDt
-                    pl.clear()
+        def m(self, s, r):
+            for i in range(self.getNodeNum()):
+                if self.map[r][i] == 1:
+                    s.append(self.getTasksIndex()[i])
+                    m(self, s, i)
+                    s.pop()
+                else:
+                    if i >= self.getNodeNum() - 1:
+                        p = '->'.join(s)
+                        if self.__isPath(p) == False:
+                            self.path.append(p)
 
-        def addPlan(self, pl, p):
-            if len(pl) <= 0:
-                pl.append(p)
-            else:
-                if pl[0].get('b') <= p.get('b'):
-                    pl.clear()
-                    pl.append(p)
+        s = []
+        for r in range(len(self.getRTask())):
+            s.clear()
+            if self.getRTask()[r] == 0:
+                s.append(self.getTasksIndex()[r])
+                m(self, s, r)
 
-        setTask(self, t, bDt, eDt)
-
-        addPlan(self, pl, {
-            'no': t.no,
-            'id': t.id,
-            'b': t.bDateTime,
-            'e': t.eDateTime,
-            'c': t.consume,
-            't': t.type
-        })
+    def __isPath(self, path):
+        """是否为一个任务路径
+        """
+        for p in self.getPath():
+            if path == p:
+                return True
+        return False
 
     def __printer():
         pass
@@ -115,7 +68,7 @@ class ModelByTaskNum(ModelBase):
         t = w
         return t
 
-    def __random(self, step):
+    def __moving(self, step):
         """随机时间
             避免在移动任务时，都聚集在一个时间点
             
@@ -129,6 +82,7 @@ class ModelByTaskNum(ModelBase):
         """
         seed = random.randint(0, 100)
         return int(step * (1 + seed / 100))
+
 
 #    def model(self, minmax, weights, nodenum, plan, intervalMatrix):
 #        """调优阶段
