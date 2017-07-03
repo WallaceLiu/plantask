@@ -38,7 +38,7 @@ class CoreEstimate:
 
     def __estimate(self):
 
-        print('Estimate...')
+        print('--Estimate Stage...')
 
         self.__computePlan()
 
@@ -48,7 +48,7 @@ class CoreEstimate:
 
         self.__initAvgTasksNum(self.steps, minmax, self.graph)
 
-        print('Estimate Complete.')
+        print('--Estimate Stage Complete.')
 
     def __computePlan(self):
         """计算所有任务的最晚时间
@@ -153,7 +153,7 @@ class CoreEstimate:
         tk = sorted(tasks, key=lambda x: x.bDateTime)
         minmax = (tk[0].bDateTime, tk[len(tk) - 1].bDateTime)
 
-        print('Min And Max Task Time:', minmax)
+        print('-Min And Max Task Time:', minmax)
 
         return minmax
 
@@ -173,7 +173,7 @@ class CoreEstimate:
         for step in steps:
             self.avgTasksNum.append(int((minmax[1] - minmax[0]) / step) + 1)
 
-        print('Avg Task Number:')
+        print('-Avg Task Number:')
         print(self.avgTasksNum)
 
     def __minmaxMoving(self, minmax, step):
@@ -237,7 +237,7 @@ class CoreEstimate:
                 b = e + 1
             return v
 
-        print('Time Seq Step:')
+        print('-Time Seq Step:')
         print(steps)
         for s in self.steps:
             self.timeSeq.append(createTimeSeqVector(self, minmax, s))
@@ -247,7 +247,7 @@ class CoreEstimate:
     def __printPlan(self, isReadable):
         """打印评估时间
         """
-        print('Last Time When Occur:')
+        print('-Last Time When Occur:')
         for r in self.plans:
             l = []
             for c in r:

@@ -137,8 +137,8 @@ class TaskAdjMatrix(Graph):
 
         before(self)
         create(self)
-        after(self)
-        
+        #after(self)
+
         self.printMap()
 
     def __findIndex(self, id):
@@ -210,7 +210,7 @@ class TaskAdjMatrix(Graph):
             if self.rTask[r] == 0:
                 s.append(self.tasksIndex[r])
                 path(self, s, r)
-                
+
         self.printPath()
 
     def findChildByMatrix(self, id):

@@ -13,4 +13,3 @@ class CoreModelByTaskConsum(CoreModelBase):
 
     def model(self):
         print('暂未实现...')
-

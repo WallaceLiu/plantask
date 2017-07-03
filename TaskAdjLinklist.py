@@ -6,6 +6,7 @@ Created on Sun Jun 25 10:40:51 2017
 """
 from Graph import Graph
 
+
 class TaskAdjLinklist(Graph):
     '''
     邻接表

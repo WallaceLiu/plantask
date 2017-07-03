@@ -27,8 +27,8 @@ class CoreModelBase:
 
     def __init__(self, e):
         self.estimate = e
-        self.__result = []
-        self.__path = []
+        self.result = []
+        self.path = []
 
     def getSteps(self):
         return self.estimate.steps
@@ -52,7 +52,10 @@ class CoreModelBase:
         return self.estimate.graph.tasksIndex
 
     def getPath(self):
-        return self.estimate.graph.plan
-    
+        return self.estimate.graph.path
+
+    def getMap(self):
+        return self.estimate.graph.map
+
     def model(self):
         pass
