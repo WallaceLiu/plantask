@@ -12,7 +12,15 @@ class CoreModelByTaskNum(CoreModelBase):
     def __init__(self, e):
         CoreModelBase.__init__(self, e)
 
-    def model(self):
+    def models(self):
+        print('--Model Stage...')
+
+        for g in self.estimate.modelGraph:
+            self.model(g)
+
+        print('--Model Stage Complete.')
+
+    def model(self, g):
         """查找邻接矩阵所有路径
     
         参数:
@@ -21,33 +29,31 @@ class CoreModelByTaskNum(CoreModelBase):
         """
 
         def m(self, s, r):
-            for i in range(self.getNodeNum()):
-                if self.getMap()[r][i] == 1:
-                    s.append(self.getTasksIndex()[i])
+            for i in range(g.nodenum):
+                if g.map[r][i] == 1:
+                    s.append(g.tasksIndex[i])
                     m(self, s, i)
                     s.pop()
                 else:
-                    if i >= self.getNodeNum() - 1:
+                    if i >= g.nodenum - 1:
                         p = '->'.join(s)
                         if self.__isPath(p) == False:
                             self.path.append(p)
 
-        print('--Model Stage...')
         s = []
-        for r in range(self.getNodeNum()):
+        for r in range(g.nodenum):
             s.clear()
-            if self.getRTask()[r] == 0:
-                s.append(self.getTasksIndex()[r])
+            if g.rTask[r] == 0:
+                s.append(g.tasksIndex[r])
                 m(self, s, r)
 
-        print('--Model Stage Complete.')
         print(self.path)
 
     def __isPath(self, path):
         """是否为一个任务路径
         """
-        for p in self.getPath():
-            if path == p:
+        for p in self.path:
+            if path in p:
                 return True
         return False
 
@@ -86,5 +92,3 @@ class CoreModelByTaskNum(CoreModelBase):
         """
         seed = random.randint(0, 100)
         return int(step * (1 + seed / 100))
-
-

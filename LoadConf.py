@@ -45,23 +45,19 @@ class LoadConf:
         for e in es:
             no += 1
             t = self.__createTask(e, no)
-            self.graph.addTasksIndex(t.id)
 
             for n in e.childNodes:
                 if n.nodeName != "#text":
                     no += 1
                     tc = self.__createTask(n, no)
-                    t.childs.add(tc)
+                    self.graph.add(t.childs, tc)
 
-                    self.graph.addTasksIndex(tc.id)
-
-            self.graph.addTask(t)
+            self.graph.add(self.graph.tasks, t)
 
         self.graph.file = self.__path
-        self.graph.nodenum = self.__getNodeNum()
-        self.graph.edgenum = self.__getEdgeNum()
 
         self.__printer()
+
         print('Load Conf Complete.')
 
     def __createTask(self, e, no):
@@ -110,31 +106,6 @@ class LoadConf:
             t.eDateTimeThreshold = e.getAttribute('eDateTimeThreshold')
 
         return t
-
-    def __getNodeNum(self):
-        """节点数量
-        """
-        try:
-            if self.graph == None:
-                raise AttributeError
-
-            return len(self.graph.tasksIndex)
-        except AttributeError:
-            print("graph is None.")
-
-    def __getEdgeNum(self):
-        """边数量
-        """
-        try:
-            if self.graph == None:
-                raise AttributeError
-
-            n = 0
-            for t in self.graph.tasks.tasks:
-                n += len(t.childs.tasks)
-            return n
-        except AttributeError:
-            print("graph is None.")
 
     def __printer(self):
         self.graph.printSummary()

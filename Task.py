@@ -4,7 +4,6 @@ Created on Wed Jun 21 09:15:48 2017
 
 @author: liuning11
 """
-from TaskType import TaskType
 from TaskCollection import TaskCollection
 import time
 
@@ -14,7 +13,7 @@ class Task:
     
     """
 
-    def __init__(self, no):
+    def __init__(self, no=-1):
         """构造函数
 
         参数:
@@ -71,6 +70,27 @@ class Task:
             return self.childs.findTask(id)
 
         return None
+
+    def clone(self):
+        t = Task()
+        t.no = self.no
+        t.id = self.id
+        t.name = self.name
+        t.desc = self.desc
+        t.type = self.type
+        t.executeRule = self.executeRule
+        t.nextExecuteDateTime = self.nextExecuteDateTime
+        t.timeout = self.timeout
+        t.retryFrequency = self.retryFrequency
+        t.retryInterval = self.retryInterval
+        t.bDateTime = self.bDateTime
+        t.eDateTime = self.eDateTime
+        t.consume = self.consume
+        t.bDateTimeThreshold = self.bDateTimeThreshold
+        t.eDateTimeThreshold = self.eDateTimeThreshold
+        t.childs = self.childs.clone()
+        t.isKey = self.isKey
+        return t
 
     def toString(self, bl):
         s = '<' + str(self.no) + '>'

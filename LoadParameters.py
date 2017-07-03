@@ -29,7 +29,7 @@ class LoadParameters:
         except NameError:
             print('Conf File is None')
 
-        print('Load Paramter...')
+        print('--Load Paramter...')
         DOMTree = xml.dom.minidom.parse(self.__path)
         es = DOMTree.getElementsByTagName("task")
 
@@ -37,9 +37,8 @@ class LoadParameters:
             self.__setParamter(e)
 
         self.__printer()
-        print('Load Paramter Complete.')
+        print('--Load Paramter Complete.')
 
-        # 创建任务
     def __setParamter(self, e):
         id = None
         bDt = None
@@ -56,7 +55,7 @@ class LoadParameters:
             c = int(e.getAttribute('consume'))
 
         try:
-            print('Find...Task <' + id + '>')
+            print('-Find...Task <' + id + '>')
             t = self.__graph.findRootTask(id)
             if t == None:
                 raise NameError
@@ -69,8 +68,10 @@ class LoadParameters:
                         eDt) > 0 else None
                 t.consume = c
 
+                self.__graph.setLastOccurTime(t)
+
         except NameError:
-            print('Task <' + id + '> No Found, is None')
+            print('-Task <' + id + '> No Found, is None')
 
     def __createFile(self):
         if self.__graph == None:
@@ -81,6 +82,7 @@ class LoadParameters:
         return '.'.join(p)
 
     def __printer(self):
-        print('Task: ')
+        print('-Task: ')
         for t in self.__graph.tasks.tasks:
             print(t.toStringParams())
+        self.__graph.printLastOccurTime()

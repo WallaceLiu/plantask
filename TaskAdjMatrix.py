@@ -7,6 +7,7 @@ Created on Wed Jun 21 09:15:48 2017
 
 from TaskCollection import TaskCollection
 from Graph import Graph
+import DateTimeUtil
 
 
 class TaskAdjMatrix(Graph):
@@ -42,6 +43,7 @@ class TaskAdjMatrix(Graph):
             map         邻接矩阵
             path        节点配置文件
             file        节点配置文件
+            lastOccurTime    最晚任务时间
         返回:
         异常:
         """
@@ -54,33 +56,9 @@ class TaskAdjMatrix(Graph):
         self.edgenum = 0
         self.map = []
         self.file = None
+        self.lastOccurTime = 0.0
 
-    def addTasksIndex(self, taskId):
-        """添加任务ID 
-
-        参数:
-            taskId:  任务Id
-        返回:
-        异常:
-        """
-
-        def isExist(self, taskId):
-            """判断任务Id是否已经存在
-    
-            参数:
-                taskId:  任务Id
-            返回:
-            异常:
-            """
-            for id in self.tasksIndex:
-                if id == taskId:
-                    return True
-            return False
-
-        if isExist(self, taskId) == False:
-            self.tasksIndex.append(taskId)
-
-    def addTask(self, t):
+    def add(self, p, t):
         """添加任务
 
         参数:
@@ -88,7 +66,30 @@ class TaskAdjMatrix(Graph):
         返回:
         异常:
         """
-        self.tasks.add(t)
+
+        def addIndex(self, taskId):
+            """添加任务ID 
+            """
+
+            def isExist(self, taskId):
+                """判断任务Id是否已经存在
+                """
+                for id in self.tasksIndex:
+                    if id == taskId:
+                        return True
+                return False
+
+            if isExist(self, taskId) == False:
+                self.tasksIndex.append(taskId)
+
+        #self.tasks.add(t)
+
+        p.add(t)
+        addIndex(self, t.id)
+
+    def setLastOccurTime(self, t):
+        if t.bDateTime != None:
+            self.lastOccurTime = t.bDateTime if t.bDateTime > self.lastOccurTime else self.lastOccurTime
 
     def createMap(self):
         """创建邻接矩阵
@@ -101,6 +102,9 @@ class TaskAdjMatrix(Graph):
             返回:
             异常:
             """
+            self.nodenum = self.getNodeNum()
+            self.edgenum = self.getEdgeNum()
+
             for i in range(self.nodenum):
                 m = [0] * self.nodenum
                 self.map.append(m)
@@ -135,11 +139,12 @@ class TaskAdjMatrix(Graph):
 
             self.map.append(self.tasksIndex)
 
+        self.map = []
         before(self)
         create(self)
         #after(self)
 
-        self.printMap()
+        #self.printMap()
 
     def __findIndex(self, id):
         """查找指定节点的行列索引
@@ -281,6 +286,19 @@ class TaskAdjMatrix(Graph):
                 return True
         return False
 
+    def getNodeNum(self):
+        """节点数量
+        """
+        return len(self.tasks.tasks)
+
+    def getEdgeNum(self):
+        """边数量
+        """
+        n = 0
+        for t in self.tasks.tasks:
+            n += len(t.childs.tasks)
+        return n
+
     # 广度遍历
     def BreadthFirstSearch(self):
         def BFS(self, i):
@@ -314,6 +332,20 @@ class TaskAdjMatrix(Graph):
             if visited[i] is 0:
                 DFS(self, i, queue)
 
+    def clone(self):
+        g = TaskAdjMatrix()
+        g.tasksIndex = self.tasksIndex.copy()
+        g.rTask = self.rTask.copy()
+        g.tTask = self.tTask.copy()
+        g.tasks = self.tasks.clone()
+        g.path = []
+        g.nodenum = self.nodenum
+        g.edgenum = self.edgenum
+        g.map = []
+        g.file = self.file
+        g.lastOccurTime = self.lastOccurTime
+        return g
+
     '''
     打印
     '''
@@ -326,19 +358,23 @@ class TaskAdjMatrix(Graph):
 
     # 打印概述信息
     def printSummary(self):
-        print("Conf File: <%s>, Task Number:<%u>, Edge Number:<%u>" %
+        print("-Conf File: <%s>, Task Number:<%u>, Edge Number:<%u>" %
               (self.file, self.nodenum, self.edgenum))
+
+    def printLastOccurTime(self):
+        print('-Last Time When Task Occur:<%s>' %
+              (DateTimeUtil.timestamp_datetime(self.lastOccurTime)))
 
     # 打印任务信息    
     def printTasks(self):
         self.printTasksIndex()
-        print('Adj All Task: ')
+        print('-Adj All Task: ')
         self.tasks.printer()
 
     def printTasksIndex(self):
         """打印任务ID
         """
-        print('Task Index: ')
+        print('-Task Index: ')
         print(self.tasksIndex)
 
     def printRootTasks(self):
@@ -387,3 +423,29 @@ class TaskAdjMatrix(Graph):
         #                self.map[x][i] = 0
         #                self.edgenum = self.edgenum - 1
         pass
+
+
+#    def addTasksIndex(self, taskId):
+#        """添加任务ID 
+#
+#        参数:
+#            taskId:  任务Id
+#        返回:
+#        异常:
+#        """
+#
+#        def isExist(self, taskId):
+#            """判断任务Id是否已经存在
+#    
+#            参数:
+#                taskId:  任务Id
+#            返回:
+#            异常:
+#            """
+#            for id in self.tasksIndex:
+#                if id == taskId:
+#                    return True
+#            return False
+#
+#        if isExist(self, taskId) == False:
+#            self.tasksIndex.append(taskId)

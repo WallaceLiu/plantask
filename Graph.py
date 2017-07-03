@@ -7,4 +7,8 @@ Created on Sun Jun 25 10:35:00 2017
 
 
 class Graph:
-    pass
+
+    name = None
+
+    def __init__(self):
+        pass

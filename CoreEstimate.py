@@ -14,13 +14,24 @@ class CoreEstimate:
     1，计算所有任务最晚发生时间
     2，计算时间间隔序列矩阵
     3，计算时间间隔矩阵的平均任务数
+    
+    
+    参数:
+        steps:          时间间隔，单位秒
+        period:         周期，单位小时，默认为24小时
+        timeSeq:        弃用
+        stepsNum:    理论上，每个时间间隔内的平均任务数量
+        plans:          根据终端任务节点计算的每个任务的最晚开始时间
 
     """
 
-    steps = [600, 1200, 1800, 2400, 3000, 3600]
-    timeSeq = []
-    avgTasksNum = []
+    steps = [600]
+    period = 3
+    minmax = None
+    stepsNum = []
     plans = []
+    timeSeq = []
+    modelGraph = []
 
     def __init__(self, g):
         """构造函数
@@ -32,29 +43,68 @@ class CoreEstimate:
     
         异常:
         """
-        self.graph = g
 
-        self.__estimate()
+        self.minmax = self.__getMinMax(g.lastOccurTime)
 
-    def __estimate(self):
+        self.__estimate(g)
 
+        self.__createModelGraph(g)
+
+    def __createModelGraph(self, g):
+        def create(self, step, num):
+            """创建模型使用的任务图
+            """
+            no = num
+            ng = g.clone()
+            for i in range(g.nodenum):
+                if ng.tTask[i] == 1:
+                    t = ng.findRootTask(g.tasksIndex[i])
+                    bDt = t.bDateTime - step
+                    while bDt >= self.minmax[0]:
+                        nt = t.clone()
+                        nt.no = no
+                        nt.id = nt.id + ':' + str(nt.no)
+                        nt.bDateTime = bDt
+                        nt.eDateTime = nt.bDateTime + nt.consume
+
+                        ng.add(ng.tasks, nt)
+
+                        bDt = bDt - step
+                        no = no + 1
+
+            ng.createMap()
+            ng.printSummary()
+            return ng
+
+        print('--Create Model Graph...')
+        self.modelGraph.clear()
+        for step in self.steps:
+            self.modelGraph.append(create(self, step, g.edgenum + 1))
+
+        print('--Create Model Complete.')
+
+        return self.modelGraph
+
+    def __estimate(self, g):
         print('--Estimate Stage...')
+        self.__computePlan(g)
 
-        self.__computePlan()
+        #self.createTimeSeq(self.steps, minmax, self.graph)
 
-        minmax = self.__getMinMax(self.graph.tasks.tasks)
-
-        self.__createTimeSeq(self.steps, minmax, self.graph)
-
-        self.__initAvgTasksNum(self.steps, minmax, self.graph)
-
+        self.__initStepsNum(self.steps, self.minmax, g)
         print('--Estimate Stage Complete.')
 
-    def __computePlan(self):
+    def __computePlan(self, g):
         """计算所有任务的最晚时间
         """
 
-        def compute(self, r, c, m, plan):
+        def init(self, g):
+            """初始化评估矩阵
+            """
+            for i in range(g.nodenum):
+                self.plans.append([])
+
+        def compute(self, r, c, m, plan, g):
             """计算所有任务的最晚时间
     
             参数:
@@ -68,25 +118,25 @@ class CoreEstimate:
             异常:
                 
             """
-            for i in range(self.graph.nodenum):
+            for i in range(g.nodenum):
                 if m[i][r] == 1:
-                    t = self.graph.findRootTask(self.graph.tasksIndex[i])
+                    t = g.findRootTask(g.tasksIndex[i])
 
                     self.__deal(t, c.bDateTime - t.consume - 1,
                                 c.bDateTime - 1, plan[i])
 
-                    compute(self, i, t, m, plan)
+                    compute(self, i, t, m, plan, g)
 
-        self.__initPlan()
+        init(self, g)
 
-        for i in range(self.graph.nodenum):
-            if self.graph.tTask[i] == 0:
-                c = self.graph.findRootTask(self.graph.tasksIndex[i])
+        for i in range(g.nodenum):
+            if g.tTask[i] == 0:
+                c = g.findRootTask(g.tasksIndex[i])
                 if c.bDateTime != None:
                     self.__deal(c, c.bDateTime, c.bDateTime + c.consume,
                                 self.plans[i])
 
-                    compute(self, i, c, self.graph.map, self.plans)
+                    compute(self, i, c, g.map, self.plans, g)
 
         self.__printPlan(True)
 
@@ -133,32 +183,20 @@ class CoreEstimate:
             't': t.type
         })
 
-    def __initPlan(self):
-        """初始化评估矩阵
-        """
-        for i in range(self.graph.nodenum):
-            self.plans.append([])
-
-    def __getMinMax(self, tasks):
+    def __getMinMax(self, lastOccurTime):
         """获得任务中最早最晚时间
-        
-            按开始时间排序
-        
-        参数:
-        返回:
-    
-        异常:
-            
         """
-        tk = sorted(tasks, key=lambda x: x.bDateTime)
-        minmax = (tk[0].bDateTime, tk[len(tk) - 1].bDateTime)
+        minmax = (lastOccurTime - (self.period - 1) * 3600, lastOccurTime)
 
-        print('-Min And Max Task Time:', minmax)
+        print('  -Min And Max Task Time:', minmax)
 
         return minmax
 
-    def __initAvgTasksNum(self, steps, minmax, g):
-        """创建时间序列矩阵
+    def sortBDateTime(self, tasks):
+        return sorted(tasks, key=lambda x: x.bDateTime)
+
+    def __initStepsNum(self, steps, minmax, g):
+        """初始化时间间隔数量
             
             按开始时间排序
         
@@ -171,10 +209,10 @@ class CoreEstimate:
                 
         """
         for step in steps:
-            self.avgTasksNum.append(int((minmax[1] - minmax[0]) / step) + 1)
+            self.stepsNum.append(int((self.period - 1) * 3600 / step) + 1)
 
-        print('-Avg Task Number:')
-        print(self.avgTasksNum)
+        print('  -Interval Number in Steps:')
+        print(self.stepsNum)
 
     def __minmaxMoving(self, minmax, step):
         """平移时间-折半平移，便于任务落在哪个时间段
@@ -190,11 +228,12 @@ class CoreEstimate:
             
         """
         v = int(step / 2)
+
         meta = (minmax[0] - v, minmax[1] + v)
 
         return meta
 
-    def __createTimeSeq(self, steps, minmax, g):
+    def createTimeSeq(self, steps, minmax, g):
         """创建时间序列矩阵
         
             按开始时间排序
@@ -244,10 +283,12 @@ class CoreEstimate:
 
         self.__printTimeSeq(True)
 
+        return self.timeSeq
+
     def __printPlan(self, isReadable):
         """打印评估时间
         """
-        print('-Last Time When Occur:')
+        print('  -Last Time When Every Task Occur:')
         for r in self.plans:
             l = []
             for c in r:
@@ -278,3 +319,7 @@ class CoreEstimate:
                     l.append(c)
 
             print(l)
+
+    def printModelGraph(self):
+        for g in self.modelGraph:
+            print(g.printTasks())

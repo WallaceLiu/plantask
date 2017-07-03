@@ -58,6 +58,23 @@ class TaskCollection:
                     if r != None:
                         return r
 
+    def clone(self):
+        """克隆
+        """
+
+        def _clone(self, c):
+            for t in c.childs.tasks:
+                nt = t.clone()
+                _clone(self, nt)
+
+        tc = TaskCollection()
+        for t in self.tasks:
+            nt = t.clone()
+            tc.add(nt)
+            _clone(self, nt)
+
+        return tc
+
     '''
     打印
     '''
