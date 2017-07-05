@@ -6,9 +6,10 @@ Created on Wed Jun 21 09:15:48 2017
 """
 from TaskCollection import TaskCollection
 import time
+from base import base
 
 
-class Task:
+class Task(base):
     """任务类
     
     """
@@ -41,6 +42,7 @@ class Task:
         self.no = no
         self.id = ''
         self.name = ''
+        self.realId = ''
         self.desc = ''
         self.type = None
         self.executeRule = ''
@@ -89,6 +91,27 @@ class Task:
         t.bDateTimeThreshold = self.bDateTimeThreshold
         t.eDateTimeThreshold = self.eDateTimeThreshold
         t.childs = self.childs.clone()
+        t.isKey = self.isKey
+        return t
+
+    def cloneLocal(self):
+        t = Task()
+        t.no = self.no
+        t.id = self.id
+        t.name = self.name
+        t.desc = self.desc
+        t.type = self.type
+        t.executeRule = self.executeRule
+        t.nextExecuteDateTime = self.nextExecuteDateTime
+        t.timeout = self.timeout
+        t.retryFrequency = self.retryFrequency
+        t.retryInterval = self.retryInterval
+        t.bDateTime = self.bDateTime
+        t.eDateTime = self.eDateTime
+        t.consume = self.consume
+        t.bDateTimeThreshold = self.bDateTimeThreshold
+        t.eDateTimeThreshold = self.eDateTimeThreshold
+        t.childs = TaskCollection()
         t.isKey = self.isKey
         return t
 

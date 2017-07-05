@@ -13,12 +13,12 @@ class CoreModelByTaskNum(CoreModelBase):
         CoreModelBase.__init__(self, e)
 
     def models(self):
-        print('--Model Stage...')
+        print('--Stage Model...')
 
         for g in self.estimate.modelGraph:
             self.model(g)
 
-        print('--Model Stage Complete.')
+        print('--Model Complete.')
 
     def model(self, g):
         """查找邻接矩阵所有路径

@@ -9,9 +9,10 @@ import xml.dom.minidom
 from TaskAdjMatrix import TaskAdjMatrix
 from Task import Task
 import time
+from base import base
 
 
-class LoadParameters:
+class LoadParameters(base):
     """加载参数
     
     包括,开始时间bDateTime,结束时间eDateTime,耗时consume
@@ -29,14 +30,16 @@ class LoadParameters:
         except NameError:
             print('Conf File is None')
 
-        print('--Load Paramter...')
+        print('--Stage Load Paramter...')
         DOMTree = xml.dom.minidom.parse(self.__path)
         es = DOMTree.getElementsByTagName("task")
 
         for e in es:
             self.__setParamter(e)
 
-        self.__printer()
+        if self.config.debug == True:
+            self.__printer()
+
         print('--Load Paramter Complete.')
 
     def __setParamter(self, e):
@@ -55,7 +58,9 @@ class LoadParameters:
             c = int(e.getAttribute('consume'))
 
         try:
-            print('-Find...Task <' + id + '>')
+            if self.config.debug == True:
+                print('\t-Find...Task <' + id + '>')
+
             t = self.__graph.findRootTask(id)
             if t == None:
                 raise NameError
@@ -82,7 +87,7 @@ class LoadParameters:
         return '.'.join(p)
 
     def __printer(self):
-        print('-Task: ')
+        print('\t-Root Task: ')
         for t in self.__graph.tasks.tasks:
             print(t.toStringParams())
         self.__graph.printLastOccurTime()

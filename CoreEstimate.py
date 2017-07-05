@@ -5,9 +5,10 @@ Created on Tue Jun 27 09:23:23 2017
 @author: liuning11
 """
 import DateTimeUtil
+from base import base
 
 
-class CoreEstimate:
+class CoreEstimate(base):
     """评估阶段
     
     包括，
@@ -26,7 +27,7 @@ class CoreEstimate:
     """
 
     steps = [600]
-    period = 3
+    period = 1
     minmax = None
     stepsNum = []
     plans = []
@@ -44,55 +45,89 @@ class CoreEstimate:
         异常:
         """
 
-        self.minmax = self.__getMinMax(g.lastOccurTime)
-
         self.__estimate(g)
 
         self.__createModelGraph(g)
 
     def __createModelGraph(self, g):
-        def create(self, step, num):
-            """创建模型使用的任务图
-            """
-            no = num
-            ng = g.clone()
+        def ready(self, g, step, minmax):
+            no = g.edgenum + g.nodenum + 1
+            arr = []
             for i in range(g.nodenum):
-                if ng.tTask[i] == 1:
-                    t = ng.findRootTask(g.tasksIndex[i])
+                if g.tTask[i] == 1:
+                    t = g.findRootTask(g.tasksIndex[i])
                     bDt = t.bDateTime - step
                     while bDt >= self.minmax[0]:
-                        nt = t.clone()
+                        nt = t.cloneLocal()
                         nt.no = no
-                        nt.id = nt.id + ':' + str(nt.no)
+                        nt.realId = nt.id
+                        nt.id = nt.id + ':' + str(no)
                         nt.bDateTime = bDt
                         nt.eDateTime = nt.bDateTime + nt.consume
 
-                        ng.add(ng.tasks, nt)
+                        arr.append(nt)
 
                         bDt = bDt - step
                         no = no + 1
 
+            return arr
+
+        def create(self, g, step, minmax):
+            """创建模型使用的任务图
+            """
+            t_arr = ready(self, g, step, minmax)
+            ng = g.clone()
+            no = t_arr[len(t_arr) - 1].no + 1  # 节点序号
+
+            for task in t_arr:
+                t = ng.findRootTask(task.readId)
+                for c in t.childs.tasks:
+                    ng.add(ng.tasks, task)
+
+                    tmp = filter(lambda x:c.id=task.readId and task.eDateTime >=
+                        c.bDateTime,t_arr)
+                    for tt in tmp:
+                        #if :
+                        nt = tt.cloneLocal()
+                        nt.no = no
+                        nt.realId = nt.id
+                        nt.id = nt.id + ':' + str(no)
+                        ng.add(t.childs, nt)
+
             ng.createMap()
             ng.printSummary()
+
             return ng
 
-        print('--Create Model Graph...')
-        self.modelGraph.clear()
-        for step in self.steps:
-            self.modelGraph.append(create(self, step, g.edgenum + 1))
+        print('--Stage Model Graph...')
 
-        print('--Create Model Complete.')
+        if self.config.debug == True:
+            print('\t-min and max:<%s,%s>' %
+                  (DateTimeUtil.timestamp_datetime(self.minmax[0]),
+                   DateTimeUtil.timestamp_datetime(self.minmax[1])))
+
+        self.modelGraph.clear()
+
+        for step in self.steps:
+            self.modelGraph.append(create(self, g, step, self.minmax))
+
+        print('--Model Graph Complete.')
 
         return self.modelGraph
 
     def __estimate(self, g):
-        print('--Estimate Stage...')
+
+        print('--Stage Estimate...')
+
+        self.minmax = self.__getMinMax(g.lastOccurTime)
+
         self.__computePlan(g)
 
         #self.createTimeSeq(self.steps, minmax, self.graph)
 
         self.__initStepsNum(self.steps, self.minmax, g)
-        print('--Estimate Stage Complete.')
+
+        print('--Estimate Complete.')
 
     def __computePlan(self, g):
         """计算所有任务的最晚时间
@@ -138,7 +173,8 @@ class CoreEstimate:
 
                     compute(self, i, c, g.map, self.plans, g)
 
-        self.__printPlan(True)
+        if self.config.debug == True:
+            self.__printPlan(True)
 
     def __deal(self, t, bDt, eDt, pl):
         """计算任务最晚时间
@@ -186,9 +222,10 @@ class CoreEstimate:
     def __getMinMax(self, lastOccurTime):
         """获得任务中最早最晚时间
         """
-        minmax = (lastOccurTime - (self.period - 1) * 3600, lastOccurTime)
+        minmax = (lastOccurTime - self.period * 3600, lastOccurTime)
 
-        print('  -Min And Max Task Time:', minmax)
+        if self.config.debug == True:
+            print('\t-Min And Max Task Time:', minmax)
 
         return minmax
 
@@ -209,10 +246,11 @@ class CoreEstimate:
                 
         """
         for step in steps:
-            self.stepsNum.append(int((self.period - 1) * 3600 / step) + 1)
+            self.stepsNum.append(int(self.period * 3600 / step) + 1)
 
-        print('  -Interval Number in Steps:')
-        print(self.stepsNum)
+        if self.config.debug == True:
+            print('\t-Interval Number in Steps:')
+            print(self.stepsNum)
 
     def __minmaxMoving(self, minmax, step):
         """平移时间-折半平移，便于任务落在哪个时间段
@@ -276,19 +314,20 @@ class CoreEstimate:
                 b = e + 1
             return v
 
-        print('-Time Seq Step:')
-        print(steps)
         for s in self.steps:
             self.timeSeq.append(createTimeSeqVector(self, minmax, s))
 
-        self.__printTimeSeq(True)
+        if self.config.debug == True:
+            print('\t-Time Seq Step:')
+            print(steps)
+            self.__printTimeSeq(True)
 
         return self.timeSeq
 
     def __printPlan(self, isReadable):
         """打印评估时间
         """
-        print('  -Last Time When Every Task Occur:')
+        print('\t-Last Time When Every Task Occur:')
         for r in self.plans:
             l = []
             for c in r:
@@ -306,7 +345,7 @@ class CoreEstimate:
     def __printTimeSeq(self, isReadable):
         """打印时间矩阵
         """
-        print('Time Seq Matrix:')
+        print('\t-Time Seq Matrix:')
         for r in self.timeSeq:
             l = []
             for c in r:

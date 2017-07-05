@@ -9,9 +9,10 @@ from TaskAdjMatrix import TaskAdjMatrix
 from Task import Task
 from TaskType import TaskType
 import time
+from base import base
 
 
-class LoadConf:
+class LoadConf(base):
 
     __path = ""
     __map = []
@@ -32,19 +33,22 @@ class LoadConf:
     def __load(self):
         """加载任务配置文件 
         """
-        print('Load Conf...')
+        print('--Stage: Load Conf...')
         try:
             if self.__path == None:
                 raise NameError
         except NameError:
-            print('Conf File is None')
+            print('\t-Conf File is None')
 
         DOMTree = xml.dom.minidom.parse(self.__path)
         es = DOMTree.getElementsByTagName("task")
         no = 0
+
         for e in es:
             no += 1
             t = self.__createTask(e, no)
+
+            self.graph.add(self.graph.tasks, t)
 
             for n in e.childNodes:
                 if n.nodeName != "#text":
@@ -52,13 +56,12 @@ class LoadConf:
                     tc = self.__createTask(n, no)
                     self.graph.add(t.childs, tc)
 
-            self.graph.add(self.graph.tasks, t)
-
         self.graph.file = self.__path
 
-        self.__printer()
+        if self.config.debug == True:
+            self.__printer()
 
-        print('Load Conf Complete.')
+        print('--Load Conf Complete.')
 
     def __createTask(self, e, no):
         """创建任务
@@ -72,6 +75,7 @@ class LoadConf:
         t = Task(no)
         if e.hasAttribute('id'):
             t.id = e.getAttribute('id')
+            t.realId = t.id
         if e.hasAttribute('name'):
             t.name = e.getAttribute('name')
         if e.hasAttribute('type'):
@@ -108,5 +112,4 @@ class LoadConf:
         return t
 
     def __printer(self):
-        self.graph.printSummary()
         self.graph.printTasksIndex()

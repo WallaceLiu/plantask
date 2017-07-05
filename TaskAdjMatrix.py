@@ -58,39 +58,6 @@ class TaskAdjMatrix(Graph):
         self.file = None
         self.lastOccurTime = 0.0
 
-    def add(self, p, t):
-        """添加任务
-
-        参数:
-            t:  添加任务
-        返回:
-        异常:
-        """
-
-        def addIndex(self, taskId):
-            """添加任务ID 
-            """
-
-            def isExist(self, taskId):
-                """判断任务Id是否已经存在
-                """
-                for id in self.tasksIndex:
-                    if id == taskId:
-                        return True
-                return False
-
-            if isExist(self, taskId) == False:
-                self.tasksIndex.append(taskId)
-
-        #self.tasks.add(t)
-
-        p.add(t)
-        addIndex(self, t.id)
-
-    def setLastOccurTime(self, t):
-        if t.bDateTime != None:
-            self.lastOccurTime = t.bDateTime if t.bDateTime > self.lastOccurTime else self.lastOccurTime
-
     def createMap(self):
         """创建邻接矩阵
         """
@@ -144,7 +111,46 @@ class TaskAdjMatrix(Graph):
         create(self)
         #after(self)
 
-        #self.printMap()
+        if self.config.debug == True:
+            print('--Stage Ajd Matrix:')
+
+            self.printGraph()
+
+    def add(self, p, t):
+        """添加任务
+
+        参数:
+            t:  添加任务
+        返回:
+        异常:
+        """
+
+        def addIndex(self, taskId):
+            """添加任务ID 
+            """
+
+            def isExist(self, taskId):
+                """判断任务Id是否已经存在
+                """
+                for id in self.tasksIndex:
+                    if id == taskId:
+                        return True
+                return False
+
+            if len(self.tasksIndex) <= 0:
+                self.tasksIndex.append(taskId)
+            else:
+                if isExist(self, taskId) == False:
+                    self.tasksIndex.append(taskId)
+
+        #self.tasks.add(t)
+
+        p.add(t)
+        addIndex(self, t.id)
+
+    def setLastOccurTime(self, t):
+        if t.bDateTime != None:
+            self.lastOccurTime = t.bDateTime if t.bDateTime > self.lastOccurTime else self.lastOccurTime
 
     def __findIndex(self, id):
         """查找指定节点的行列索引
@@ -174,7 +180,6 @@ class TaskAdjMatrix(Graph):
         """
         if self.map[x][y] is 0:
             self.map[x][y] = 1
-            self.edgenum = self.edgenum + 1
 
     def removeEdge(self, x, y):
         """删除边
@@ -187,7 +192,7 @@ class TaskAdjMatrix(Graph):
         """
         if self.map[x][y] is 0:
             self.map[x][y] = 1
-            self.edgenum = self.edgenum + 1
+            self.edgenum = self.edgenum - 1
 
     def searchPath(self):
         """查找邻接矩阵所有路径
@@ -216,7 +221,8 @@ class TaskAdjMatrix(Graph):
                 s.append(self.tasksIndex[r])
                 path(self, s, r)
 
-        self.printPath()
+        if self.config.debug == True:
+            self.printPath()
 
     def findChildByMatrix(self, id):
         """查找指定节点的所有直接子节点
@@ -297,6 +303,7 @@ class TaskAdjMatrix(Graph):
         n = 0
         for t in self.tasks.tasks:
             n += len(t.childs.tasks)
+
         return n
 
     # 广度遍历
@@ -358,43 +365,43 @@ class TaskAdjMatrix(Graph):
 
     # 打印概述信息
     def printSummary(self):
-        print("-Conf File: <%s>, Task Number:<%u>, Edge Number:<%u>" %
+        print("\t-Conf File: <%s>, Task Number:<%u>, Edge Number:<%u>" %
               (self.file, self.nodenum, self.edgenum))
 
     def printLastOccurTime(self):
-        print('-Last Time When Task Occur:<%s>' %
+        print('\t-Last Time When Task Occur:<%s>' %
               (DateTimeUtil.timestamp_datetime(self.lastOccurTime)))
 
     # 打印任务信息    
     def printTasks(self):
         self.printTasksIndex()
-        print('-Adj All Task: ')
+        print('\t-All Tasks: ')
         self.tasks.printer()
 
     def printTasksIndex(self):
         """打印任务ID
         """
-        print('-Task Index: ')
+        print('\t-Tasks Index: ')
         print(self.tasksIndex)
 
     def printRootTasks(self):
         """打印所有ROOT任务
         """
-        print('Adj Root Task: ')
+        print('\t-Root Task: ')
         for t in self.tasks.tasks:
             print(t.toString(True))
 
     def printMap(self):
         """打印邻接矩阵信息
         """
-        print('Adj Matrix:')
+        print('\t-Matrix:')
         for m in self.map:
             print(m)
 
     def printPath(self):
         """打印全部路径
         """
-        print('Adj All Path:' + str(len(self.path)))
+        print('\t-All Paths:' + str(len(self.path)))
         for p in self.path:
             print(p)
 
