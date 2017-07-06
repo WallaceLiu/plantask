@@ -69,6 +69,7 @@ class TaskAdjMatrix(Graph):
             返回:
             异常:
             """
+
             self.nodenum = self.getNodeNum()
             self.edgenum = self.getEdgeNum()
 
@@ -359,6 +360,7 @@ class TaskAdjMatrix(Graph):
 
     # 输出
     def printGraph(self):
+        print('???????????????????????????????????')
         self.printSummary()
         self.printTasks()
         self.printMap()

@@ -77,6 +77,7 @@ class Task(base):
         t = Task()
         t.no = self.no
         t.id = self.id
+        t.realId = self.realId
         t.name = self.name
         t.desc = self.desc
         t.type = self.type
@@ -98,6 +99,7 @@ class Task(base):
         t = Task()
         t.no = self.no
         t.id = self.id
+        t.realId = self.realId
         t.name = self.name
         t.desc = self.desc
         t.type = self.type
@@ -118,6 +120,7 @@ class Task(base):
     def toString(self, bl):
         s = '<' + str(self.no) + '>'
         s += '\t' + str(self.id)
+        s += '\t' + str(self.realId)
         s += '\t' + (self.name if len(self.name) > 0 else '-')
         s += '\n\t\t' + '任务类型(' + (str(self.type)
                                    if str(self.type) != None else '-') + ')'
@@ -151,6 +154,7 @@ class Task(base):
     def toStringParams(self):
         s = '<' + str(self.no) + '>'
         s += '\t' + str(self.id)
+        s += '\t' + str(self.realId)
         s += '\t' + (self.name if len(self.name) > 0 else '-')
         s += '\n\t\t' + '运行时间(' + (
             time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(self.bDateTime))

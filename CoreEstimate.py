@@ -6,6 +6,7 @@ Created on Tue Jun 27 09:23:23 2017
 """
 import DateTimeUtil
 from base import base
+from TaskCollection import TaskCollection
 
 
 class CoreEstimate(base):
@@ -60,8 +61,7 @@ class CoreEstimate(base):
                     while bDt >= self.minmax[0]:
                         nt = t.cloneLocal()
                         nt.no = no
-                        nt.realId = nt.id
-                        nt.id = nt.id + ':' + str(no)
+                        nt.id = nt.id + ':' + str(no)  # 新ID=原ID+序号
                         nt.bDateTime = bDt
                         nt.eDateTime = nt.bDateTime + nt.consume
 
@@ -75,27 +75,32 @@ class CoreEstimate(base):
         def create(self, g, step, minmax):
             """创建模型使用的任务图
             """
-            t_arr = ready(self, g, step, minmax)
+            t_arrs = ready(self, g, step, minmax)
+
             ng = g.clone()
-            no = t_arr[len(t_arr) - 1].no + 1  # 节点序号
 
-            for task in t_arr:
-                t = ng.findRootTask(task.readId)
-                for c in t.childs.tasks:
-                    ng.add(ng.tasks, task)
+            no = t_arrs[len(t_arrs) - 1].no + 1
 
-                    tmp = filter(lambda x:c.id=task.readId and task.eDateTime >=
-                        c.bDateTime,t_arr)
-                    for tt in tmp:
-                        #if :
-                        nt = tt.cloneLocal()
-                        nt.no = no
-                        nt.realId = nt.id
-                        nt.id = nt.id + ':' + str(no)
-                        ng.add(t.childs, nt)
+            for t_arr in t_arrs: # 添加节点
+                n = t_arr.cloneLocal()
+                ng.add(ng.tasks, n)
+                no = no + 1
+
+                node = ng.findRootTask(t_arr.realId)
+
+                for c in node.childs.tasks:  # 添加节点边
+                    t = ng.findRootTask(c.realId)
+
+                    edges = filter(
+                        lambda x: t.realId == x.realId and t_arr.eDateTime <= x.bDateTime,
+                        t_arrs)
+
+                    for edge in edges:
+                        e = edge.cloneLocal()
+                        ng.add(n.childs, e)
 
             ng.createMap()
-            ng.printSummary()
+            ng.printGraph()
 
             return ng
 
