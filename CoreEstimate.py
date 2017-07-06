@@ -81,7 +81,7 @@ class CoreEstimate(base):
 
             no = t_arrs[len(t_arrs) - 1].no + 1
 
-            for t_arr in t_arrs: # 添加节点
+            for t_arr in t_arrs:  # 添加节点
                 n = t_arr.cloneLocal()
                 ng.add(ng.tasks, n)
                 no = no + 1
@@ -91,13 +91,16 @@ class CoreEstimate(base):
                 for c in node.childs.tasks:  # 添加节点边
                     t = ng.findRootTask(c.realId)
 
-                    edges = filter(
-                        lambda x: t.realId == x.realId and t_arr.eDateTime <= x.bDateTime,
-                        t_arrs)
+                    if len(t.childs.tasks) == 0:
+                        ng.add(n.childs, t.cloneLocal())  # 添加终端节点的边
+                    else:
+                        edges = filter(
+                            lambda x: t.realId == x.realId and t_arr.eDateTime <= x.bDateTime,
+                            t_arrs)
 
-                    for edge in edges:
-                        e = edge.cloneLocal()
-                        ng.add(n.childs, e)
+                        for edge in edges:
+                            e = edge.cloneLocal()
+                            ng.add(n.childs, e)
 
             ng.createMap()
             ng.printGraph()
@@ -107,7 +110,7 @@ class CoreEstimate(base):
         print('--Stage Model Graph...')
 
         if self.config.debug == True:
-            print('\t-min and max:<%s,%s>' %
+            print('\t-Min and Max:<%s,%s>' %
                   (DateTimeUtil.timestamp_datetime(self.minmax[0]),
                    DateTimeUtil.timestamp_datetime(self.minmax[1])))
 
