@@ -87,8 +87,8 @@ class TaskAdjMatrix(Graph):
             self.rTask = [0] * self.nodenum
             self.tTask = [0] * self.nodenum
             for x in self.tasks.tasks:
+                w = self.__findIndex(x.id)
                 for y in x.childs.tasks:
-                    w = self.__findIndex(x.id)
                     v = self.__findIndex(y.id)
                     self.addEdge(w, v)
 
