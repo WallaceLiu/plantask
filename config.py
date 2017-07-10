@@ -8,7 +8,7 @@ Created on Tue Jul  4 10:00:07 2017
 
 class config:
 
-    debug = False
+    debug = True
 
     def __init__(self):
         pass

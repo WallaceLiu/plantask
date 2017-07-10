@@ -90,7 +90,7 @@ class TaskAdjMatrix(Graph):
                 w = self.__findIndex(x.id)
                 for y in x.childs.tasks:
                     v = self.__findIndex(y.id)
-                    self.addEdge(w, v)
+                    self.addEdge(w, v, x.consume)
 
                     self.tTask[w] = 1
                     self.rTask[v] = 1
@@ -116,6 +116,9 @@ class TaskAdjMatrix(Graph):
             print('--Stage Ajd Matrix:')
 
             self.printGraph()
+
+    def correctMap(self):
+        pass
 
     def add(self, p, t):
         """添加任务
@@ -170,7 +173,7 @@ class TaskAdjMatrix(Graph):
         except IndexError:
             print("节点下标出界")
 
-    def addEdge(self, x, y):
+    def addEdge(self, x, y, weight):
         """添加边
 
         参数:
@@ -179,8 +182,8 @@ class TaskAdjMatrix(Graph):
         返回:
         异常:
         """
-        if self.map[x][y] is 0:
-            self.map[x][y] = 1
+        #if self.map[x][y] is 0:
+        self.map[x][y] = weight
 
     def removeEdge(self, x, y):
         """删除边
@@ -205,7 +208,7 @@ class TaskAdjMatrix(Graph):
 
         def path(self, s, r):
             for i in range(self.nodenum):
-                if self.map[r][i] == 1:
+                if self.map[r][i] > 0:
                     s.append(self.tasksIndex[i])
                     path(self, s, i)
                     s.pop()
@@ -396,8 +399,12 @@ class TaskAdjMatrix(Graph):
         """打印邻接矩阵信息
         """
         print('\t-Matrix:')
-        for m in self.map:
-            print(m)
+        for r in self.map:
+            s = '|\t'
+            for c in r:
+                s = s + str(c) + '\t'
+            s = s + '|'
+            print(s)
 
     def printPath(self):
         """打印全部路径

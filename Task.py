@@ -52,7 +52,7 @@ class Task(base):
         self.retryInterval = 0
         self.bDateTime = None
         self.eDateTime = None
-        self.consume = 0
+        self.consume = 1
         self.bDateTimeThreshold = ''
         self.eDateTimeThreshold = ''
         self.childs = TaskCollection()
