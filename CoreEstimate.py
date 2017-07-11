@@ -48,9 +48,9 @@ class CoreEstimate(base):
 
         self.__estimate(g)
 
-        self.__createModelGraph(g)
+        self.__createModelGraph(g, self.minmax)
 
-    def __createModelGraph(self, g):
+    def __createModelGraph(self, g, minmax):
         """
         任务关系：
         a->b->c
@@ -124,18 +124,62 @@ class CoreEstimate(base):
         60:23   [0,  0,  0,  0, 10,  0,  0,  0,  0,  0,  0,  0, 0,  0, 0, 0, 0, 0, 0]
         60:24   [0,  0,  0,  0, 10,  0,  0,  0,  0,  0,  0,  0, 0,  0, 0, 0, 0, 0, 0]
         
-        上面可以看到，x_16*16，即b，是不合理的，没有任何父节点~
+    上面可以看到，x_16*16，即b，是不合理的，没有任何父节点~   
+           
+    
+        ['10', '20', '30', '40', '50', '60', 
+        '10:12', '20:14', '10:13', '20:15', 
+        '40:16', '40:17', '40:18', '60:19', 
+        '60:20', '60:21', '60:22']
+        
+                a   b    c   d   e   f   12  14  13  15  16  17 18  19 20 21 22 
+            a   [0, 10,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 0,  0, 0, 0, 0]
+            b   [0,  0, 10, 10,  0,  0,  0,  0,  0,  0,  0,  0, 0,  0, 0, 0, 0]
+            c   [0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 0,  0, 0, 0, 0]
+            d   [0,  0,  0,  0, 10,  0,  0,  0,  0,  0,  0,  0, 0,  0, 0, 0, 0]
+            e   [0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 0,  0, 0, 0, 0]
+            f   [0,  0,  0,  0, 10,  0,  0,  0,  0,  0,  0,  0, 0,  0, 0, 0, 0]
+            
+        10:12   [0,  0,  0,  0,  0,  0,  0, 10,  0,  0,  0,  0, 0,  0, 0, 0, 0]
+        20:14   [0,  0, 10,  0,  0,  0,  0,  0,  0,  0, 10,  0, 0,  0, 0, 0, 0]
+        10:13   [0,  0,  0,  0,  0,  0,  0, 10,  0, 10,  0,  0, 0,  0, 0, 0, 0]
+        20:15   [0,  0, 10,  0,  0,  0,  0,  0,  0,  0, 10, 10, 0,  0, 0, 0, 0]
+        40:16   [0,  0,  0,  0, 10,  0,  0,  0,  0,  0,  0,  0, 0,  0, 0, 0, 0]
+        40:17   [0,  0,  0,  0, 10,  0,  0,  0,  0,  0,  0,  0, 0,  0, 0, 0, 0]
+        40:18   [0,  0,  0,  0, 10,  0,  0,  0,  0,  0,  0,  0, 0,  0, 0, 0, 0]
+        60:19   [0,  0,  0,  0, 10,  0,  0,  0,  0,  0,  0,  0, 0,  0, 0, 0, 0]
+        60:20   [0,  0,  0,  0, 10,  0,  0,  0,  0,  0,  0,  0, 0,  0, 0, 0, 0]
+        60:21   [0,  0,  0,  0, 10,  0,  0,  0,  0,  0,  0,  0, 0,  0, 0, 0, 0]
+        60:22   [0,  0,  0,  0, 10,  0,  0,  0,  0,  0,  0,  0, 0,  0, 0, 0, 0]
+        
+        
+
         
         """
 
         def ready(self, g, step, minmax):
+
+            if self.config.debug == True:
+                print('\t-CoreEstimate.__createModelGraph.ready...')
+                print('\t\t-Min and Max:<%s,%s>' %
+                      (DateTimeUtil.timestamp_datetime(minmax[0]),
+                       DateTimeUtil.timestamp_datetime(minmax[1])))
+
             no = g.edgenum + g.nodenum + 1
             arr = []
             for i in range(g.nodenum):
-                if g.tTask[i] == 1:
+                if g.tTask[i] == 1:  # 非终端任务节点
                     t = g.findRootTask(g.tasksIndex[i])
                     bDt = t.bDateTime - step
-                    while bDt >= self.minmax[0]:
+                    win = maxParentConsume(self, g.map, g.nodenum, i)
+
+                    if self.config.debug == True:
+                        print('\t\t-ready:%s      win=%s      end=%s    step=%s' %
+                              (t.id, win,
+                               DateTimeUtil.timestamp_datetime(minmax[0] + win),
+                               str(step)))
+
+                    while bDt > minmax[0] + win:
                         nt = t.cloneLocal()
                         nt.no = no
                         nt.id = nt.id + ':' + str(no)  # 新ID=原ID+序号
@@ -144,19 +188,34 @@ class CoreEstimate(base):
 
                         arr.append(nt)
 
+                        if self.config.debug == True:
+                            print('\t\t\t-Add New:%s' % nt.toStringTime())
+
                         bDt = bDt - step
                         no = no + 1
 
             #if base.config.debug == True:
-            print('Optional Task:')
+            print('\t-CoreEstimate.__createModelGraph.ready:')
             for a in arr:
                 print(a.toString(True))
 
             return arr
 
-#        def select(self, g, arr):
-#            for rt in g.rTask:
-#                if rt==0:
+        def maxParentConsume(self, matrix, nodenum, c):
+            m = 0
+            r = c
+            consume = 0
+            while r >= 0:
+                rt = -1
+                for i in range(nodenum):
+                    if matrix[i][r] > m:
+                        m = matrix[i][r]
+                        rt = i
+                if rt > 0:
+                    consume += m
+                r = rt
+
+            return consume
 
         def create(self, g, step, minmax):
             """创建模型使用的任务图
@@ -190,29 +249,24 @@ class CoreEstimate(base):
 
             ng.createMap()
 
-            ng.printGraph()
+            #ng.printGraph()
 
             return ng
 
-        print('--Stage Model Graph...')
-
-        if self.config.debug == True:
-            print('\t-Min and Max:<%s,%s>' %
-                  (DateTimeUtil.timestamp_datetime(self.minmax[0]),
-                   DateTimeUtil.timestamp_datetime(self.minmax[1])))
+        print('--Stage: CoreEstimate.__createModelGraph...')
 
         self.modelGraph.clear()
 
         for step in self.steps:
-            self.modelGraph.append(create(self, g, step, self.minmax))
+            self.modelGraph.append(create(self, g, step, minmax))
 
-        print('--Model Graph Complete.')
+        print('--CoreEstimate.__createModelGraph End.')
 
         return self.modelGraph
 
     def __estimate(self, g):
 
-        print('--Stage Estimate...')
+        print('--Stage: CoreEstimate.__estimate...')
 
         self.minmax = self.__getMinMax(g.lastOccurTime)
 
@@ -222,7 +276,7 @@ class CoreEstimate(base):
 
         self.__initStepsNum(self.steps, self.minmax, g)
 
-        print('--Estimate Complete.')
+        print('--CoreEstimate.__estimate End.')
 
     def __computePlan(self, g):
         """计算所有任务的最晚时间
@@ -320,7 +374,7 @@ class CoreEstimate(base):
         minmax = (lastOccurTime - self.period * 3600, lastOccurTime)
 
         if self.config.debug == True:
-            print('\t-Min And Max Task Time:', minmax)
+            print('\t-CoreEstimate.__getMinMax:', minmax)
 
         return minmax
 
@@ -344,7 +398,7 @@ class CoreEstimate(base):
             self.stepsNum.append(int(self.period * 3600 / step) + 1)
 
         if self.config.debug == True:
-            print('\t-Interval Number in Steps:')
+            print('\t-CoreEstimate.__initStepsNum:')
             print(self.stepsNum)
 
     def __minmaxMoving(self, minmax, step):

@@ -13,12 +13,12 @@ class CoreModelByTaskNum(CoreModelBase):
         CoreModelBase.__init__(self, e)
 
     def models(self):
-        print('--Stage Model...')
+        print('--Stage: CoreModelByTaskNum.models...')
 
         for g in self.estimate.modelGraph:
             self.model(g)
 
-        print('--Model Complete.')
+        print('--CoreModelByTaskNum.models End.')
 
     def model(self, g):
         """查找邻接矩阵所有路径
@@ -30,15 +30,16 @@ class CoreModelByTaskNum(CoreModelBase):
 
         def m(self, s, r):
             for i in range(g.nodenum):
-                if g.map[r][i] == 1:
+                if g.map[r][i] > 0:
                     s.append(g.tasksIndex[i])
                     m(self, s, i)
                     s.pop()
                 else:
                     if i >= g.nodenum - 1:
                         p = '->'.join(s)
-                        #if self.__isPath(p) == False:
-                        self.path.append(p)
+                        if self.__isPath(p) == False and g.isRootTask(
+                                s[0]):
+                            self.path.append(p)
 
         s = []
         for r in range(g.nodenum):

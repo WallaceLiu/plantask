@@ -23,5 +23,5 @@ class CoreWrapper:
         g.createMap()
         g.searchPath()
         e = CoreEstimate(g)
-        #m = CoreModelByTaskNum(e)
-        #m.models()
+        m = CoreModelByTaskNum(e)
+        m.models()

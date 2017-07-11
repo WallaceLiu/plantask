@@ -113,9 +113,9 @@ class TaskAdjMatrix(Graph):
         #after(self)
 
         if self.config.debug == True:
-            print('--Stage Ajd Matrix:')
-
+            print('--Stage: TaskAdjMatrix.createMap...')
             self.printGraph()
+            print('--TaskAdjMatrix.createMap End.')
 
     def correctMap(self):
         pass
@@ -198,6 +198,16 @@ class TaskAdjMatrix(Graph):
             self.map[x][y] = 1
             self.edgenum = self.edgenum - 1
 
+    def isRootTask(self,id):
+        """判断节点是否为根节点
+
+        参数:
+            id:  
+        返回:
+        异常:
+        """
+        pass
+    
     def searchPath(self):
         """查找邻接矩阵所有路径
 
