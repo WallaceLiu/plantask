@@ -37,9 +37,11 @@ class coreModelByTaskNum(coreModelBase):
                 else:
                     if i >= g.nodenum - 1:
                         p = '->'.join(s)
-                        if self.__isPath(p) == False:
+                        if self.__isPath(g, s) is True:
                             self.path.append(p)
 
+        print('?????????????????????????????')
+        print(g.rTask)
         s = []
         for r in range(g.nodenum):
             s.clear()
@@ -49,13 +51,30 @@ class coreModelByTaskNum(coreModelBase):
 
         print(self.path)
 
-    def __isPath(self, path):
+    def __isPath(self, g, s):
         """是否为一个任务路径
         """
-        for p in self.path:
-            if path in p:
-                return True
-        return False
+
+        def _isExist(self, g, s):
+            """是否已经存在
+            """
+            path = '->'.join(s)
+            for p in self.path:
+                if path in p:
+                    return True
+            return False
+
+        def _isRoot(self, g, botomm):
+            """是否为根节点
+            只有是根节点开头的才是路径
+            """
+            bl = g.isRootTask(botomm.split(':')[0])
+            if bl is False:
+                pass  # 删除边
+
+            return bl
+
+        return _isExist(self, g, s) is False and _isRoot(self, g, s[0]) is True
 
     def __printer():
         pass

@@ -195,10 +195,10 @@ class coreEstimate(base):
                         bDt = bDt - step
                         no = no + 1
 
-            #if base.config.debug == True:
-            print('\t-CoreEstimate.__createModelGraph.ready:')
-            for a in arr:
-                print(a.toString(True))
+            if base.config.debug == True:
+                print('\t-CoreEstimate.__createModelGraph.ready:')
+                for a in arr:
+                    print(a.toString(True))
 
             return arr
 

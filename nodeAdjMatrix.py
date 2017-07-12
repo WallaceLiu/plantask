@@ -34,16 +34,18 @@ class nodeAdjMatrix(nodeAdjBase):
         """构造函数
 
         参数:
-            tasksIndex  所有节点ID
-            tasks       所有节点实例
-            rTask       根节点
-            tTask       终端节点
-            nodenum     节点数量
-            edgenum     边数量
-            map         邻接矩阵
-            path        节点配置文件
-            file        节点配置文件
-            lastOccurTime    最晚任务时间
+            tasksIndex:     所有节点ID
+            tasks:          所有节点实例
+            rTask:          根节点
+                            列全为0
+            tTask:          终端节点
+                            行全为0
+            nodenum:        节点数量
+            edgenum:        边数量
+            map:            邻接矩阵
+            path:           节点配置文件
+            file:           节点配置文件
+            lastOccurTime:  最晚任务时间
         返回:
         异常:
         """
@@ -97,10 +99,6 @@ class nodeAdjMatrix(nodeAdjBase):
 
         def after(self):
             """在邻接矩阵行-列追加所有任务ID
-    
-            参数:
-            返回:
-            异常:
             """
             for i in range(self.nodenum):
                 self.map[i].append(self.tasksIndex[i])
@@ -117,8 +115,13 @@ class nodeAdjMatrix(nodeAdjBase):
             self.printGraph()
             print('--TaskAdjMatrix.createMap End.')
 
-    def correctMap(self):
-        pass
+    def isRootTask(self, id):
+        """是否为根节点
+        """
+        for i in range(self.nodenum):
+            if self.rTask[i] == 0 and self.tasksIndex[i] == id:
+                return True
+        return False
 
     def add(self, p, t):
         """添加任务
@@ -182,7 +185,6 @@ class nodeAdjMatrix(nodeAdjBase):
         返回:
         异常:
         """
-        #if self.map[x][y] is 0:
         self.map[x][y] = weight
 
     def removeEdge(self, x, y):
@@ -195,18 +197,8 @@ class nodeAdjMatrix(nodeAdjBase):
         异常:
         """
         if self.map[x][y] is 0:
-            self.map[x][y] = 1
+            self.map[x][y] = 0
             self.edgenum = self.edgenum - 1
-
-    def isRootTask(self, id):
-        """判断节点是否为根节点
-
-        参数:
-            id:  
-        返回:
-        异常:
-        """
-        pass
 
     def searchPath(self):
         """查找邻接矩阵所有路径
