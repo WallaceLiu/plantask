@@ -13,10 +13,23 @@ class nodeProject(base):
     """邻接矩阵
     """
 
+    __no = None
     __id = None
     __realId = None
-    __projects = nodeProjectz()
+    __optional = nodeProjectz()
+    __cproject = None
 
-    def __init__(self):
+    def __init__(self, no=0, id='', realId=''):
         """构造函数
         """
+        self.__id = id
+        self.__realId = realId
+
+    def add(self, pro):
+        """添加
+        """
+        self.__optional.add(pro)
+        
+        
+    def toString(self):
+        pass

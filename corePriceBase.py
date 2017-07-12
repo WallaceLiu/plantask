@@ -7,10 +7,13 @@ Created on Fri Jun 30 11:43:31 2017
 from base import base
 import datetimeUtil
 from nodeProjectz import nodeProjectz
+import re
+from nodeProject import nodeProject
 
 
 class corePriceBase(base):
 
+    __regx = ':\d+'
     __minmax = None
     __steps = None
     __period = None
@@ -20,7 +23,7 @@ class corePriceBase(base):
     __modelGraph = []
     __timeSeq = []
     __priceMatrix = []
-    __projects = nodeProjectz()
+    __projects = nodeProject()
 
     def __init__(self, cm, g):
         self.__minmax = cm.estimate.minmax
@@ -33,17 +36,36 @@ class corePriceBase(base):
         self.__initStepNum(self.__steps, self.__period)
         self.__initTimeSeq(self.__steps, self.__minmax)
 
-        self.__priceMatrix = self.initMatrix2(len(self.__timeSeq[0]), 4)
+        self.__priceMatrix = self.initMatrix2(0, len(self.__timeSeq[0]), 4)
 
-        self.__createProjects(self.__originalPath, self.__modelGraph[0].tasks)
+        self.__createProjects(self.__path, self.__modelGraph[0].tasks)
 
     def price():
         """代价计算
         """
         pass
 
-    def __createProjects(self, path, tasks):
-        pass
+    def __createProjects(self, paths, tasks):
+        pMatrix = self.__transform(paths)
+
+        no = 0
+        cur = self.__projects
+        for p in paths:
+
+            ts = filter(lambda x: x[1] == p, pMatrix)
+            for t in ts:
+                no = no + 1
+                cur.add(nodeProject(no, t[0], t[1]))
+            no = no + 1
+            pro = nodeProject(no, '', '')
+            cur = pro
+
+    def __transform(self, paths):
+        p = self.initMatrix2('', len(paths), 2)
+        for i in range(len(p)):
+            p[i][0] = paths[i]
+            p[i][1] = re.sub(self.__regx, '', paths[i], count=0)
+        return p
 
     def printParameters(self):
         print('\t\t-coreNewAdjMatrix.estimate.minmax:')
@@ -59,10 +81,11 @@ class corePriceBase(base):
         print('\t\t-coreNewAdjMatrix.path:')
         print(self.__path)
         print('\t\t-coreNewAdjMatrix.estimate.modelGraph:')
-        print(self.__modelGraph[0].printGraph())
-        self.__printTimeSeq(True)
-        #for m in self.__priceMatrix:
-        print(self.__priceMatrix)
+        #print(self.__modelGraph[0].printGraph())
+        #self.__printTimeSeq(True)
+        #print(self.__priceMatrix)
+        #print(self.__originalPath)
+        self.printProjects()
 
     def __initStepNum(self, steps, period):
         """初始化时间间隔数量
@@ -191,3 +214,7 @@ class corePriceBase(base):
                     l.append(c)
 
             print(l)
+            
+            
+    def printProjects(self):
+        print(self.__projects)

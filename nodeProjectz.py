@@ -13,14 +13,14 @@ class nodeProjectz(base):
     '''
 
     def __init__(self):
-        self.tasks = []
+        self.projects = []
 
     #添加任务
     def add(self, t):
-        self.tasks.append(t)
+        self.projects.append(t)
 
     # 输出
-    def printer(self):
+    def toString(self):
         pass
 
 
