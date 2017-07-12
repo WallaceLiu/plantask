@@ -6,6 +6,7 @@ Created on Fri Jun 30 11:43:31 2017
 """
 from base import base
 import datetimeUtil
+from nodeProjectz import nodeProjectz
 
 
 class corePriceBase(base):
@@ -14,26 +15,34 @@ class corePriceBase(base):
     __steps = None
     __period = None
     __stepNum = []
+    __originalPath = []
     __path = []
     __modelGraph = []
     __timeSeq = []
     __priceMatrix = []
+    __projects = nodeProjectz()
 
-    def __init__(self, cm):
+    def __init__(self, cm, g):
         self.__minmax = cm.estimate.minmax
         self.__steps = cm.estimate.steps
         self.__period = cm.estimate.period
+        self.__originalPath = g.path
         self.__path = cm.path
         self.__modelGraph = cm.estimate.modelGraph
 
-        self.initStepNum(self.__steps, self.__period)
-        self.initTimeSeq(self.__steps, self.__minmax)
+        self.__initStepNum(self.__steps, self.__period)
+        self.__initTimeSeq(self.__steps, self.__minmax)
 
         self.__priceMatrix = self.initMatrix2(len(self.__timeSeq[0]), 4)
+
+        self.__createProjects(self.__originalPath, self.__modelGraph[0].tasks)
 
     def price():
         """代价计算
         """
+        pass
+
+    def __createProjects(self, path, tasks):
         pass
 
     def printParameters(self):
@@ -55,7 +64,7 @@ class corePriceBase(base):
         #for m in self.__priceMatrix:
         print(self.__priceMatrix)
 
-    def initStepNum(self, steps, period):
+    def __initStepNum(self, steps, period):
         """初始化时间间隔数量
                 
             按开始时间排序
@@ -75,7 +84,7 @@ class corePriceBase(base):
             print('\t-corePrice.__initStepNum:')
             print(self.__stepNum)
 
-    def initTimeSeq(self, steps, minmax):
+    def __initTimeSeq(self, steps, minmax):
         """创建时间序列矩阵
             
             按开始时间排序
@@ -137,6 +146,35 @@ class corePriceBase(base):
             print('\t-Time Seq Step:')
             print(steps)
             self.__printTimeSeq(True)
+
+    def creatPriceMatrix(self):
+        """创建代价矩阵
+        二维矩阵
+            [[-,-,-,-],[],[],...]
+                其中，
+                    [-,-,-,-]为[任务数量,CPU密集任务数量,IO密集任务数量,集群空闲时间]
+                    
+                    
+        ['10->20->30', 
+        '10:12->20:14->30', 
+        '10:13->20:14->30', 
+        '10:13->20:15->30', 
+        
+        '10->20->40->50', 
+        '10:12->20:14->40:17->50', 
+        '10:13->20:14->40:17->50', 
+        '10:13->20:15->40:17->50', 
+        '10:13->20:15->40:18->50',
+        
+        '60->50', 
+        '60:20->50', 
+        '60:21->50', 
+        '60:22->50', 
+        '60:23->50']   
+                    
+        """
+        visited = self.initVector(100)
+        pass
 
     def __printTimeSeq(self, isReadable):
         """打印时间矩阵

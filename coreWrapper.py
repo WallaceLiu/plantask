@@ -26,4 +26,4 @@ class coreWrapper:
         e = coreEstimate(g)
         m = coreNewAdjMatrix(e)
         m.models()
-        p = corePrice(m)
+        p = corePrice(m, g)

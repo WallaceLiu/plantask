@@ -24,3 +24,10 @@ class base:
             t = [0] * cn
             m.append(t)
         return m
+
+    def initVector(n):
+        """初始化向量
+        参数
+            n:     row number
+        """
+        return [0] * n

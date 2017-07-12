@@ -258,7 +258,7 @@ class coreEstimate(base):
         """
 
         def init(self, g):
-            """初始化评估矩阵
+            """初始化评估
             """
             for i in range(g.nodenum):
                 self.plans.append([])

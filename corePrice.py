@@ -9,8 +9,8 @@ from corePriceBase import corePriceBase
 
 
 class corePrice(corePriceBase):
-    def __init__(self, cm):
-        corePriceBase.__init__(self, cm)
+    def __init__(self, cm, g):
+        corePriceBase.__init__(self, cm, g)
 
         print('-corePrice...')
         print('\t-Parameters Ready...')
@@ -47,13 +47,4 @@ class corePrice(corePriceBase):
         异常:
         """
 
-        pass
-
-    def creatPriceMatrix():
-        """创建代价矩阵
-        二维矩阵
-            [[-,-,-,-],[],[],...]
-                其中，
-                    [-,-,-,-]为[任务数量,CPU密集任务数量,IO密集任务数量,集群空闲时间]
-        """
         pass
