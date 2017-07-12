@@ -10,7 +10,7 @@ from graph import graph
 import datetimeUtil
 
 
-class gAdjMatrix(graph):
+class nodeAdjMatrix(graph):
     """邻接矩阵
     
     a->b->c
@@ -354,7 +354,7 @@ class gAdjMatrix(graph):
                 DFS(self, i, queue)
 
     def clone(self):
-        g = gAdjMatrix()
+        g = nodeAdjMatrix()
         g.tasksIndex = self.tasksIndex.copy()
         g.rTask = self.rTask.copy()
         g.tTask = self.tTask.copy()

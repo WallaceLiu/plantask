@@ -7,7 +7,7 @@ Created on Sun Jun 25 10:40:51 2017
 from graph import graph
 
 
-class gAdjLinklist(graph):
+class nodeAdjLinklist(graph):
     '''
     邻接表
     '''
