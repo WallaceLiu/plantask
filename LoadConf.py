@@ -5,7 +5,7 @@ Created on Wed Jun 21 19:47:40 2017
 @author: liuning11
 """
 import xml.dom.minidom
-from nodeAdjMatrix import nodeAdjMatrix
+from gAdjMatrix import gAdjMatrix
 from nodeTask import nodeTask
 from nodeTaskType import nodeTaskType
 import time
@@ -16,7 +16,7 @@ class loadConf(base):
 
     __path = ""
     __map = []
-    graph = nodeAdjMatrix()
+    graph = gAdjMatrix()
 
     def __init__(self, path="conf/conf.xml"):
         """加载任务配置文件 

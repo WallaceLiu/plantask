@@ -158,14 +158,12 @@ class coreEstimate(base):
 
         def ready(self, g, step, minmax):
 
-            # log
             if self.config.debug == True:
                 print('\t-CoreEstimate.__createModelGraph.ready...')
                 print('\t\t-Min and Max:<%s,%s>' %
                       (datetimeUtil.timestamp_datetime(minmax[0]),
                        datetimeUtil.timestamp_datetime(minmax[1])))
-            # log end    
-            
+
             no = g.edgenum + g.nodenum + 1
             arr = []
             for i in range(g.nodenum):
@@ -173,8 +171,7 @@ class coreEstimate(base):
                     t = g.findRootTask(g.tasksIndex[i])
                     bDt = t.bDateTime - step
                     win = maxParentConsume(self, g.map, g.nodenum, i)
-                    
-                    # log
+
                     if self.config.debug == True:
                         print(
                             '\t\t-ready:%s      win=%s      end=%s    step=%s'
@@ -182,8 +179,7 @@ class coreEstimate(base):
                             (t.id, win,
                              datetimeUtil.timestamp_datetime(minmax[0] + win),
                              str(step)))
-                    # log end  
-            
+
                     while bDt > minmax[0] + win:
                         nt = t.cloneLocal()
                         nt.no = no
@@ -198,14 +194,12 @@ class coreEstimate(base):
 
                         bDt = bDt - step
                         no = no + 1
-                        
-            # log  
-            if base.config.debug == True:
-                print('\t-CoreEstimate.__createModelGraph.ready:')
-                for t in arr:
-                    print(t.toString(True))
-            # log end  
-            
+
+            #if base.config.debug == True:
+            print('\t-CoreEstimate.__createModelGraph.ready:')
+            for a in arr:
+                print(a.toString(True))
+
             return arr
 
         def maxParentConsume(self, matrix, nodenum, c):
