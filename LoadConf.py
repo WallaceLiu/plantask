@@ -5,18 +5,18 @@ Created on Wed Jun 21 19:47:40 2017
 @author: liuning11
 """
 import xml.dom.minidom
-from TaskAdjMatrix import TaskAdjMatrix
-from Task import Task
-from TaskType import TaskType
+from gAdjMatrix import gAdjMatrix
+from nodeTask import nodeTask
+from nodeTaskType import nodeTaskType
 import time
 from base import base
 
 
-class LoadConf(base):
+class loadConf(base):
 
     __path = ""
     __map = []
-    graph = TaskAdjMatrix()
+    graph = gAdjMatrix()
 
     def __init__(self, path="conf/conf.xml"):
         """加载任务配置文件 
@@ -72,14 +72,14 @@ class LoadConf(base):
         返回:
         异常:
         """
-        t = Task(no)
+        t = nodeTask(no)
         if e.hasAttribute('id'):
             t.id = e.getAttribute('id')
             t.realId = t.id
         if e.hasAttribute('name'):
             t.name = e.getAttribute('name')
         if e.hasAttribute('type'):
-            t.type = TaskType.General  #e.getAttribute('type')
+            t.type = nodeTaskType.General  #e.getAttribute('type')
         if e.hasAttribute('desc'):
             t.desc = e.getAttribute('desc')
         if e.hasAttribute('executeRule'):

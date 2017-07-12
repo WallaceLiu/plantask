@@ -7,7 +7,7 @@ Created on Sun Jun 25 10:35:00 2017
 from base import base
 
 
-class Graph(base):
+class graph(base):
 
     name = None
 

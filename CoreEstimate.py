@@ -4,12 +4,11 @@ Created on Tue Jun 27 09:23:23 2017
 
 @author: liuning11
 """
-import DateTimeUtil
+import datetimeUtil
 from base import base
-from TaskCollection import TaskCollection
 
 
-class CoreEstimate(base):
+class coreEstimate(base):
     """评估阶段
     
     包括，
@@ -162,8 +161,8 @@ class CoreEstimate(base):
             if self.config.debug == True:
                 print('\t-CoreEstimate.__createModelGraph.ready...')
                 print('\t\t-Min and Max:<%s,%s>' %
-                      (DateTimeUtil.timestamp_datetime(minmax[0]),
-                       DateTimeUtil.timestamp_datetime(minmax[1])))
+                      (datetimeUtil.timestamp_datetime(minmax[0]),
+                       datetimeUtil.timestamp_datetime(minmax[1])))
 
             no = g.edgenum + g.nodenum + 1
             arr = []
@@ -176,7 +175,7 @@ class CoreEstimate(base):
                     if self.config.debug == True:
                         print('\t\t-ready:%s      win=%s      end=%s    step=%s' %
                               (t.id, win,
-                               DateTimeUtil.timestamp_datetime(minmax[0] + win),
+                               datetimeUtil.timestamp_datetime(minmax[0] + win),
                                str(step)))
 
                     while bDt > minmax[0] + win:
@@ -482,9 +481,9 @@ class CoreEstimate(base):
             for c in r:
                 if isReadable:
                     l.append('(' + str(c.get('no')) + ',' + str(c.get(
-                        'id')) + ',' + DateTimeUtil.timestamp_datetime(
+                        'id')) + ',' + datetimeUtil.timestamp_datetime(
                             c.get('b')) + ',' +
-                             DateTimeUtil.timestamp_datetime(c.get('e')) + ','
+                             datetimeUtil.timestamp_datetime(c.get('e')) + ','
                              + str(c.get('c')) + ',' + str(c.get('t')) + ')')
                 else:
                     l.append(c)
@@ -499,8 +498,8 @@ class CoreEstimate(base):
             l = []
             for c in r:
                 if isReadable:
-                    l.append('(' + DateTimeUtil.timestamp_datetime(
-                        c.get('bdt')) + ',' + DateTimeUtil.timestamp_datetime(
+                    l.append('(' + datetimeUtil.timestamp_datetime(
+                        c.get('bdt')) + ',' + datetimeUtil.timestamp_datetime(
                             c.get('edt')) + ',' + str(c.get('na')) + ',' + str(
                                 c.get('nk')) + ',' + str(c.get('ng')) + ')')
                 else:

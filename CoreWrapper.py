@@ -4,12 +4,12 @@ Created on Sun Jul  2 10:38:47 2017
 
 @author: liuning11
 """
-from LoadWrapper import LoadWrapper
-from CoreEstimate import CoreEstimate
-from CoreModelByTaskNum import CoreModelByTaskNum
+from loadWrapper import loadWrapper
+from coreEstimate import coreEstimate
+from coreModelByTaskNum import coreModelByTaskNum
 
 
-class CoreWrapper:
+class coreWrapper:
     """任务时间规划
     
     分两个阶段：
@@ -18,10 +18,10 @@ class CoreWrapper:
     """
 
     def __init__(self, path='conf/conf.xml'):
-        l = LoadWrapper(path)
+        l = loadWrapper(path)
         g = l.load()
         g.createMap()
         g.searchPath()
-        e = CoreEstimate(g)
-        m = CoreModelByTaskNum(e)
+        e = coreEstimate(g)
+        m = coreModelByTaskNum(e)
         m.models()

@@ -6,7 +6,7 @@ Created on Fri Jun 30 11:42:10 2017
 """
 
 
-class CoreModelBase:
+class coreModelBase:
     """模型阶段
 
         任务分为两种：

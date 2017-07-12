@@ -6,7 +6,7 @@ Created on Thu Jun 22 09:47:35 2017
 """
 
 
-class TaskCollection:
+class nodeTaskz:
     '''
     任务集合类
     '''
@@ -67,7 +67,7 @@ class TaskCollection:
                 nt = t.clone()
                 _clone(self, nt)
 
-        tc = TaskCollection()
+        tc = nodeTaskz()
         for t in self.tasks:
             nt = t.clone()
             tc.add(nt)

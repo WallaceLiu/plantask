@@ -4,13 +4,13 @@ Created on Fri Jun 30 11:43:31 2017
 
 @author: liuning11
 """
-from CoreModelBase import CoreModelBase
+from coreModelBase import coreModelBase
 import random
 
 
-class CoreModelByTaskNum(CoreModelBase):
+class coreModelByTaskNum(coreModelBase):
     def __init__(self, e):
-        CoreModelBase.__init__(self, e)
+        coreModelBase.__init__(self, e)
 
     def models(self):
         print('--Stage: CoreModelByTaskNum.models...')
@@ -37,8 +37,7 @@ class CoreModelByTaskNum(CoreModelBase):
                 else:
                     if i >= g.nodenum - 1:
                         p = '->'.join(s)
-                        if self.__isPath(p) == False and g.isRootTask(
-                                s[0]):
+                        if self.__isPath(p) == False :
                             self.path.append(p)
 
         s = []

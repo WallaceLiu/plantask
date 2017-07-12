@@ -4,12 +4,12 @@ Created on Wed Jun 21 09:15:48 2017
 
 @author: liuning11
 """
-from TaskCollection import TaskCollection
+from nodeTaskz import nodeTaskz
 import time
 from base import base
 
 
-class Task(base):
+class nodeTask(base):
     """任务类
     
     """
@@ -55,7 +55,7 @@ class Task(base):
         self.consume = 1
         self.bDateTimeThreshold = ''
         self.eDateTimeThreshold = ''
-        self.childs = TaskCollection()
+        self.childs = nodeTaskz()
         self.isKey = False
 
     def findTask(self, id):
@@ -74,7 +74,7 @@ class Task(base):
         return None
 
     def clone(self):
-        t = Task()
+        t = nodeTask()
         t.no = self.no
         t.id = self.id
         t.realId = self.realId
@@ -96,7 +96,7 @@ class Task(base):
         return t
 
     def cloneLocal(self):
-        t = Task()
+        t = nodeTask()
         t.no = self.no
         t.id = self.id
         t.realId = self.realId
@@ -113,7 +113,7 @@ class Task(base):
         t.consume = self.consume
         t.bDateTimeThreshold = self.bDateTimeThreshold
         t.eDateTimeThreshold = self.eDateTimeThreshold
-        t.childs = TaskCollection()
+        t.childs = nodeTaskz()
         t.isKey = self.isKey
         return t
 

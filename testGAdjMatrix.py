@@ -5,12 +5,12 @@ Created on Wed Jun 21 09:19:45 2017
 @author: liuning11
 """
 
-from TaskAdjMatrix import TaskAdjMatrix
-from LoadWrapper import LoadWrapper
+from gAdjMatrix import gAdjMatrix
+from loadWrapper import loadWrapper
 
 
 def DoTest():
-    l = LoadWrapper("conf/t1.xml")
+    l = loadWrapper("conf/t1.xml")
     g = l.load()
     g.createMap()
     g.searchPath()

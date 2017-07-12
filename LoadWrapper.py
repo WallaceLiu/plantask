@@ -4,15 +4,15 @@ Created on Sat Jul  1 19:42:50 2017
 
 @author: liuning11
 """
-from LoadConf import LoadConf
-from LoadParameters import LoadParameters
+from loadConf import loadConf
+from loadParameters import loadParameters
 
 
-class LoadWrapper:
+class loadWrapper:
     def __init__(self, path='conf/conf.xml'):
         self.__path = path
 
     def load(self):
-        l = LoadConf(self.__path)
-        LoadParameters(l.graph)
+        l = loadConf(self.__path)
+        loadParameters(l.graph)
         return l.graph

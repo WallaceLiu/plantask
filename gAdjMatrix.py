@@ -5,12 +5,12 @@ Created on Wed Jun 21 09:15:48 2017
 @author: liuning11
 """
 
-from TaskCollection import TaskCollection
-from Graph import Graph
-import DateTimeUtil
+from nodeTaskz import nodeTaskz
+from graph import graph
+import datetimeUtil
 
 
-class TaskAdjMatrix(Graph):
+class gAdjMatrix(graph):
     """邻接矩阵
     
     a->b->c
@@ -48,7 +48,7 @@ class TaskAdjMatrix(Graph):
         异常:
         """
         self.tasksIndex = []
-        self.tasks = TaskCollection()
+        self.tasks = nodeTaskz()
         self.rTask = []
         self.tTask = []
         self.path = []
@@ -354,7 +354,7 @@ class TaskAdjMatrix(Graph):
                 DFS(self, i, queue)
 
     def clone(self):
-        g = TaskAdjMatrix()
+        g = gAdjMatrix()
         g.tasksIndex = self.tasksIndex.copy()
         g.rTask = self.rTask.copy()
         g.tTask = self.tTask.copy()
@@ -384,7 +384,7 @@ class TaskAdjMatrix(Graph):
 
     def printLastOccurTime(self):
         print('\t-Last Time When Task Occur:<%s>' %
-              (DateTimeUtil.timestamp_datetime(self.lastOccurTime)))
+              (datetimeUtil.timestamp_datetime(self.lastOccurTime)))
 
     # 打印任务信息    
     def printTasks(self):

@@ -6,13 +6,11 @@ Created on Sun Jun 25 11:25:05 2017
 """
 
 import xml.dom.minidom
-from TaskAdjMatrix import TaskAdjMatrix
-from Task import Task
 import time
 from base import base
 
 
-class LoadParameters(base):
+class loadParameters(base):
     """加载参数
     
     包括,开始时间bDateTime,结束时间eDateTime,耗时consume
