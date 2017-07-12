@@ -6,11 +6,11 @@ Created on Wed Jun 21 09:15:48 2017
 """
 
 from nodeTaskz import nodeTaskz
-from graph import graph
+from nodeAdjBase import nodeAdjBase
 import datetimeUtil
 
 
-class nodeAdjMatrix(graph):
+class nodeAdjMatrix(nodeAdjBase):
     """邻接矩阵
     
     a->b->c

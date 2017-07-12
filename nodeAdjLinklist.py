@@ -4,10 +4,10 @@ Created on Sun Jun 25 10:40:51 2017
 
 @author: liuning11
 """
-from graph import graph
+from nodeAdjBase import nodeAdjBase
 
 
-class nodeAdjLinklist(graph):
+class nodeAdjLinklist(nodeAdjBase):
     '''
     邻接表
     '''
