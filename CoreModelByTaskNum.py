@@ -37,7 +37,7 @@ class coreModelByTaskNum(coreModelBase):
                 else:
                     if i >= g.nodenum - 1:
                         p = '->'.join(s)
-                        if self.__isPath(p) == False :
+                        if self.__isPath(p) == False:
                             self.path.append(p)
 
         s = []

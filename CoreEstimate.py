@@ -173,10 +173,12 @@ class coreEstimate(base):
                     win = maxParentConsume(self, g.map, g.nodenum, i)
 
                     if self.config.debug == True:
-                        print('\t\t-ready:%s      win=%s      end=%s    step=%s' %
-                              (t.id, win,
-                               datetimeUtil.timestamp_datetime(minmax[0] + win),
-                               str(step)))
+                        print(
+                            '\t\t-ready:%s      win=%s      end=%s    step=%s'
+                            %
+                            (t.id, win,
+                             datetimeUtil.timestamp_datetime(minmax[0] + win),
+                             str(step)))
 
                     while bDt > minmax[0] + win:
                         nt = t.cloneLocal()

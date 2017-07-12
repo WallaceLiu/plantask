@@ -198,7 +198,7 @@ class gAdjMatrix(graph):
             self.map[x][y] = 1
             self.edgenum = self.edgenum - 1
 
-    def isRootTask(self,id):
+    def isRootTask(self, id):
         """判断节点是否为根节点
 
         参数:
@@ -207,7 +207,7 @@ class gAdjMatrix(graph):
         异常:
         """
         pass
-    
+
     def searchPath(self):
         """查找邻接矩阵所有路径
 
