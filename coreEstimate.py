@@ -6,6 +6,7 @@ Created on Tue Jun 27 09:23:23 2017
 """
 import datetimeUtil
 from base import base
+import random
 
 
 class coreEstimate(base):
@@ -29,9 +30,7 @@ class coreEstimate(base):
     steps = [600]
     period = 1
     minmax = None
-    stepsNum = []
     plans = []
-    timeSeq = []
     modelGraph = []
 
     def __init__(self, g):
@@ -101,30 +100,7 @@ class coreEstimate(base):
         - 指定节点的子节点，看行，如行b，有两个大于0的值，c和d，即为其子节点
         - 指定节点的父节点，看列，如列b，有一个大于0的值，a，即为其父节点
         
-                a   b    c   d   e   f   12 14  13  15  17  18  16  19 20 21 22 23 24
-            a   [0, 10,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 0,  0, 0, 0, 0, 0, 0]
-            b   [0,  0, 10, 10,  0,  0,  0,  0,  0,  0,  0,  0, 0,  0, 0, 0, 0, 0, 0]
-            c   [0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 0,  0, 0, 0, 0, 0, 0]
-            d   [0,  0,  0,  0, 10,  0,  0,  0,  0,  0,  0,  0, 0,  0, 0, 0, 0, 0, 0]
-            e   [0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 0,  0, 0, 0, 0, 0, 0]
-            f   [0,  0,  0,  0, 10,  0,  0,  0,  0,  0,  0,  0, 0,  0, 0, 0, 0, 0, 0]
-            
-        10:12   [0,  0,  0,  0,  0,  0,  0, 10,  0,  0,  0,  0, 0,  0, 0, 0, 0, 0, 0]
-        20:14   [0,  0, 10,  0,  0,  0,  0,  0,  0,  0, 10,  0, 0,  0, 0, 0, 0, 0, 0]
-        10:13   [0,  0,  0,  0,  0,  0,  0, 10,  0, 10,  0,  0, 0,  0, 0, 0, 0, 0, 0]
-        20:15   [0,  0, 10,  0,  0,  0,  0,  0,  0,  0, 10, 10, 0,  0, 0, 0, 0, 0, 0]
-        40:17   [0,  0,  0,  0, 10,  0,  0,  0,  0,  0,  0,  0, 0,  0, 0, 0, 0, 0, 0]
-        40:18   [0,  0,  0,  0, 10,  0,  0,  0,  0,  0,  0,  0, 0,  0, 0, 0, 0, 0, 0]
-        20:16   [0,  0, 10,  0,  0,  0,  0,  0,  0,  0, 10, 10, 0, 10, 0, 0, 0, 0, 0]
-        40:19   [0,  0,  0,  0, 10,  0,  0,  0,  0,  0,  0,  0, 0,  0, 0, 0, 0, 0, 0]
-        40:20   [0,  0,  0,  0, 10,  0,  0,  0,  0,  0,  0,  0, 0,  0, 0, 0, 0, 0, 0]
-        60:21   [0,  0,  0,  0, 10,  0,  0,  0,  0,  0,  0,  0, 0,  0, 0, 0, 0, 0, 0]
-        60:22   [0,  0,  0,  0, 10,  0,  0,  0,  0,  0,  0,  0, 0,  0, 0, 0, 0, 0, 0]
-        60:23   [0,  0,  0,  0, 10,  0,  0,  0,  0,  0,  0,  0, 0,  0, 0, 0, 0, 0, 0]
-        60:24   [0,  0,  0,  0, 10,  0,  0,  0,  0,  0,  0,  0, 0,  0, 0, 0, 0, 0, 0]
-        
-    上面可以看到，x_16*16，即b，是不合理的，没有任何父节点~   
-           
+ 
     
         ['10', '20', '30', '40', '50', '60', 
         '10:12', '20:14', '10:13', '20:15', 
@@ -152,7 +128,7 @@ class coreEstimate(base):
         60:22   [0,  0,  0,  0, 10,  0,  0,  0,  0,  0,  0,  0, 0,  0, 0, 0, 0]
         
         
-
+    上面可以看到，x_16*16，即b，是不合理的，没有任何父节点~   
         
         """
 
@@ -275,8 +251,6 @@ class coreEstimate(base):
 
         #self.createTimeSeq(self.steps, minmax, self.graph)
 
-        self.__initStepsNum(self.steps, self.minmax, g)
-
         print('--CoreEstimate.__estimate End.')
 
     def __computePlan(self, g):
@@ -382,97 +356,20 @@ class coreEstimate(base):
     def sortBDateTime(self, tasks):
         return sorted(tasks, key=lambda x: x.bDateTime)
 
-    def __initStepsNum(self, steps, minmax, g):
-        """初始化时间间隔数量
+    def __moving(self, step):
+        """随机时间
+            避免在移动任务时，都聚集在一个时间点
             
-            按开始时间排序
-        
         参数:
-            step:   步进时间，单位为秒
-            g:      任务图
-        返回:
-    
-        异常:
-                
-        """
-        for step in steps:
-            self.stepsNum.append(int(self.period * 3600 / step) + 1)
-
-        if self.config.debug == True:
-            print('\t-CoreEstimate.__initStepsNum:')
-            print(self.stepsNum)
-
-    def __minmaxMoving(self, minmax, step):
-        """平移时间-折半平移，便于任务落在哪个时间段
-
-        参数:
-            minmax:     最早最晚时间
-            step:       步长,单位为秒
+            step:   时间间隔
                 
         返回:
-            (最早时间, 最晚时间)
+            随机时间
             
         异常:
-            
         """
-        v = int(step / 2)
-
-        meta = (minmax[0] - v, minmax[1] + v)
-
-        return meta
-
-    def createTimeSeq(self, steps, minmax, g):
-        """创建时间序列矩阵
-        
-            按开始时间排序
-        
-        参数:
-            step:   步进时间，单位为秒
-            g:      任务图
-        返回:
-    
-        异常:
-            
-        """
-
-        def createTimeSeqVector(self, minmax, step):
-            """创建时间序列向量
-    
-            参数:
-                minmax: 最小最大日期.
-                step:步长,单位为秒.
-                    
-            返回:
-                {'bt': b, 'et': e, 'na': 0, 'nk': 0, 'ng': 0}
-                
-                bt - 开始时间
-                et - 结束时间
-                na - 任务数量
-                nk - 关键任务数量
-                ng - 非关键任务数量
-        
-            异常:
-                
-            """
-            mm = self.__minmaxMoving(minmax, step)
-            v = []
-            b = mm[0]
-            e = None
-            while b < mm[1]:
-                e = b + step
-                v.append({'bdt': b, 'edt': e, 'na': 0, 'nk': 0, 'ng': 0})
-                b = e + 1
-            return v
-
-        for s in self.steps:
-            self.timeSeq.append(createTimeSeqVector(self, minmax, s))
-
-        if self.config.debug == True:
-            print('\t-Time Seq Step:')
-            print(steps)
-            self.__printTimeSeq(True)
-
-        return self.timeSeq
+        seed = random.randint(0, 100)
+        return int(step * (1 + seed / 100))
 
     def __printPlan(self, isReadable):
         """打印评估时间
@@ -487,23 +384,6 @@ class coreEstimate(base):
                             c.get('b')) + ',' +
                              datetimeUtil.timestamp_datetime(c.get('e')) + ','
                              + str(c.get('c')) + ',' + str(c.get('t')) + ')')
-                else:
-                    l.append(c)
-
-            print(l)
-
-    def __printTimeSeq(self, isReadable):
-        """打印时间矩阵
-        """
-        print('\t-Time Seq Matrix:')
-        for r in self.timeSeq:
-            l = []
-            for c in r:
-                if isReadable:
-                    l.append('(' + datetimeUtil.timestamp_datetime(
-                        c.get('bdt')) + ',' + datetimeUtil.timestamp_datetime(
-                            c.get('edt')) + ',' + str(c.get('na')) + ',' + str(
-                                c.get('nk')) + ',' + str(c.get('ng')) + ')')
                 else:
                     l.append(c)
 

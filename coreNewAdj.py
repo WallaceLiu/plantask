@@ -4,9 +4,10 @@ Created on Fri Jun 30 11:42:10 2017
 
 @author: liuning11
 """
+from base import base
 
 
-class coreModelBase:
+class coreNewAdj(base):
     """模型阶段
 
         任务分为两种：
@@ -27,35 +28,7 @@ class coreModelBase:
 
     def __init__(self, e):
         self.estimate = e
-        self.result = []
         self.path = []
-
-    def getSteps(self):
-        return self.estimate.steps
-
-    def getTimeSeq(self):
-        return self.estimate.timeSeq
-
-    def getAvgTasksNum(self):
-        return self.estimate.avgTasksNum
-
-    def getPlans(self):
-        return self.estimate.plans
-
-    def getNodeNum(self):
-        return self.estimate.graph.nodenum
-
-    def getRTask(self):
-        return self.estimate.graph.rTask
-
-    def getTasksIndex(self):
-        return self.estimate.graph.tasksIndex
-
-    def getPath(self):
-        return self.estimate.graph.path
-
-    def getMap(self):
-        return self.estimate.graph.map
 
     def model(self):
         pass

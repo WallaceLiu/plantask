@@ -6,7 +6,8 @@ Created on Sun Jul  2 10:38:47 2017
 """
 from loadWrapper import loadWrapper
 from coreEstimate import coreEstimate
-from coreModelByTaskNum import coreModelByTaskNum
+from coreNewAdjMatrix import coreNewAdjMatrix
+from corePrice import corePrice
 
 
 class coreWrapper:
@@ -23,5 +24,6 @@ class coreWrapper:
         g.createMap()
         g.searchPath()
         e = coreEstimate(g)
-        m = coreModelByTaskNum(e)
+        m = coreNewAdjMatrix(e)
         m.models()
+        p = corePrice(m)
