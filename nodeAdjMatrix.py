@@ -276,6 +276,9 @@ class nodeAdjMatrix(nodeAdjBase):
                 l.append(p)
         return l
 
+    def sortBDateTime(self, tasks):
+        return sorted(tasks, key=lambda x: x.bDateTime)
+
     def findRootTask(self, id):
         """查找Root任务
         

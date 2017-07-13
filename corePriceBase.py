@@ -15,7 +15,7 @@ class corePriceBase(coreBase):
 
     __regx = ':\d+'
     __minmax = None
-    __stepNum = []
+    __stepNum = None
     __originalPath = []
     __path = []
     __modelGraph = []
@@ -24,79 +24,79 @@ class corePriceBase(coreBase):
     __projects = nodeProject()
 
     def __init__(self, cm, g):
-        self.__minmax = cm.estimate.minmax
+        self.__minmax = cm.minmax
         self.__originalPath = g.path
         self.__path = cm.path
-        self.__modelGraph = cm.estimate.modelGraph
+        self.__modelGraph = cm.modelGraph
 
         self.__initStepNum(self.config.timeStep, self.config.period)
         self.__initTimeSeq(self.config.timeStep, self.__minmax)
 
-        self.__priceMatrix = self.initMatrix2(0, len(self.__timeSeq), 4)
+        self.__priceMatrix = self.initMatrix2(0, self.__stepNum, 4)
 
-        self.__createProjects(self.__path, self.__modelGraph.tasks)
+        self.__createProjects(self.__originalPath, self.__path)
 
     def price():
         """代价计算
         """
         pass
 
-    def __createProjects(self, paths, tasks):
+    def __createProjects(self, opaths, paths):
         pMatrix = self.__transform(paths)
 
         no = 0
         cur = self.__projects
-        for p in paths:
+        print('????????????????????????')
 
-            ts = filter(lambda x: x[1] == p, pMatrix)
-            for t in ts:
+        for i in range(len(opaths)):
+            print('i='+str(i))
+            for t in filter(lambda x: x[1] == opaths[i], pMatrix):
                 no = no + 1
-                cur.add(nodeProject(no, t[0], t[1]))
-            no = no + 1
-            pro = nodeProject(no, '', '')
-            cur = pro
+                tp = nodeProject(no, t[0], t[1])
+                print('\t-Add (%s) to (%s): ' %
+                      (tp.toString(), cur.toString()))
+                cur.add(tp)
+
+            if i < len(opaths) - 1:
+                no = no + 1
+                cur.cproject = nodeProject(no, str(no), str(no))
+                cur = cur.cproject
+#            else:
+#                cur.cproject = None
+                #print('add: ' + cur.toString())
 
     def __transform(self, paths):
         p = self.initMatrix2('', len(paths), 2)
         for i in range(len(p)):
             p[i][0] = paths[i]
             p[i][1] = re.sub(self.__regx, '', paths[i], count=0)
+
         return p
 
     def printParameters(self):
-        print('\t\t-coreNewAdjMatrix.estimate.minmax:')
+        print('\t\t-Min And Max:')
         print('(%s, %s)' % (
             (datetimeUtil.timestamp_datetime(self.__minmax[0]),
              datetimeUtil.timestamp_datetime(self.__minmax[1]))))
-        print('\t\t-coreNewAdjMatrix.estimate.steps:')
-        print(self.config.timeStep)
-        print('\t\t-coreNewAdjMatrix.estimate.period:')
-        print(self.config.period)
-        print('\t\t-corePrice.stepNum:')
-        print(self.__stepNum)
-        print('\t\t-coreNewAdjMatrix.path:')
+        print('\t\t-Time Step: %d' % (self.config.timeStep))
+        print('\t\t-Period: %d' % (self.config.period))
+        print('\t\t-Step Num: %d' % (self.__stepNum))
+        print('\t\t-Original Path:')
+        print(self.__originalPath)
+        print('\t\t-Path:')
         print(self.__path)
-        print('\t\t-coreNewAdjMatrix.estimate.modelGraph:')
-        #print(self.__modelGraph[0].printGraph())
-        #self.__printTimeSeq(True)
-        #print(self.__priceMatrix)
-        #print(self.__originalPath)
-        self.printProjects()
+        self.__printTimeSeq(True)
+        print('\t\t-Price Matrix:')
+        print(self.__priceMatrix)
+        #print('\t\t-coreNewAdjMatrix.estimate.modelGraph:')
+        #print(self.__modelGraph.printGraph())
+        print('\t\t-projects:')
+        self.__projects.printer()
 
     def __initStepNum(self, step, period):
         """初始化时间间隔数量
-                
-            按开始时间排序
-        
-        参数:
-            step:   步进时间，单位为秒
-            g:      任务图
-        返回:
-    
-        异常:
-                
         """
-        self.__stepNum.append(int(period * 3600 / step) + 1)
+        self.__stepNum = int(period * 3600 / step) + 1
 
         if self.config.debug == True:
             print('\t-corePrice.__initStepNum:')
@@ -164,39 +164,10 @@ class corePriceBase(coreBase):
             print(step)
             self.__printTimeSeq(True)
 
-    def creatPriceMatrix(self):
-        """创建代价矩阵
-        二维矩阵
-            [[-,-,-,-],[],[],...]
-                其中，
-                    [-,-,-,-]为[任务数量,CPU密集任务数量,IO密集任务数量,集群空闲时间]
-                    
-                    
-        ['10->20->30', 
-        '10:12->20:14->30', 
-        '10:13->20:14->30', 
-        '10:13->20:15->30', 
-        
-        '10->20->40->50', 
-        '10:12->20:14->40:17->50', 
-        '10:13->20:14->40:17->50', 
-        '10:13->20:15->40:17->50', 
-        '10:13->20:15->40:18->50',
-        
-        '60->50', 
-        '60:20->50', 
-        '60:21->50', 
-        '60:22->50', 
-        '60:23->50']   
-                    
-        """
-        visited = self.initVector(100)
-        pass
-
     def __printTimeSeq(self, isReadable):
         """打印时间矩阵
         """
-        print('\t-Time Seq Matrix:')
+        print('\t-Time Seq Vector:')
         for r in self.__timeSeq:
             l = []
             for c in r:
@@ -208,6 +179,3 @@ class corePriceBase(coreBase):
                     l.append(c)
 
             print(l)
-
-    def printProjects(self):
-        print(self.__projects)

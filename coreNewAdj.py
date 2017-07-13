@@ -25,7 +25,7 @@ class coreNewAdj(coreBase):
             a，CPU密集型
             b，IO密集型
     """
+    path = []
 
-    def __init__(self, e):
-        self.estimate = e
-        self.path = []
+    def __init__(self, g):
+        self.graph = g

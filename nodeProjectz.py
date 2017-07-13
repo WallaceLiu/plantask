@@ -16,12 +16,14 @@ class nodeProjectz(base):
         self.projects = []
 
     #添加任务
-    def add(self, t):
-        self.projects.append(t)
+    def add(self, pro):
+        self.projects.append(pro)
 
     # 输出
-    def toString(self):
-        pass
+    def printer(self, tab):
+        print(str(len(self.projects)))
+        for p in self.projects:
+            print(tab + p.toString())
 
 
 #        def p(self, p, i):

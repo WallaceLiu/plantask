@@ -13,22 +13,45 @@ class nodeProject(base):
     """邻接矩阵
     """
 
-    __no = None
-    __id = None
-    __realId = None
-    __optional = nodeProjectz()
-    __cproject = None
+    no = None
+    id = None
+    realId = None
+    optional = nodeProjectz()
+    cproject = None
 
-    def __init__(self, no=0, id='', realId=''):
+    def __init__(self, no=0, id='0', realId='0', cproject=None):
         """构造函数
         """
-        self.__id = id
-        self.__realId = realId
+        self.no = no
+        self.id = id
+        self.realId = realId
+        self.cproject = cproject
 
     def add(self, pro):
         """添加
         """
-        self.__optional.add(pro)
+        self.optional.add(pro)
 
     def toString(self):
-        pass
+        s = '<' + str(self.no) + '>'
+        s += ',' + str(self.id) + ',' + str(self.realId)
+        s += ',' + (str(True) if self.cproject != None else str(False))
+        return s
+
+    def printer(self):
+        cur = self
+        no = 0
+
+        #        print('???????????????')
+        #        print(self.toString())
+        #        print(self.optional.printer('\t'))
+
+        while cur != None:
+            s = ''
+            for i in range(no):
+                s += '\t'
+            print(s + cur.toString())
+            s += '\t'
+            cur.optional.printer(s)
+            cur = cur.cproject
+            no = no + 1

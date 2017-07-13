@@ -4,7 +4,6 @@ Created on Fri Jun 30 11:43:31 2017
 
 @author: liuning11
 """
-from base import base
 from corePriceBase import corePriceBase
 
 
@@ -16,14 +15,6 @@ class corePrice(corePriceBase):
         print('\t-Parameters Ready...')
         self.printParameters()
 
-    def models(self):
-        print('--Stage: corePrice.models...')
-
-        for g in self.estimate.modelGraph:
-            self.model(g)
-
-        print('--corePrice.models End.')
-
     def model(self, g):
         """查找邻接矩阵所有路径
     
@@ -31,6 +22,8 @@ class corePrice(corePriceBase):
         返回:
         异常:
         """
+        print('--Stage: corePrice.model...')
+        print('--corePrice.model End.')
 
         pass
 

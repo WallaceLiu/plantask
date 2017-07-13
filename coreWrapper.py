@@ -26,5 +26,5 @@ class coreWrapper:
         g.searchPath()
 
         ce = coreEstimate(g)
-        cm = coreNewAdjMatrix(ce)
+        cm = coreNewAdjMatrix(g)
         p = corePrice(cm, g)
