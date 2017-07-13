@@ -9,6 +9,10 @@ Created on Tue Jul  4 10:00:07 2017
 class config:
 
     debug = False
+    configPath = ''
+
+    timeStep = 600
+    period = 1
 
     def __init__(self):
         pass

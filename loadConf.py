@@ -15,10 +15,9 @@ from base import base
 class loadConf(base):
 
     __path = ""
-    __map = []
     graph = nodeAdjMatrix()
 
-    def __init__(self, path="conf/conf.xml"):
+    def __init__(self, path):
         """加载任务配置文件 
 
         参数:
@@ -32,8 +31,10 @@ class loadConf(base):
 
     def __load(self):
         """加载任务配置文件 
+            1，初始化g.tasksIndex
+            2，初始化g.tasks
         """
-        print('--Stage: Load Conf...')
+        print('--Stage: loadConf.__load...')
         try:
             if self.__path == None:
                 raise NameError
@@ -61,7 +62,7 @@ class loadConf(base):
         if self.config.debug == True:
             self.__printer()
 
-        print('--Load Conf Complete.')
+        print('--loadConf.__load End.')
 
     def __createTask(self, e, no):
         """创建任务

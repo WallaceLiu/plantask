@@ -11,13 +11,7 @@ class coreNewAdjMatrix(coreNewAdj):
     def __init__(self, e):
         coreNewAdj.__init__(self, e)
 
-    def models(self):
-        print('--Stage: coreNewAdjMatrix.models...')
-
-        for g in self.estimate.modelGraph:
-            self.model(g)
-
-        print('--coreNewAdjMatrix.models End.')
+        self.model(self.estimate.modelGraph)
 
     def model(self, g):
         """查找邻接矩阵所有路径
@@ -39,6 +33,7 @@ class coreNewAdjMatrix(coreNewAdj):
                         if self.__isPath(g, s) is True:
                             self.path.append(p)
 
+        print('--Stage: coreNewAdjMatrix.models...')
         s = []
         for r in range(g.nodenum):
             s.clear()
@@ -48,6 +43,8 @@ class coreNewAdjMatrix(coreNewAdj):
 
         if self.config.debug == True:
             print(self.path)
+
+        print('--coreNewAdjMatrix.models End.')
 
     def __isPath(self, g, s):
         """是否为一个任务路径

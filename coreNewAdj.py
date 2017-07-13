@@ -4,10 +4,10 @@ Created on Fri Jun 30 11:42:10 2017
 
 @author: liuning11
 """
-from base import base
+from coreBase import coreBase
 
 
-class coreNewAdj(base):
+class coreNewAdj(coreBase):
     """模型阶段
 
         任务分为两种：
@@ -29,6 +29,3 @@ class coreNewAdj(base):
     def __init__(self, e):
         self.estimate = e
         self.path = []
-
-    def model(self):
-        pass

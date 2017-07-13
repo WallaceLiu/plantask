@@ -19,11 +19,12 @@ class coreWrapper:
     """
 
     def __init__(self, path='conf/conf.xml'):
-        l = loadWrapper(path)
-        g = l.load()
+        lw = loadWrapper(path)
+        g = lw.load()
+
         g.createMap()
         g.searchPath()
-        e = coreEstimate(g)
-        m = coreNewAdjMatrix(e)
-        m.models()
-        p = corePrice(m, g)
+
+        ce = coreEstimate(g)
+        cm = coreNewAdjMatrix(ce)
+        p = corePrice(cm, g)

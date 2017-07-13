@@ -53,41 +53,38 @@ class nodeAdjMatrix(nodeAdjBase):
         self.tasks = nodeTaskz()
         self.rTask = []
         self.tTask = []
-        self.path = []
         self.nodenum = 0
         self.edgenum = 0
         self.map = []
+        self.path = []
         self.file = None
         self.lastOccurTime = 0.0
 
     def createMap(self):
         """创建邻接矩阵
+            1，初始化nodenum
+            2，初始化edgenum
+            3，初始化map
+            4，初始化tTask
+            5，初始化rTask
         """
 
         def before(self):
             """初始化邻接矩阵
-    
-            参数:
-            返回:
-            异常:
             """
 
             self.nodenum = self.getNodeNum()
             self.edgenum = self.getEdgeNum()
 
-            for i in range(self.nodenum):
-                m = [0] * self.nodenum
-                self.map.append(m)
+            self.map = nodeAdjBase.initMatrix2(self, 0, self.nodenum,
+                                               self.nodenum)
 
         def create(self):
             """创建邻接矩阵
-    
-            参数:
-            返回:
-            异常:
             """
             self.rTask = [0] * self.nodenum
             self.tTask = [0] * self.nodenum
+
             for x in self.tasks.tasks:
                 w = self.__findIndex(x.id)
                 for y in x.childs.tasks:
@@ -114,6 +111,41 @@ class nodeAdjMatrix(nodeAdjBase):
             print('--Stage: TaskAdjMatrix.createMap...')
             self.printGraph()
             print('--TaskAdjMatrix.createMap End.')
+
+    def searchPath(self):
+        """查找邻接矩阵所有路径
+        1，初始化path
+        """
+
+        def isPath(self, path):
+            """是否为一个任务路径
+            """
+            for p in self.path:
+                if path in p:
+                    return True
+            return False
+
+        def path(self, s, r):
+            for i in range(self.nodenum):
+                if self.map[r][i] > 0:
+                    s.append(self.tasksIndex[i])
+                    path(self, s, i)
+                    s.pop()
+                else:
+                    if i >= self.nodenum - 1:
+                        p = '->'.join(s)
+                        if isPath(self, p) == False:
+                            self.path.append(p)
+
+        s = []
+        for r in range(len(self.rTask)):
+            s.clear()
+            if self.rTask[r] == 0:
+                s.append(self.tasksIndex[r])
+                path(self, s, r)
+
+        if self.config.debug == True:
+            self.printPath()
 
     def isRootTask(self, id):
         """是否为根节点
@@ -200,36 +232,6 @@ class nodeAdjMatrix(nodeAdjBase):
             self.map[x][y] = 0
             self.edgenum = self.edgenum - 1
 
-    def searchPath(self):
-        """查找邻接矩阵所有路径
-
-        参数:
-        返回:
-        异常:
-        """
-
-        def path(self, s, r):
-            for i in range(self.nodenum):
-                if self.map[r][i] > 0:
-                    s.append(self.tasksIndex[i])
-                    path(self, s, i)
-                    s.pop()
-                else:
-                    if i >= self.nodenum - 1:
-                        p = '->'.join(s)
-                        if self.__isPath(p) == False:
-                            self.path.append(p)
-
-        s = []
-        for r in range(len(self.rTask)):
-            s.clear()
-            if self.rTask[r] == 0:
-                s.append(self.tasksIndex[r])
-                path(self, s, r)
-
-        if self.config.debug == True:
-            self.printPath()
-
     def findChildByMatrix(self, id):
         """查找指定节点的所有直接子节点
 
@@ -289,14 +291,6 @@ class nodeAdjMatrix(nodeAdjBase):
             id:     任务Id
         """
         return self.tasks.findTask(id)
-
-    def __isPath(self, path):
-        """是否为一个任务路径
-        """
-        for p in self.path:
-            if path in p:
-                return True
-        return False
 
     def getNodeNum(self):
         """节点数量

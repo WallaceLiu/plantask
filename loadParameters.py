@@ -18,18 +18,21 @@ class loadParameters(base):
 
     def __init__(self, g):
         self.__graph = g
-        self.__path = self.__createFile()
+        self.path = self.__getParamsFile()
         self.__load()
 
     def __load(self):
+        """
+        1，初始化g.lastOccurTime
+        """
         try:
-            if self.__path == None:
+            if self.path == None:
                 raise NameError
         except NameError:
-            print('Conf File is None')
+            print('Conf Params File is None')
 
-        print('--Stage Load Paramter...')
-        DOMTree = xml.dom.minidom.parse(self.__path)
+        print('--Stage: loadParameters.__load...')
+        DOMTree = xml.dom.minidom.parse(self.path)
         es = DOMTree.getElementsByTagName("task")
 
         for e in es:
@@ -38,13 +41,11 @@ class loadParameters(base):
         if self.config.debug == True:
             self.__printer()
 
-        print('--Load Paramter Complete.')
+        print('--loadParameters.__load End.')
 
     def __setParamter(self, e):
         id = None
-        bDt = None
-        eDt = None
-        c = None
+        bDt, eDt, c = None, None, None
 
         if e.hasAttribute('id'):
             id = e.getAttribute('id')
@@ -57,7 +58,7 @@ class loadParameters(base):
 
         try:
             if self.config.debug == True:
-                print('\t-Find...Task <' + id + '>')
+                print('\t-loadParameters.__setParamter Find Task <' + id + '>')
 
             t = self.__graph.findRootTask(id)
             if t == None:
@@ -74,9 +75,10 @@ class loadParameters(base):
                 self.__graph.setLastOccurTime(t)
 
         except NameError:
-            print('-Task <' + id + '> No Found, is None')
+            print('\t-loadParameters.__setParamter Task <' + id +
+                  '> No Found.')
 
-    def __createFile(self):
+    def __getParamsFile(self):
         if self.__graph == None:
             return None
 

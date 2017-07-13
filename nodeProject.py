@@ -29,7 +29,6 @@ class nodeProject(base):
         """添加
         """
         self.__optional.add(pro)
-        
-        
+
     def toString(self):
         pass

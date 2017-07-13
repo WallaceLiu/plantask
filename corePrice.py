@@ -12,7 +12,7 @@ class corePrice(corePriceBase):
     def __init__(self, cm, g):
         corePriceBase.__init__(self, cm, g)
 
-        print('-corePrice...')
+        print('--corePrice...')
         print('\t-Parameters Ready...')
         self.printParameters()
 

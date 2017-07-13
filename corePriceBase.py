@@ -4,19 +4,17 @@ Created on Fri Jun 30 11:43:31 2017
 
 @author: liuning11
 """
-from base import base
+from coreBase import coreBase
 import datetimeUtil
 from nodeProjectz import nodeProjectz
 import re
 from nodeProject import nodeProject
 
 
-class corePriceBase(base):
+class corePriceBase(coreBase):
 
     __regx = ':\d+'
     __minmax = None
-    __steps = None
-    __period = None
     __stepNum = []
     __originalPath = []
     __path = []
@@ -27,18 +25,16 @@ class corePriceBase(base):
 
     def __init__(self, cm, g):
         self.__minmax = cm.estimate.minmax
-        self.__steps = cm.estimate.steps
-        self.__period = cm.estimate.period
         self.__originalPath = g.path
         self.__path = cm.path
         self.__modelGraph = cm.estimate.modelGraph
 
-        self.__initStepNum(self.__steps, self.__period)
-        self.__initTimeSeq(self.__steps, self.__minmax)
+        self.__initStepNum(self.config.timeStep, self.config.period)
+        self.__initTimeSeq(self.config.timeStep, self.__minmax)
 
-        self.__priceMatrix = self.initMatrix2(0, len(self.__timeSeq[0]), 4)
+        self.__priceMatrix = self.initMatrix2(0, len(self.__timeSeq), 4)
 
-        self.__createProjects(self.__path, self.__modelGraph[0].tasks)
+        self.__createProjects(self.__path, self.__modelGraph.tasks)
 
     def price():
         """代价计算
@@ -73,9 +69,9 @@ class corePriceBase(base):
             (datetimeUtil.timestamp_datetime(self.__minmax[0]),
              datetimeUtil.timestamp_datetime(self.__minmax[1]))))
         print('\t\t-coreNewAdjMatrix.estimate.steps:')
-        print(self.__steps)
+        print(self.config.timeStep)
         print('\t\t-coreNewAdjMatrix.estimate.period:')
-        print(self.__period)
+        print(self.config.period)
         print('\t\t-corePrice.stepNum:')
         print(self.__stepNum)
         print('\t\t-coreNewAdjMatrix.path:')
@@ -87,7 +83,7 @@ class corePriceBase(base):
         #print(self.__originalPath)
         self.printProjects()
 
-    def __initStepNum(self, steps, period):
+    def __initStepNum(self, step, period):
         """初始化时间间隔数量
                 
             按开始时间排序
@@ -100,14 +96,13 @@ class corePriceBase(base):
         异常:
                 
         """
-        for step in steps:
-            self.__stepNum.append(int(period * 3600 / step) + 1)
+        self.__stepNum.append(int(period * 3600 / step) + 1)
 
         if self.config.debug == True:
             print('\t-corePrice.__initStepNum:')
             print(self.__stepNum)
 
-    def __initTimeSeq(self, steps, minmax):
+    def __initTimeSeq(self, step, minmax):
         """创建时间序列矩阵
             
             按开始时间排序
@@ -162,12 +157,11 @@ class corePriceBase(base):
                 b = e + 1
             return v
 
-        for s in self.__steps:
-            self.__timeSeq.append(createTimeSeqVector(self, minmax, s))
+        self.__timeSeq.append(createTimeSeqVector(self, minmax, step))
 
         if self.config.debug == True:
             print('\t-Time Seq Step:')
-            print(steps)
+            print(step)
             self.__printTimeSeq(True)
 
     def creatPriceMatrix(self):
@@ -214,7 +208,6 @@ class corePriceBase(base):
                     l.append(c)
 
             print(l)
-            
-            
+
     def printProjects(self):
         print(self.__projects)

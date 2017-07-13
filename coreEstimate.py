@@ -5,11 +5,12 @@ Created on Tue Jun 27 09:23:23 2017
 @author: liuning11
 """
 import datetimeUtil
-from base import base
+from coreBase import coreBase
 import random
+from nodeAdjMatrix import nodeAdjMatrix
 
 
-class coreEstimate(base):
+class coreEstimate(coreBase):
     """评估阶段
     
     包括，
@@ -27,11 +28,9 @@ class coreEstimate(base):
 
     """
 
-    steps = [600]
-    period = 1
     minmax = None
+    modelGraph = nodeAdjMatrix()
     plans = []
-    modelGraph = []
 
     def __init__(self, g):
         """构造函数
@@ -47,6 +46,120 @@ class coreEstimate(base):
         self.__estimate(g)
 
         self.__createModelGraph(g, self.minmax)
+
+    def __estimate(self, g):
+
+        print('--Stage: CoreEstimate.__estimate...')
+
+        self.minmax = self.__getMinMax(g.lastOccurTime)
+
+        self.__computePlan(g)
+
+        print('--CoreEstimate.__estimate End.')
+
+    def __computePlan(self, g):
+        """设置所有任务的最晚时间
+        """
+
+        def init(self, g):
+            """初始化评估
+            """
+            for i in range(g.nodenum):
+                self.plans.append([])
+
+        def compute(self, r, c, m, plan, g):
+            """计算所有任务的最晚时间
+    
+            参数:
+                r:      节点索引
+                c:      节点
+                m:      邻接矩阵
+                plan:   评估时间
+                    
+            返回:
+        
+            异常:
+                
+            """
+            for i in range(g.nodenum):
+                if m[i][r] > 0:
+                    t = g.findRootTask(g.tasksIndex[i])
+
+                    self.__deal(t, c.bDateTime - t.consume - 1,
+                                c.bDateTime - 1, plan[i])
+
+                    compute(self, i, t, m, plan, g)
+
+        init(self, g)
+
+        for i in range(g.nodenum):
+            if g.tTask[i] == 0:
+                c = g.findRootTask(g.tasksIndex[i])
+                if c.bDateTime != None:
+                    self.__deal(c, c.bDateTime, c.bDateTime + c.consume,
+                                self.plans[i])
+
+                    compute(self, i, c, g.map, self.plans, g)
+
+        if self.config.debug == True:
+            self.__printPlan(True)
+
+    def __deal(self, t, bDt, eDt, pl):
+        """计算任务最晚时间
+
+        参数:
+            t:      任务
+            bDt:    开始时间
+            eDt:    结束时间
+            pl:     最晚时间
+            
+        返回:
+    
+        异常:
+        """
+
+        def setTask(self, t, bDt, eDt):
+            if t.bDateTime == None:
+                t.bDateTime = bDt
+                t.eDateTime = eDt
+            else:
+                if t.bDateTime < bDt:
+                    t.bDateTime = bDt
+                    t.eDateTime = eDt
+                    pl.clear()
+
+        def addPlan(self, pl, p):
+            if len(pl) <= 0:
+                pl.append(p)
+            else:
+                if pl[0].get('b') <= p.get('b'):
+                    pl.clear()
+                    pl.append(p)
+
+        setTask(self, t, bDt, eDt)
+
+        addPlan(self, pl, {
+            'no': t.no,
+            'id': t.id,
+            'b': t.bDateTime,
+            'e': t.eDateTime,
+            'c': t.consume,
+            't': t.type
+        })
+
+    def __getMinMax(self, lastOccurTime):
+        """获得任务中最早最晚时间
+        """
+        minmax = (lastOccurTime - self.config.period * 3600, lastOccurTime)
+
+        if self.config.debug == True:
+            print('\t-CoreEstimate.__getMinMax:', minmax)
+
+        return minmax
+
+    """
+    core 
+    """
 
     def __createModelGraph(self, g, minmax):
         """
@@ -171,7 +284,7 @@ class coreEstimate(base):
                         bDt = bDt - step
                         no = no + 1
 
-            if base.config.debug == True:
+            if coreBase.config.debug == True:
                 print('\t-CoreEstimate.__createModelGraph.ready:')
                 for a in arr:
                     print(a.toString(True))
@@ -232,126 +345,11 @@ class coreEstimate(base):
 
         print('--Stage: CoreEstimate.__createModelGraph...')
 
-        self.modelGraph.clear()
-
-        for step in self.steps:
-            self.modelGraph.append(create(self, g, step, minmax))
+        self.modelGraph = create(self, g, self.config.timeStep, minmax)
 
         print('--CoreEstimate.__createModelGraph End.')
 
         return self.modelGraph
-
-    def __estimate(self, g):
-
-        print('--Stage: CoreEstimate.__estimate...')
-
-        self.minmax = self.__getMinMax(g.lastOccurTime)
-
-        self.__computePlan(g)
-
-        #self.createTimeSeq(self.steps, minmax, self.graph)
-
-        print('--CoreEstimate.__estimate End.')
-
-    def __computePlan(self, g):
-        """计算所有任务的最晚时间
-        """
-
-        def init(self, g):
-            """初始化评估
-            """
-            for i in range(g.nodenum):
-                self.plans.append([])
-
-        def compute(self, r, c, m, plan, g):
-            """计算所有任务的最晚时间
-    
-            参数:
-                r:      节点索引
-                c:      节点
-                m:      邻接矩阵
-                plan:   评估时间
-                    
-            返回:
-        
-            异常:
-                
-            """
-            for i in range(g.nodenum):
-                if m[i][r] > 0:
-                    t = g.findRootTask(g.tasksIndex[i])
-
-                    self.__deal(t, c.bDateTime - t.consume - 1,
-                                c.bDateTime - 1, plan[i])
-
-                    compute(self, i, t, m, plan, g)
-
-        init(self, g)
-
-        for i in range(g.nodenum):
-            if g.tTask[i] == 0:
-                c = g.findRootTask(g.tasksIndex[i])
-                if c.bDateTime != None:
-                    self.__deal(c, c.bDateTime, c.bDateTime + c.consume,
-                                self.plans[i])
-
-                    compute(self, i, c, g.map, self.plans, g)
-
-        if self.config.debug == True:
-            self.__printPlan(True)
-
-    def __deal(self, t, bDt, eDt, pl):
-        """计算任务最晚时间
-
-        参数:
-            t:      任务
-            bDt:    开始时间
-            eDt:    结束时间
-            pl:     最晚时间
-            
-        返回:
-    
-        异常:
-        """
-
-        def setTask(self, t, bDt, eDt):
-            if t.bDateTime == None:
-                t.bDateTime = bDt
-                t.eDateTime = eDt
-            else:
-                if t.bDateTime < bDt:
-                    t.bDateTime = bDt
-                    t.eDateTime = eDt
-                    pl.clear()
-
-        def addPlan(self, pl, p):
-            if len(pl) <= 0:
-                pl.append(p)
-            else:
-                if pl[0].get('b') <= p.get('b'):
-                    pl.clear()
-                    pl.append(p)
-
-        setTask(self, t, bDt, eDt)
-
-        addPlan(self, pl, {
-            'no': t.no,
-            'id': t.id,
-            'b': t.bDateTime,
-            'e': t.eDateTime,
-            'c': t.consume,
-            't': t.type
-        })
-
-    def __getMinMax(self, lastOccurTime):
-        """获得任务中最早最晚时间
-        """
-        minmax = (lastOccurTime - self.period * 3600, lastOccurTime)
-
-        if self.config.debug == True:
-            print('\t-CoreEstimate.__getMinMax:', minmax)
-
-        return minmax
 
     def sortBDateTime(self, tasks):
         return sorted(tasks, key=lambda x: x.bDateTime)
@@ -370,6 +368,10 @@ class coreEstimate(base):
         """
         seed = random.randint(0, 100)
         return int(step * (1 + seed / 100))
+
+    """
+    打印
+    """
 
     def __printPlan(self, isReadable):
         """打印评估时间

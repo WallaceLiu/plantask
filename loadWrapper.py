@@ -9,10 +9,16 @@ from loadParameters import loadParameters
 
 
 class loadWrapper:
-    def __init__(self, path='conf/conf.xml'):
-        self.__path = path
+
+    configPath = None
+    configParamsPath = None
+
+    def __init__(self, path):
+        self.configPath = path
 
     def load(self):
-        l = loadConf(self.__path)
-        loadParameters(l.graph)
-        return l.graph
+        lc = loadConf(self.configPath)
+        lp = loadParameters(lc.graph)
+
+        self.configParamsPath = lp.path
+        return lc.graph
