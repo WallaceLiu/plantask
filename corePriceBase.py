@@ -50,12 +50,14 @@ class corePriceBase(coreBase):
 
         for i in range(len(opaths)):
             print('i='+str(i))
-            for t in filter(lambda x: x[1] == opaths[i], pMatrix):
-                no = no + 1
-                tp = nodeProject(no, t[0], t[1])
-                print('\t-Add (%s) to (%s): ' %
-                      (tp.toString(), cur.toString()))
-                cur.add(tp)
+            #ts =filter(lambda x: x[1] == opaths[i], pMatrix)
+            for t in pMatrix:
+                if t[1]==opaths[i]:
+                    no = no + 1
+                    tp = nodeProject(no, t[0], t[1])
+                    print('\t-Add (%s) to (%s): ' %
+                          (tp.toString(), cur.toString()))
+                    cur.add(tp)
 
             if i < len(opaths) - 1:
                 no = no + 1
