@@ -79,7 +79,23 @@ class nodeTaskz:
     打印
     '''
 
-    # 输出
+    def printerBrief(self):
+        def p(self, p, i):
+            s = ''
+            for t in p.childs.tasks:
+                for j in range(i):
+                    s += '\t'
+                print(s + t.toStringBrief())
+                s = ''
+                if len(t.childs.tasks) > 0:
+                    p(self, t, i + 1)
+
+        i = 0
+        for t in self.tasks:
+            print(t.toStringBrief())
+            if len(t.childs.tasks) > 0:
+                p(self, t, i + 1)
+
     def printer(self):
         def p(self, p, i):
             s = ''

@@ -117,6 +117,13 @@ class nodeTask(base):
         t.isKey = self.isKey
         return t
 
+    def toStringBrief(self):
+        s = '<' + str(self.no) + '>'
+        s += '\t' + str(self.id)
+        s += '\t' + str(self.realId)
+        s += '\t' + (self.name if len(self.name) > 0 else '-')
+        return s
+        
     def toString(self, bl):
         s = '<' + str(self.no) + '>'
         s += '\t' + str(self.id)
