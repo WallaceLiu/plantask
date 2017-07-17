@@ -22,23 +22,22 @@ class coreProject(coreBase):
         """
 
         def add(self, pMatrix, p, curTask):
-            #ts = filter(lambda x: x[1] == p, pMatrix)
-            #cur.optional.clear()  # import
-            #print(p)
-            for t in pMatrix:
+            ts = filter(lambda x: x[1] == p, pMatrix)
+            for t in ts:
                 if t[1] == p:
                     self.__no = self.__no + 1
                     tp = nodeProject(self.__no, t[0], t[1])
                     curTask.add(tp)
-                    print('\t-Add (%d)(%s) to (%d)(%s)' %
-                          (id(tp), tp.toString(), id(curTask),
-                           curTask.toString()))
+
+                    if self.config.debug == True and self.config.detail == True:
+                        print('\t-Add (%d)(%s) to (%d)(%s)' %
+                              (id(tp), tp.toString(), id(curTask),
+                               curTask.toString()))
 
         pMatrix = self.__transform(paths)
         self.__no = 0
         cur = nodeProject()
         root = cur
-        print('??????????????????????????????')
         print('\t--Stage: Project...')
         for i in range(len(oPaths)):
 

@@ -72,7 +72,7 @@ class coreNewAdjMatrix(coreNewAdj):
 
                         arr.append(nt)
 
-                        if self.config.debug == True:
+                        if self.config.debug == True and self.config.detail == True:
                             print('\t\t\t-Add New:%s' % nt.toStringRT())
 
                         bDt = bDt - step
