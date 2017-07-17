@@ -50,7 +50,7 @@ class coreProject(coreBase):
                 cur.cproject = proj
                 cur = proj
 
-        print('--Project End.')
+        print('\t--Project End.')
         return root
 
     def __transform(self, paths):

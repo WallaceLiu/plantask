@@ -417,5 +417,3 @@ class nodeAdjMatrix(nodeAdjBase):
         #                self.map[x][i] = 0
         #                self.edgenum = self.edgenum - 1
         pass
-
-

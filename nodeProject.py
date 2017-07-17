@@ -13,12 +13,6 @@ class nodeProject(base):
     """邻接矩阵
     """
 
-    no = None
-    id = None
-    realId = None
-    optional = nodeProjectz()
-    cproject = None
-
     def __init__(self, no=0, id='0', realId='0', cproject=None):
         """构造函数
         """
@@ -26,6 +20,7 @@ class nodeProject(base):
         self.id = id
         self.realId = realId
         self.cproject = cproject
+        self.optional = nodeProjectz()
 
     def add(self, pro):
         """添加

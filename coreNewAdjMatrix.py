@@ -55,7 +55,7 @@ class coreNewAdjMatrix(coreNewAdj):
                     bDt = t.bDateTime - step
                     win = maxParentConsume(self, g.map, g.nodenum, i)
 
-                    if self.config.debug == True:
+                    if self.config.debug == True and self.config.detail == True:
                         print(
                             '\t\t-ready:%s      win=%s      end=%s    step=%s'
                             %

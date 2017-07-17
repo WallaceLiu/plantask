@@ -106,4 +106,3 @@ class nodeTaskz:
             print(__toString(self, type, t))
             if len(t.childs.tasks) > 0:
                 p(self, t, i + 1, type)
-

@@ -58,7 +58,7 @@ class loadParameters(base):
             c = int(e.getAttribute('consume'))
 
         try:
-            if self.config.debug == True:
+            if self.config.debug == True and self.config.detail == True:
                 print('\t-loadParameters.__setParamter Find Task <' + id + '>')
 
             t = self.__graph.findRootTask(id)
