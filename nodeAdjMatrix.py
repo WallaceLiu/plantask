@@ -7,7 +7,7 @@ Created on Wed Jun 21 09:15:48 2017
 
 from nodeTaskz import nodeTaskz
 from nodeAdjBase import nodeAdjBase
-import datetimeUtil
+from stageType import stageType
 
 
 class nodeAdjMatrix(nodeAdjBase):
@@ -107,10 +107,10 @@ class nodeAdjMatrix(nodeAdjBase):
         create(self)
         #after(self)
 
+        print('--Stage: nodeAdjMatrix.createMap...')
         if self.config.debug == True:
-            print('--Stage: TaskAdjMatrix.createMap...')
             self.printGraph()
-            print('--TaskAdjMatrix.createMap End.')
+        print('--nodeAdjMatrix.createMap End.')
 
     def searchPath(self):
         """查找邻接矩阵所有路径
@@ -144,8 +144,10 @@ class nodeAdjMatrix(nodeAdjBase):
                 s.append(self.tasksIndex[r])
                 path(self, s, r)
 
+        print('--Stage: nodeAdjMatrix.searchPath...')
         if self.config.debug == True:
             self.printPath()
+        print('--nodeAdjMatrix.searchPath End.')
 
     def isRootTask(self, id):
         """是否为根节点
@@ -362,37 +364,15 @@ class nodeAdjMatrix(nodeAdjBase):
 
     # 输出
     def printGraph(self):
-        self.printSummary()
-        self.printTasks()
+        print("\t-Task Number:<%u>, Edge Number:<%u>" %
+              (self.nodenum, self.edgenum))
         self.printMap()
 
-    # 打印概述信息
-    def printSummary(self):
-        print("\t-Conf File: <%s>, Task Number:<%u>, Edge Number:<%u>" %
-              (self.file, self.nodenum, self.edgenum))
-
-    def printLastOccurTime(self):
-        print('\t-Last Time When Task Occur:<%s>' %
-              (datetimeUtil.timestamp_datetime(self.lastOccurTime)))
-
-    # 打印任务信息    
-    def printTasks(self):
-        self.printTasksIndex()
-        print('\t-All Tasks: ')
-        self.tasks.printer()
-
-    def printTasksIndex(self):
-        """打印任务ID
-        """
-        print('\t-Tasks Index: ')
+    def printTasks(self, type):
+        print('\t-Tasks Id Index: ')
         print(self.tasksIndex)
-
-    def printRootTasks(self):
-        """打印所有ROOT任务
-        """
-        print('\t-Root Task: ')
-        for t in self.tasks.tasks:
-            print(t.toString(True))
+        print('\t-All Tasks: ')
+        self.tasks.printer(type)
 
     def printMap(self):
         """打印邻接矩阵信息
@@ -439,27 +419,3 @@ class nodeAdjMatrix(nodeAdjBase):
         pass
 
 
-#    def addTasksIndex(self, taskId):
-#        """添加任务ID 
-#
-#        参数:
-#            taskId:  任务Id
-#        返回:
-#        异常:
-#        """
-#
-#        def isExist(self, taskId):
-#            """判断任务Id是否已经存在
-#    
-#            参数:
-#                taskId:  任务Id
-#            返回:
-#            异常:
-#            """
-#            for id in self.tasksIndex:
-#                if id == taskId:
-#                    return True
-#            return False
-#
-#        if isExist(self, taskId) == False:
-#            self.tasksIndex.append(taskId)

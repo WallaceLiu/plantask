@@ -11,7 +11,6 @@ class corePrice(corePriceBase):
     def __init__(self, cm, g):
         corePriceBase.__init__(self, cm, g)
 
-        print('--corePrice...')
         print('\t-Parameters Ready...')
         self.printParameters()
 
@@ -24,7 +23,6 @@ class corePrice(corePriceBase):
         """
         print('--Stage: corePrice.model...')
         print('--corePrice.model End.')
-
         pass
 
     def price(self, g, path, avgTask):
@@ -39,5 +37,4 @@ class corePrice(corePriceBase):
         返回:
         异常:
         """
-
         pass

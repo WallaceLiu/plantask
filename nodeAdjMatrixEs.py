@@ -8,7 +8,7 @@ import datetimeUtil
 from coreBase import coreBase
 
 
-class coreEstimate(coreBase):
+class nodeAdjMatrixEs(coreBase):
     """评估阶段
     
     包括，
@@ -78,11 +78,11 @@ class coreEstimate(coreBase):
 
                     compute(self, i, c, g.map, self.__plans, g)
 
-        print('--Stage: CoreEstimate.__estimate...')
+        print('--Stage: nodeAdjMatrixEs.__estimate...')
         if self.config.debug == True:
-            self.__printPlan(True)
+            self.__printer(True)
 
-        print('--CoreEstimate.__estimate End.')
+        print('--nodeAdjMatrixEs.__estimate End.')
 
     def __deal(self, t, bDt, eDt, pl):
         """计算任务最晚时间
@@ -131,10 +131,9 @@ class coreEstimate(coreBase):
     打印
     """
 
-    def __printPlan(self, isReadable):
+    def __printer(self, isReadable):
         """打印评估时间
         """
-        print('\t\t-coreEstimate.__printPlan:')
         for r in self.__plans:
             l = []
             for c in r:

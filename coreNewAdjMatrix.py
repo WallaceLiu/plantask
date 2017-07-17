@@ -23,6 +23,8 @@ class coreNewAdjMatrix(coreNewAdj):
     def __init__(self, g):
         coreNewAdj.__init__(self, g)
 
+        print('--Stage: coreNewAdjMatrix...')
+
         self.minmax = self.__getMinMax(self.graph.lastOccurTime)
 
         self.__create(g, self.minmax)
@@ -30,6 +32,8 @@ class coreNewAdjMatrix(coreNewAdj):
         self.__search(self.modelGraph)
 
         self.__cut(self.modelGraph)
+
+        print('--Stage: coreNewAdjMatrix End.')
 
     def __create(self, g, minmax):
         """添加新的可能的任务节点，并创建邻接矩阵
@@ -69,7 +73,7 @@ class coreNewAdjMatrix(coreNewAdj):
                         arr.append(nt)
 
                         if self.config.debug == True:
-                            print('\t\t\t-Add New:%s' % nt.toStringTime())
+                            print('\t\t\t-Add New:%s' % nt.toStringRT())
 
                         bDt = bDt - step
                         no = no + 1
@@ -77,7 +81,7 @@ class coreNewAdjMatrix(coreNewAdj):
             if self.config.debug == True:
                 print('\t-coreNewAdjMatrix.__create.ready:')
                 for a in arr:
-                    print(a.toString(True))
+                    print(a.toStringLP())
 
             return arr
 
@@ -130,9 +134,9 @@ class coreNewAdjMatrix(coreNewAdj):
             ng.createMap()
             return ng
 
-        print('--Stage: coreNewAdjMatrix.__create...')
+        print('\t-coreNewAdjMatrix.__create...')
         self.modelGraph = create(self, g, self.config.timeStep, minmax)
-        print('--coreNewAdjMatrix.__create End.')
+        print('\t-coreNewAdjMatrix.__create End.')
 
     def __moving(self, step):
         """随机时间
@@ -148,9 +152,6 @@ class coreNewAdjMatrix(coreNewAdj):
         """获得任务中最早最晚时间
         """
         minmax = (lastOccurTime - self.config.period * 3600, lastOccurTime)
-
-        if self.config.debug == True:
-            print('\t-CoreEstimate.__getMinMax:', minmax)
 
         return minmax
 
@@ -216,6 +217,3 @@ class coreNewAdjMatrix(coreNewAdj):
     """
     打印
     """
-
-    def printModelGraph(self):
-        print(self.modelGraph.printTasks())

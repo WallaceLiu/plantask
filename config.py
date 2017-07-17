@@ -9,6 +9,8 @@ Created on Tue Jul  4 10:00:07 2017
 class config:
 
     debug = True
+    detail = True
+
     configPath = ''
 
     timeStep = 600

@@ -5,7 +5,7 @@ Created on Sun Jul  2 10:38:47 2017
 @author: liuning11
 """
 from loadWrapper import loadWrapper
-from coreEstimate import coreEstimate
+from nodeAdjMatrixEs import nodeAdjMatrixEs
 from coreNewAdjMatrix import coreNewAdjMatrix
 from corePrice import corePrice
 
@@ -25,6 +25,6 @@ class coreWrapper:
         g.createMap()
         g.searchPath()
 
-        ce = coreEstimate(g)
+        ce = nodeAdjMatrixEs(g)
         cm = coreNewAdjMatrix(g)
         p = corePrice(cm, g)

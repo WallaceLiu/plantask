@@ -117,53 +117,62 @@ class nodeTask(base):
         t.isKey = self.isKey
         return t
 
+    """
+    打印
+    """
+
     def toStringBrief(self):
+        """
+        示例：<1>	10	10	a
+        """
         s = '<' + str(self.no) + '>'
         s += '\t' + str(self.id)
         s += '\t' + str(self.realId)
         s += '\t' + (self.name if len(self.name) > 0 else '-')
+
         return s
-        
-    def toString(self, bl):
+
+    def toStringDesc(self):
+        """
+        示例：<1>	10	10	a
+        """
         s = '<' + str(self.no) + '>'
         s += '\t' + str(self.id)
         s += '\t' + str(self.realId)
         s += '\t' + (self.name if len(self.name) > 0 else '-')
-        s += '\n\t\t' + '任务类型(' + (str(self.type)
-                                   if str(self.type) != None else '-') + ')'
-        s += '\n\t\t' + '关键任务(' + str(self.isKey) + ')'
-        if bl == True:
-            s += '\n\t\t' + '任务描述(' + (self.desc
-                                       if len(self.desc) > 0 else '-') + ')'
-            s += '\n\t\t' + '运行规则(' + (
-                self.executeRule
-                if len(self.executeRule) > 0 else '-') + ',' + (
-                    time.strftime('%Y-%m-%d %H:%M:%S',
-                                  time.localtime(self.nextExecuteDateTime))
-                    if self.nextExecuteDateTime != None else '-') + ')'
-            s += '\t' + '超时重试(' + str(self.timeout) + ',' + str(
-                self.retryFrequency) + ',' + str(self.retryInterval) + ')'
-            s += '\n\t\t' + '运行时间(' + (
+        s += '\t' + self.desc
+
+        return s
+
+    def toStringTy(self):
+        s = '\t' + '任务类型(' + (str(self.type)
+                              if str(self.type) != None else '-') + ')'
+        s += '\t' + '关键任务(' + str(self.isKey) + ')'
+        return s
+
+    def toStringRR(self):
+        """
+        打印运行规则Run Rule
+        """
+        s = '\t' + '运行规则(' + (
+            self.executeRule if len(self.executeRule) > 0 else '-') + ',' + (
                 time.strftime('%Y-%m-%d %H:%M:%S',
-                              time.localtime(self.bDateTime))
-                if self.bDateTime != None else '-') + ',' + (
-                    time.strftime('%Y-%m-%d %H:%M:%S',
-                                  time.localtime(self.eDateTime))
-                    if self.eDateTime != None else '-'
-                ) + ',' + str(self.consume) + ')'
-            s += '\t' + '运行阈值(' + (self.bDateTimeThreshold
-                                   if len(self.bDateTimeThreshold) > 0 else '-'
-                                   ) + ',' + (self.eDateTimeThreshold
-                                              if len(self.eDateTimeThreshold) >
-                                              0 else '-') + ')'
+                              time.localtime(self.nextExecuteDateTime))
+                if self.nextExecuteDateTime != None else '-') + ')'
+        s += '\t' + '超时重试(' + str(self.timeout) + ',' + str(
+            self.retryFrequency) + ',' + str(self.retryInterval) + ')'
+        s += '\t' + '运行阈值(' + (self.bDateTimeThreshold
+                               if len(self.bDateTimeThreshold) > 0 else '-'
+                               ) + ',' + (self.eDateTimeThreshold
+                                          if len(self.eDateTimeThreshold) > 0
+                                          else '-') + ')'
         return s
 
-    def toStringTime(self):
-        s = '<' + str(self.no) + '>'
-        s += '\t' + str(self.id)
-        s += '\t' + str(self.realId)
-        s += '\t' + (self.name if len(self.name) > 0 else '-')
-        s += '\n\t\t' + '运行时间(' + (
+    def toStringRT(self):
+        """
+        打印运行时间Run Time
+        """
+        s = '\t' + '运行时间(' + (
             time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(self.bDateTime))
             if self.bDateTime != None else '-'
         ) + ',' + (
@@ -171,20 +180,27 @@ class nodeTask(base):
             if self.eDateTime != None else '-') + ',' + str(self.consume) + ')'
         return s
 
-    def toStringParams(self):
-        s = '<' + str(self.no) + '>'
-        s += '\t' + str(self.id)
-        s += '\t' + str(self.realId)
-        s += '\t' + (self.name if len(self.name) > 0 else '-')
-        s += '\n\t\t' + '运行时间(' + (
-            time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(self.bDateTime))
-            if self.bDateTime != None else '-'
-        ) + ',' + (
-            time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(self.eDateTime))
-            if self.eDateTime != None else '-') + ',' + str(self.consume) + ')'
+    def toStringLC(self):
+        """LoadConf 阶段加载的信息
+        """
+        s = self.toStringBrief()
+        s += self.toStringTy()
+        s += self.toStringRR()
 
         return s
 
-    def printer(self):
-        print(self.toString())
-        print('\t' + self.childs.printer())
+    def toStringLP(self):
+        """LoadParameter 阶段加载的信息
+        """
+        s = self.toStringBrief()
+        s += self.toStringRT()
+
+        return s
+
+    def toString(self):
+        s = self.toStringDesc()
+        s += self.toStringTy()
+        s += self.toStringRR()
+        s += self.toStringRT()
+
+        return s

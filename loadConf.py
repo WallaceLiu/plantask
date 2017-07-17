@@ -10,6 +10,7 @@ from nodeTask import nodeTask
 from nodeTaskType import nodeTaskType
 import time
 from base import base
+from stageType import stageType
 
 
 class loadConf(base):
@@ -113,4 +114,5 @@ class loadConf(base):
         return t
 
     def __printer(self):
-        self.graph.printTasksIndex()
+        print("\t-Conf File: <%s>" % self.__path)
+        self.graph.printTasks(stageType.LC)

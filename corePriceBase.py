@@ -6,14 +6,14 @@ Created on Fri Jun 30 11:43:31 2017
 """
 from coreBase import coreBase
 import datetimeUtil
-from nodeProjectz import nodeProjectz
-import re
 from nodeProject import nodeProject
+from coreProject import coreProject
 
 
 class corePriceBase(coreBase):
 
     __regx = ':\d+'
+    __no = 0
     __minmax = None
     __stepNum = None
     __originalPath = []
@@ -21,7 +21,7 @@ class corePriceBase(coreBase):
     __modelGraph = []
     __timeSeq = []
     __priceMatrix = []
-    __projects = nodeProject()
+    __project = nodeProject()
 
     def __init__(self, cm, g):
         self.__minmax = cm.minmax
@@ -29,71 +29,25 @@ class corePriceBase(coreBase):
         self.__path = cm.path
         self.__modelGraph = cm.modelGraph
 
+        print('--Stage: corePrice...')
+
         self.__initStepNum(self.config.timeStep, self.config.period)
         self.__initTimeSeq(self.config.timeStep, self.__minmax)
 
         self.__priceMatrix = self.initMatrix2(0, self.__stepNum, 4)
 
-        self.__createProjects(self.__originalPath, self.__path)
+        self.__createProject(self.__originalPath, self.__path)
 
     def price():
         """代价计算
         """
         pass
 
-    def __createProjects(self, opaths, paths):
-        pMatrix = self.__transform(paths)
-
-        no = 0
-        cur = self.__projects
-        print('????????????????????????')
-
-        for i in range(len(opaths)):
-            print('i='+str(i))
-            #ts =filter(lambda x: x[1] == opaths[i], pMatrix)
-            for t in pMatrix:
-                if t[1]==opaths[i]:
-                    no = no + 1
-                    tp = nodeProject(no, t[0], t[1])
-                    print('\t-Add (%s) to (%s): ' %
-                          (tp.toString(), cur.toString()))
-                    cur.add(tp)
-
-            if i < len(opaths) - 1:
-                no = no + 1
-                cur.cproject = nodeProject(no, str(no), str(no))
-                cur = cur.cproject
-#            else:
-#                cur.cproject = None
-                #print('add: ' + cur.toString())
-
-    def __transform(self, paths):
-        p = self.initMatrix2('', len(paths), 2)
-        for i in range(len(p)):
-            p[i][0] = paths[i]
-            p[i][1] = re.sub(self.__regx, '', paths[i], count=0)
-
-        return p
-
-    def printParameters(self):
-        print('\t\t-Min And Max:')
-        print('(%s, %s)' % (
-            (datetimeUtil.timestamp_datetime(self.__minmax[0]),
-             datetimeUtil.timestamp_datetime(self.__minmax[1]))))
-        print('\t\t-Time Step: %d' % (self.config.timeStep))
-        print('\t\t-Period: %d' % (self.config.period))
-        print('\t\t-Step Num: %d' % (self.__stepNum))
-        print('\t\t-Original Path:')
-        print(self.__originalPath)
-        print('\t\t-Path:')
-        print(self.__path)
-        self.__printTimeSeq(True)
-        print('\t\t-Price Matrix:')
-        print(self.__priceMatrix)
-        #print('\t\t-coreNewAdjMatrix.estimate.modelGraph:')
-        #print(self.__modelGraph.printGraph())
-        print('\t\t-projects:')
-        self.__projects.printer()
+    def __createProject(self, opaths, paths):
+        """创建方案结构
+        """
+        cp = coreProject()
+        self.__project = cp.create(self.__originalPath, self.__path)
 
     def __initStepNum(self, step, period):
         """初始化时间间隔数量
@@ -101,8 +55,7 @@ class corePriceBase(coreBase):
         self.__stepNum = int(period * 3600 / step) + 1
 
         if self.config.debug == True:
-            print('\t-corePrice.__initStepNum:')
-            print(self.__stepNum)
+            print('\t-Step Number: %u' % self.__stepNum)
 
     def __initTimeSeq(self, step, minmax):
         """创建时间序列矩阵
@@ -162,9 +115,28 @@ class corePriceBase(coreBase):
         self.__timeSeq.append(createTimeSeqVector(self, minmax, step))
 
         if self.config.debug == True:
-            print('\t-Time Seq Step:')
-            print(step)
+            print('\t-Time Seq Step:%u' % step)
             self.__printTimeSeq(True)
+
+    def printParameters(self):
+        print('\t\t-Min And Max:')
+        print('(%s, %s)' % (
+            (datetimeUtil.timestamp_datetime(self.__minmax[0]),
+             datetimeUtil.timestamp_datetime(self.__minmax[1]))))
+        print('\t\t-Time Step: %d' % (self.config.timeStep))
+        print('\t\t-Period: %d' % (self.config.period))
+        print('\t\t-Step Num: %d' % (self.__stepNum))
+        print('\t\t-Original Path:')
+        print(self.__originalPath)
+        print('\t\t-Path:')
+        print(self.__path)
+        self.__printTimeSeq(True)
+        print('\t\t-Price Matrix:')
+        print(self.__priceMatrix)
+        #print('\t\t-coreNewAdjMatrix.estimate.modelGraph:')
+        #print(self.__modelGraph.printGraph())
+        print('\t\t-projects:')
+        self.__project.printer()
 
     def __printTimeSeq(self, isReadable):
         """打印时间矩阵

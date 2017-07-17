@@ -8,6 +8,7 @@ Created on Sun Jun 25 11:25:05 2017
 import xml.dom.minidom
 import time
 from base import base
+import datetimeUtil
 
 
 class loadParameters(base):
@@ -87,7 +88,9 @@ class loadParameters(base):
         return '.'.join(p)
 
     def __printer(self):
+        print("\t-Parameter File: <%s>" % self.path)
         print('\t-Root Task: ')
         for t in self.__graph.tasks.tasks:
-            print(t.toStringParams())
-        self.__graph.printLastOccurTime()
+            print(t.toStringLP())
+        print('\t-Last Time When Task Occur:<%s>' %
+              (datetimeUtil.timestamp_datetime(self.__graph.lastOccurTime)))

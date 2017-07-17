@@ -19,25 +19,10 @@ class nodeProjectz(base):
     def add(self, pro):
         self.projects.append(pro)
 
+    def clear(self):
+        self.projects.clear()
+
     # 输出
     def printer(self, tab):
-        print(str(len(self.projects)))
         for p in self.projects:
             print(tab + p.toString())
-
-
-#        def p(self, p, i):
-#            s = ''
-#            for t in p.childs.tasks:
-#                for j in range(i):
-#                    s += '\t'
-#                print(s + t.toString(False))
-#                s = ''
-#                if len(t.childs.tasks) > 0:
-#                    p(self, t, i + 1)
-#
-#        i = 0
-#        for t in self.tasks:
-#            print(t.toString(True))
-#            if len(t.childs.tasks) > 0:
-#                p(self, t, i + 1)

@@ -42,10 +42,6 @@ class nodeProject(base):
         cur = self
         no = 0
 
-        #        print('???????????????')
-        #        print(self.toString())
-        #        print(self.optional.printer('\t'))
-
         while cur != None:
             s = ''
             for i in range(no):
