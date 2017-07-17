@@ -22,7 +22,6 @@ class corePriceBase(coreBase):
     __timeSeq = []
     __priceMatrix = []
     __project = nodeProject()
-    __dim=4
 
     def __init__(self, cm, g):
         self.__minmax = cm.minmax
@@ -35,7 +34,7 @@ class corePriceBase(coreBase):
         self.__initStepNum(self.config.timeStep, self.config.period)
         self.__initTimeSeq(self.config.timeStep, self.__minmax)
 
-        self.__priceMatrix = self.initMatrix2(0, self.__stepNum, self.__dim)
+        self.__priceMatrix = self.initMatrix2(0, self.__stepNum, self.config.priceDim)
 
         self.__createProject(self.__originalPath, self.__path)
 

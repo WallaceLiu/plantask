@@ -15,6 +15,7 @@ class config:
 
     timeStep = 600
     period = 1
+    priceDim=4
 
     def __init__(self):
         pass
