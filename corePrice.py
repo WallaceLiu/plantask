@@ -15,7 +15,7 @@ class corePrice(corePriceBase):
         self.printParameters()
 
     def model(self, g):
-        """查找邻接矩阵所有路径
+        """
     
         参数:
         返回:
@@ -24,7 +24,25 @@ class corePrice(corePriceBase):
         print('--Stage: corePrice.model...')
         print('--corePrice.model End.')
         pass
-
+    
+    def project(self):
+        def proj(self, s,p,co):
+            for pro in p:
+                s.append(pro)
+                proj(self,s,p)  
+                if pro.cproject==None:
+                    co.append(s)
+                    s.clear()
+        
+        self.__projOptional.clear()
+        
+        s=[]
+        cur=self.__project
+        for pro in cur.optional:
+            s.append(pro)
+            if pro.cproject!=None:
+                proj(self,s,pro,self.__projOptional)
+    
     def price(self, g, path, avgTask):
         """目标函数
         

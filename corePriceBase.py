@@ -22,6 +22,7 @@ class corePriceBase(coreBase):
     __timeSeq = []
     __priceMatrix = []
     __project = nodeProject()
+    __projOptional=[]
 
     def __init__(self, cm, g):
         self.__minmax = cm.minmax
@@ -52,10 +53,9 @@ class corePriceBase(coreBase):
     def __initStepNum(self, step, period):
         """初始化时间间隔数量
         """
+        self.__stepNum=None
         self.__stepNum = int(period * 3600 / step) + 1
 
-        if self.config.debug == True:
-            print('\t-Step Number: %u' % self.__stepNum)
 
     def __initTimeSeq(self, step, minmax):
         """创建时间序列矩阵
@@ -112,11 +112,9 @@ class corePriceBase(coreBase):
                 b = e + 1
             return v
 
+        self.__timeSeq.clear()   
         self.__timeSeq.append(createTimeSeqVector(self, minmax, step))
 
-        if self.config.debug == True:
-            print('\t-Time Seq Step:%u' % step)
-            self.__printTimeSeq(True)
 
     def printParameters(self):
         print('\t\t-Min And Max:')

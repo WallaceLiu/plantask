@@ -10,7 +10,7 @@ from nodeProjectz import nodeProjectz
 
 
 class nodeProject(base):
-    """邻接矩阵
+    """
     """
 
     def __init__(self, no=0, id='0', realId='0', cproject=None):

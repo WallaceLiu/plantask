@@ -38,7 +38,7 @@ class coreProject(coreBase):
         self.__no = 0
         cur = nodeProject()
         root = cur
-        print('\t--Stage: Project...')
+
         for i in range(len(oPaths)):
 
             add(self, pMatrix, oPaths[i], cur)
@@ -48,7 +48,10 @@ class coreProject(coreBase):
                 proj = nodeProject(self.__no, str(self.__no), str(self.__no))
                 cur.cproject = proj
                 cur = proj
-
+                
+        print('\t--Stage: Project...')
+        if self.config.debug==True:
+            root.printer()
         print('\t--Project End.')
         return root
 
