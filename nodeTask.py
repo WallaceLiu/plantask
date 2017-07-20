@@ -122,8 +122,7 @@ class nodeTask(base):
     """
 
     def toStringBrief(self):
-        """
-        示例：<1>	10	10	a
+        """输出no，id，realid，name
         """
         s = '<' + str(self.no) + '>'
         s += '\t' + str(self.id)
@@ -133,8 +132,7 @@ class nodeTask(base):
         return s
 
     def toStringDesc(self):
-        """
-        示例：<1>	10	10	a
+        """输出no，id，realid，name，desc
         """
         s = '<' + str(self.no) + '>'
         s += '\t' + str(self.id)
@@ -145,14 +143,15 @@ class nodeTask(base):
         return s
 
     def toStringTy(self):
+        """输出type，iskey
+        """
         s = '\t' + '任务类型(' + (str(self.type)
                               if str(self.type) != None else '-') + ')'
         s += '\t' + '关键任务(' + str(self.isKey) + ')'
         return s
 
     def toStringRR(self):
-        """
-        打印运行规则Run Rule
+        """输出运行规则Run Rule
         """
         s = '\t' + '运行规则(' + (
             self.executeRule if len(self.executeRule) > 0 else '-') + ',' + (
@@ -169,8 +168,7 @@ class nodeTask(base):
         return s
 
     def toStringRT(self):
-        """
-        打印运行时间Run Time
+        """输出运行时间Run Time
         """
         s = '\t' + '运行时间(' + (
             time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(self.bDateTime))
@@ -181,7 +179,7 @@ class nodeTask(base):
         return s
 
     def toStringLC(self):
-        """LoadConf 阶段加载的信息
+        """输出LoadConf阶段加载的信息
         """
         s = self.toStringBrief()
         s += self.toStringTy()
@@ -190,7 +188,7 @@ class nodeTask(base):
         return s
 
     def toStringLP(self):
-        """LoadParameter 阶段加载的信息
+        """输出LoadParameter阶段加载的信息
         """
         s = self.toStringBrief()
         s += self.toStringRT()
