@@ -79,6 +79,7 @@ def lcsst(s1, s2):
 
 def rlcsst(s1, s2):
     """限制的最长公共子字符串
+    必须从头开始
     """
     m = [[0 for i in range(len(s2) + 1)] for j in range(len(s1) + 1)]
     mmax = 0  #最长匹配的长度  
@@ -97,8 +98,8 @@ def rlcsst(s1, s2):
     return s1[p - mmax:p], mmax
 
 
-if __name__ == '__main__':
-    #print(find_lcs('10->20->30', '10:12->20:14->40:17->50'))
-    #print(find_lcs_len('abcoisjf', 'axbaoeijf'))
-    print(rlcsst('10->20->30', '10:12->20:14->40:17->50'))
-    print(rlcsst('10:13->20:14->30', '10:13->20:15->40:17->50'))
+#if __name__ == '__main__':
+#    #print(find_lcs('10->20->30', '10:12->20:14->40:17->50'))
+#    #print(find_lcs_len('abcoisjf', 'axbaoeijf'))
+#    print(rlcsst('10->20->30', '10:12->20:14->40:17->50'))
+#    print(rlcsst('10:13->20:14->30', '10:13->20:15->40:17->50'))

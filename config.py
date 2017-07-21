@@ -13,6 +13,7 @@ class config:
 
     configPath = ''
 
+    CODE = 'AAAAAAAA'
     timeStep = 600
     period = 1
     priceDim = 4
