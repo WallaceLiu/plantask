@@ -40,21 +40,6 @@ class corePriceBase(coreBase):
 
         self.__createProject(self.__originalPath, self.__path)
 
-    def price():
-        """代价计算
-        """
-        pass
-
-    def __initpriceMatrix(self, v, rn, cn, tv):
-        m = self.initMatrix2(0, self.__stepNum, self.config.priceDim)
-
-        print('????????????????????????????????????????')
-        print(tv)
-        for i in range(len(tv)):
-            m[i].append(tv[i])
-
-        return m
-
     def __createProject(self, opaths, paths):
         """创建方案结构
         """
@@ -124,6 +109,14 @@ class corePriceBase(coreBase):
 
         self.__timeSeq.clear()
         self.__timeSeq = createTimeSeqVector(self, minmax, step)
+
+    def __initpriceMatrix(self, v, rn, cn, tv):
+        m = self.initMatrix2(0, self.__stepNum, self.config.priceDim)
+
+        for i in range(len(tv)):
+            m[i].append(tv[i])
+
+        return m
 
     def printParameters(self):
         print('\t\t-Min And Max:')
