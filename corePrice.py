@@ -39,6 +39,7 @@ class corePrice(corePriceBase):
 
             if j >= len(s) - 2:
                 return True
+            
             return False
 
         def proj(self, s, c, co):
