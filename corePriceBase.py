@@ -20,7 +20,7 @@ class corePriceBase(coreBase):
     __path = []
     __modelGraph = []
     __timeSeq = []
-    __priceMatrix = []
+    priceMatrix = []
     project = nodeProject()
     projOptional = []
 
@@ -35,8 +35,8 @@ class corePriceBase(coreBase):
         self.__initStepNum(self.config.timeStep, self.config.period)
         self.__initTimeSeq(self.config.timeStep, self.__minmax)
 
-        self.__priceMatrix = self.initMatrix2(0, self.__stepNum,
-                                              self.config.priceDim)
+        self.priceMatrix = self.__initpriceMatrix(
+            0, self.__stepNum, self.config.priceDim, self.__timeSeq)
 
         self.__createProject(self.__originalPath, self.__path)
 
@@ -44,6 +44,16 @@ class corePriceBase(coreBase):
         """代价计算
         """
         pass
+
+    def __initpriceMatrix(self, v, rn, cn, tv):
+        m = self.initMatrix2(0, self.__stepNum, self.config.priceDim)
+
+        print('????????????????????????????????????????')
+        print(tv)
+        for i in range(len(tv)):
+            m[i].append(tv[i])
+
+        return m
 
     def __createProject(self, opaths, paths):
         """创建方案结构
@@ -108,12 +118,12 @@ class corePriceBase(coreBase):
             e = None
             while b < mm[1]:
                 e = b + step
-                v.append({'bdt': b, 'edt': e})
+                v.append((b, e))
                 b = e + 1
             return v
 
         self.__timeSeq.clear()
-        self.__timeSeq.append(createTimeSeqVector(self, minmax, step))
+        self.__timeSeq = createTimeSeqVector(self, minmax, step)
 
     def printParameters(self):
         print('\t\t-Min And Max:')
@@ -129,7 +139,7 @@ class corePriceBase(coreBase):
         print(self.__path)
         self.__printTimeSeq(True)
         print('\t\t-Price Matrix:')
-        print(self.__priceMatrix)
+        print(self.priceMatrix)
         #print('\t\t-coreNewAdjMatrix.estimate.modelGraph:')
         #print(self.__modelGraph.printGraph())
         print('\t\t-projects:')
@@ -140,13 +150,8 @@ class corePriceBase(coreBase):
         """
         print('\t-Time Seq Vector:')
         for r in self.__timeSeq:
-            l = []
-            for c in r:
-                if isReadable:
-                    l.append('(' + datetimeUtil.timestamp_datetime(
-                        c.get('bdt')) + ',' + datetimeUtil.timestamp_datetime(
-                            c.get('edt')) + ')')
-                else:
-                    l.append(c)
-
-            print(l)
+            if isReadable:
+                print('(' + datetimeUtil.timestamp_datetime(r[0]) + ',' +
+                      datetimeUtil.timestamp_datetime(r[1]) + ')')
+            else:
+                print(r)
