@@ -18,7 +18,7 @@ class corePriceBase(coreBase):
     __stepNum = None
     __originalPath = []
     __path = []
-    __modelGraph = []
+    __modelGraph = None
     __timeSeq = []
     priceMatrix = []
     project = nodeProject()
