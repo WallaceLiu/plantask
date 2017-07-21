@@ -11,6 +11,7 @@ from nodeTaskType import nodeTaskType
 import time
 from base import base
 from stageType import stageType
+import coder
 
 
 class loadConf(base):
@@ -46,9 +47,11 @@ class loadConf(base):
         es = DOMTree.getElementsByTagName("task")
         no = 0
 
+        code = self.config.CODE
         for e in es:
             no += 1
-            t = self.__createTask(e, no)
+            t = self.__createTask(e, no, code)
+            code = coder.autoInc(code)
 
             self.graph.add(self.graph.tasks, t)
 
@@ -65,7 +68,7 @@ class loadConf(base):
 
         print('--loadConf.__load End.')
 
-    def __createTask(self, e, no):
+    def __createTask(self, e, no, code=''):
         """创建任务
 
         参数:
@@ -75,6 +78,7 @@ class loadConf(base):
         异常:
         """
         t = nodeTask(no)
+        t.code = code
         if e.hasAttribute('id'):
             t.id = e.getAttribute('id')
             t.realId = t.id

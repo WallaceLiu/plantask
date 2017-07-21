@@ -129,6 +129,7 @@ class nodeTask(base):
         """
         s = '<' + str(self.no) + '>'
         s += '\t' + str(self.id)
+        s += '\t' + str(self.code)
         s += '\t' + str(self.realId)
         s += '\t' + (self.name if len(self.name) > 0 else '-')
 

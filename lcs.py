@@ -93,9 +93,9 @@ def rlcsst(s1, s2):
                     p = i + 1
 
     if p - mmax != 0:
-        return '', -1
+        return -1  #'', -1
 
-    return s1[p - mmax:p], mmax
+    return mmax  #s1[p - mmax:p], mmax
 
 
 #if __name__ == '__main__':

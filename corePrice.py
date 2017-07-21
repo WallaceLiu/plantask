@@ -5,6 +5,7 @@ Created on Fri Jun 30 11:43:31 2017
 @author: liuning11
 """
 from corePriceBase import corePriceBase
+import lcs
 
 
 class corePrice(corePriceBase):
@@ -27,7 +28,18 @@ class corePrice(corePriceBase):
 
     def getProjects(self):
         def isProject(self, s):
-            return True
+            j = 0
+            for i in range(len(s) - 1):
+                # 具有公共子串，并且第一个任务相同
+                if lcs.rlcsst(
+                        s[i], s[i + 1]) <= 0 and s[i].split('->')[0].split(
+                            ':')[0] == s[i + 1].split('->')[0].split(':')[0]:
+                    break
+                j = i
+
+            if j >= len(s) - 2:
+                return True
+            return False
 
         def proj(self, s, c, co):
             for pro in c.optional.projects:
@@ -39,12 +51,12 @@ class corePrice(corePriceBase):
                 else:
                     p = '$'.join(s)
                     isProj = isProject(self, s)
-                    print('\t-Add Project:%s    %d' % (p, isProj))
+                    if self.config.debug == True and self.config.detail == True:
+                        print('\t-Add Project:%s    %d' % (p, isProj))
                     if isProj:
                         co.append(p)
                     s.pop()
 
-        print('??????????????????????????????????')
         print('--Stage: corePrice.getProjects...')
         self.projOptional.clear()
         s = []
@@ -55,7 +67,8 @@ class corePrice(corePriceBase):
             s.pop()
 
         print(str(len(self.projOptional)))
-        print(self.projOptional)
+        if self.config.debug == True:
+            print(self.projOptional)
         print('--getProjects End.')
 
     def price(self, g, path, avgTask):
