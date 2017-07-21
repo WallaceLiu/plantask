@@ -24,25 +24,40 @@ class corePrice(corePriceBase):
         print('--Stage: corePrice.model...')
         print('--corePrice.model End.')
         pass
-    
-    def project(self):
-        def proj(self, s,p,co):
-            for pro in p:
-                s.append(pro)
-                proj(self,s,p)  
-                if pro.cproject==None:
-                    co.append(s)
-                    s.clear()
-        
-        self.__projOptional.clear()
-        
-        s=[]
-        cur=self.__project
-        for pro in cur.optional:
-            s.append(pro)
-            if pro.cproject!=None:
-                proj(self,s,pro,self.__projOptional)
-    
+
+    def getProjects(self):
+        def isProject(self, s):
+            return True
+
+        def proj(self, s, c, co):
+            for pro in c.optional.projects:
+                s.append(str(pro.id))
+                if c.cproject != None:
+                    cur = c.cproject
+                    proj(self, s, cur, co)
+                    s.pop()
+                else:
+                    p = '$'.join(s)
+                    isProj = isProject(self, s)
+                    print('\t-Add Project:%s    %d' % (p, isProj))
+                    if isProj:
+                        co.append(p)
+                    s.pop()
+
+        print('??????????????????????????????????')
+        print('--Stage: corePrice.getProjects...')
+        self.projOptional.clear()
+        s = []
+        cur = self.project
+        for pro in cur.optional.projects:
+            s.append(str(pro.id))
+            proj(self, s, cur.cproject, self.projOptional)
+            s.pop()
+
+        print(str(len(self.projOptional)))
+        print(self.projOptional)
+        print('--getProjects End.')
+
     def price(self, g, path, avgTask):
         """目标函数
         

@@ -21,8 +21,8 @@ class corePriceBase(coreBase):
     __modelGraph = []
     __timeSeq = []
     __priceMatrix = []
-    __project = nodeProject()
-    __projOptional=[]
+    project = nodeProject()
+    projOptional = []
 
     def __init__(self, cm, g):
         self.__minmax = cm.minmax
@@ -35,7 +35,8 @@ class corePriceBase(coreBase):
         self.__initStepNum(self.config.timeStep, self.config.period)
         self.__initTimeSeq(self.config.timeStep, self.__minmax)
 
-        self.__priceMatrix = self.initMatrix2(0, self.__stepNum, self.config.priceDim)
+        self.__priceMatrix = self.initMatrix2(0, self.__stepNum,
+                                              self.config.priceDim)
 
         self.__createProject(self.__originalPath, self.__path)
 
@@ -48,14 +49,13 @@ class corePriceBase(coreBase):
         """创建方案结构
         """
         cp = coreProject()
-        self.__project = cp.create(self.__originalPath, self.__path)
+        self.project = cp.create(self.__originalPath, self.__path)
 
     def __initStepNum(self, step, period):
         """初始化时间间隔数量
         """
-        self.__stepNum=None
+        self.__stepNum = None
         self.__stepNum = int(period * 3600 / step) + 1
-
 
     def __initTimeSeq(self, step, minmax):
         """创建时间序列矩阵
@@ -112,9 +112,8 @@ class corePriceBase(coreBase):
                 b = e + 1
             return v
 
-        self.__timeSeq.clear()   
+        self.__timeSeq.clear()
         self.__timeSeq.append(createTimeSeqVector(self, minmax, step))
-
 
     def printParameters(self):
         print('\t\t-Min And Max:')
@@ -134,7 +133,7 @@ class corePriceBase(coreBase):
         #print('\t\t-coreNewAdjMatrix.estimate.modelGraph:')
         #print(self.__modelGraph.printGraph())
         print('\t\t-projects:')
-        self.__project.printer()
+        self.project.printer()
 
     def __printTimeSeq(self, isReadable):
         """打印时间矩阵

@@ -28,3 +28,4 @@ class coreWrapper:
         ce = nodeAdjMatrixEs(g)
         cm = coreNewAdjMatrix(g)
         p = corePrice(cm, g)
+        p.getProjects()
