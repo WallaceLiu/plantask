@@ -15,10 +15,10 @@ class corePriceBase(coreBase):
     __regx = ':\d+'
     __no = 0
     __minmax = None
-    __stepNum = None
+    stepNum = None
     __originalPath = []
     __path = []
-    __modelGraph = None
+    modelGraph = None
     __timeSeq = []
     priceMatrix = []
     project = nodeProject()
@@ -28,7 +28,7 @@ class corePriceBase(coreBase):
         self.__minmax = cm.minmax
         self.__originalPath = g.path
         self.__path = cm.path
-        self.__modelGraph = cm.modelGraph
+        self.modelGraph = cm.modelGraph
 
         print('--Stage: corePrice...')
 
@@ -36,7 +36,7 @@ class corePriceBase(coreBase):
         self.__initTimeSeq(self.config.timeStep, self.__minmax)
 
         self.priceMatrix = self.__initpriceMatrix(
-            0, self.__stepNum, self.config.priceDim, self.__timeSeq)
+            0, self.stepNum, self.config.priceDim, self.__timeSeq)
 
         self.__createProject(self.__originalPath, self.__path)
 
@@ -49,8 +49,8 @@ class corePriceBase(coreBase):
     def __initStepNum(self, step, period):
         """初始化时间间隔数量
         """
-        self.__stepNum = None
-        self.__stepNum = int(period * 3600 / step) + 1
+        self.stepNum = None
+        self.stepNum = int(period * 3600 / step) + 1
 
     def __initTimeSeq(self, step, minmax):
         """创建时间序列矩阵
@@ -111,7 +111,7 @@ class corePriceBase(coreBase):
         self.__timeSeq = createTimeSeqVector(self, minmax, step)
 
     def __initpriceMatrix(self, v, rn, cn, tv):
-        m = self.initMatrix2(0, self.__stepNum, self.config.priceDim)
+        m = self.initMatrix2(0, self.stepNum, self.config.priceDim)
 
         for i in range(len(tv)):
             m[i].append(tv[i])
@@ -125,7 +125,7 @@ class corePriceBase(coreBase):
              datetimeUtil.timestamp_datetime(self.__minmax[1]))))
         print('\t\t-Time Step: %d' % (self.config.timeStep))
         print('\t\t-Period: %d' % (self.config.period))
-        print('\t\t-Step Num: %d' % (self.__stepNum))
+        print('\t\t-Step Num: %d' % (self.stepNum))
         print('\t\t-Original Path:')
         print(self.__originalPath)
         print('\t\t-Path:')
@@ -134,7 +134,7 @@ class corePriceBase(coreBase):
         print('\t\t-Price Matrix:')
         print(self.priceMatrix)
         #print('\t\t-coreNewAdjMatrix.estimate.modelGraph:')
-        #print(self.__modelGraph.printGraph())
+        #print(self.modelGraph.printGraph())
         print('\t\t-projects:')
         self.project.printer()
 
