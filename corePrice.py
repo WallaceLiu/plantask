@@ -89,6 +89,8 @@ class corePrice(corePriceBase):
                 if t.eDateTime <= priceMatrix[i][4][1]:
                     priceMatrix[i][0] = priceMatrix[i][0] + 1
                     #按任务类型统计任务数量
+                    #priceMatrix[i][1] = priceMatrix[i][1] + 1
+                    #priceMatrix[i][2] = priceMatrix[i][2] + 1
                 else:
                     break
                 i = i + 1
