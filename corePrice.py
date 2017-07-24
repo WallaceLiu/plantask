@@ -82,6 +82,7 @@ class corePrice(corePriceBase):
             while i < len(priceMatrix):
                 if t.bDateTime < priceMatrix[i][4][0]:
                     break
+                
                 i = i + 1
 
             while i < len(priceMatrix) and t.eDateTime != None:
@@ -92,6 +93,7 @@ class corePrice(corePriceBase):
                     #priceMatrix[i][2] = priceMatrix[i][2] + 1
                 else:
                     break
+                
                 i = i + 1
 
     def price(self, priceMatrix, stepNum):

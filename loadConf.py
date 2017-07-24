@@ -11,7 +11,6 @@ from nodeTaskType import nodeTaskType
 import time
 from base import base
 from stageType import stageType
-import coder
 
 
 class loadConf(base):

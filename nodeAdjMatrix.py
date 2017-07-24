@@ -203,13 +203,6 @@ class nodeAdjMatrix(nodeAdjBase):
             if id == self.tasksIndex[i]:
                 return i
 
-    def __isOutRange(self, x):
-        try:
-            if x >= self.nodenum or x <= 0:
-                raise IndexError
-        except IndexError:
-            print("节点下标出界")
-
     def addEdge(self, x, y, weight):
         """添加边
 
@@ -311,39 +304,6 @@ class nodeAdjMatrix(nodeAdjBase):
 
         return n
 
-    # 广度遍历
-    def BreadthFirstSearch(self):
-        def BFS(self, i):
-            print(i)
-            visited[i] = 1
-            for k in range(self.getNodeNum()):
-                if self.map[i][k] == 1 and visited[k] == 0:
-                    BFS(self, k)
-
-        visited = [0] * self.getNodeNum()
-        for i in range(self.getNodeNum()):
-            if visited[i] is 0:
-                BFS(self, i)
-
-    # 深度遍历
-    def DepthFirstSearch(self):
-        def DFS(self, i, queue):
-
-            queue.append(i)
-            print(i)
-            visited[i] = 1
-            if len(queue) != 0:
-                w = queue.pop()
-                for k in range(self.getNodeNum()):
-                    if self.map[w][k] is 1 and visited[k] is 0:
-                        DFS(self, k, queue)
-
-        visited = [0] * self.getNodeNum()
-        queue = []
-        for i in range(self.getNodeNum()):
-            if visited[i] is 0:
-                DFS(self, i, queue)
-
     def clone(self):
         g = nodeAdjMatrix()
         g.tasksIndex = self.tasksIndex.copy()
@@ -358,11 +318,10 @@ class nodeAdjMatrix(nodeAdjBase):
         g.lastOccurTime = self.lastOccurTime
         return g
 
-    '''
+    """
     打印
-    '''
+    """
 
-    # 输出
     def printGraph(self):
         print("\t-Task Number:<%u>, Edge Number:<%u>" %
               (self.nodenum, self.edgenum))
@@ -392,9 +351,52 @@ class nodeAdjMatrix(nodeAdjBase):
         for p in self.path:
             print(p)
 
-    '''
+    """
     暂时不实现
-    '''
+    """
+
+    # 广度遍历
+    def BreadthFirstSearch(self):
+        #        def BFS(self, i):
+        #            print(i)
+        #            visited[i] = 1
+        #            for k in range(self.getNodeNum()):
+        #                if self.map[i][k] == 1 and visited[k] == 0:
+        #                    BFS(self, k)
+        #
+        #        visited = [0] * self.getNodeNum()
+        #        for i in range(self.getNodeNum()):
+        #            if visited[i] is 0:
+        #                BFS(self, i)
+        pass
+
+    # 深度遍历
+    def DepthFirstSearch(self):
+        #        def DFS(self, i, queue):
+        #
+        #            queue.append(i)
+        #            print(i)
+        #            visited[i] = 1
+        #            if len(queue) != 0:
+        #                w = queue.pop()
+        #                for k in range(self.getNodeNum()):
+        #                    if self.map[w][k] is 1 and visited[k] is 0:
+        #                        DFS(self, k, queue)
+        #
+        #        visited = [0] * self.getNodeNum()
+        #        queue = []
+        #        for i in range(self.getNodeNum()):
+        #            if visited[i] is 0:
+        #                DFS(self, i, queue)
+        pass
+
+    def __isOutRange(self, x):
+        #        try:
+        #            if x >= self.nodenum or x <= 0:
+        #                raise IndexError
+        #        except IndexError:
+        #            print("节点下标出界")
+        pass
 
     def insertNode(self, t):
         #        for i in range(self.nodenum):
