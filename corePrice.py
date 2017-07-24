@@ -48,13 +48,13 @@ class corePrice(corePriceBase):
                 else:
                     p = '$'.join(s)
                     isProj = isProject(self, s)
-                    
+
                     if self.config.debug == True and self.config.detail == True:
                         print('\t-Add Project:%s    %d' % (p, isProj))
-                        
+
                     if isProj:
                         co.append(p)
-                        
+
                     s.pop()
 
         print('--Stage: corePrice.getProjects...')

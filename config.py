@@ -18,5 +18,7 @@ class config:
     period = 1
     priceDim = 4
 
+    threshold = 0.0
+
     def __init__(self):
         pass
