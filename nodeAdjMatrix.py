@@ -12,22 +12,6 @@ from stageType import stageType
 
 class nodeAdjMatrix(nodeAdjBase):
     """邻接矩阵
-    
-    a->b->c
-    a->b->d->e
-    f->e
-    
-      a b c d e f
-    a 0 1 0 0 0 0
-    b 0 0 1 1 0 0
-    c 0 0 0 0 0 0
-    d 0 0 0 0 1 0
-    e 0 0 0 0 0 0
-    f 0 0 0 0 1 0
-
-    若列全为0，则表示为根节点
-    若行全为0，则表示为终端节点，无子节点
-    
     """
 
     def __init__(self):
@@ -117,32 +101,33 @@ class nodeAdjMatrix(nodeAdjBase):
         1，初始化path
         """
 
-        def isPath(self, path):
+        def isPath(self, path, paths):
             """是否为一个任务路径
             """
-            for p in self.path:
+            for p in paths:
                 if path in p:
                     return True
             return False
 
-        def path(self, s, r):
-            for i in range(self.nodenum):
+        def path(self, s, r, nodenum, m, tasksIndex, paths):
+            for i in range(nodenum):
                 if self.map[r][i] > 0:
-                    s.append(self.tasksIndex[i])
-                    path(self, s, i)
+                    s.append(tasksIndex[i])
+                    path(self, s, i, nodenum, m, tasksIndex, paths)
                     s.pop()
                 else:
-                    if i >= self.nodenum - 1:
+                    if i >= nodenum - 1:
                         p = '->'.join(s)
-                        if isPath(self, p) == False:
-                            self.path.append(p)
+                        if isPath(self, p, paths) == False:
+                            paths.append(p)
 
         s = []
         for r in range(len(self.rTask)):
             s.clear()
             if self.rTask[r] == 0:
                 s.append(self.tasksIndex[r])
-                path(self, s, r)
+                path(self, s, r, self.nodenum, self.map, self.tasksIndex,
+                     self.path)
 
         print('--Stage: nodeAdjMatrix.searchPath...')
         if self.config.debug == True:

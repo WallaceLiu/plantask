@@ -44,7 +44,7 @@ class nodeAdjMatrixEs(coreBase):
             for i in range(g.nodenum):
                 self.__plans.append([])
 
-        def compute(self, r, c, m, plan, g):
+        def compute(self, r, c, g, plan):
             """计算所有任务的最晚时间
     
             参数:
@@ -59,13 +59,13 @@ class nodeAdjMatrixEs(coreBase):
                 
             """
             for i in range(g.nodenum):
-                if m[i][r] > 0:
+                if g.map[i][r] > 0:
                     t = g.findRootTask(g.tasksIndex[i])
 
                     self.__deal(t, c.bDateTime - t.consume - 1,
                                 c.bDateTime - 1, plan[i])
 
-                    compute(self, i, t, m, plan, g)
+                    compute(self, i, t, g, plan)
 
         init(self, g)
 
@@ -76,7 +76,7 @@ class nodeAdjMatrixEs(coreBase):
                     self.__deal(c, c.bDateTime, c.bDateTime + c.consume,
                                 self.__plans[i])
 
-                    compute(self, i, c, g.map, self.__plans, g)
+                    compute(self, i, c, g, self.__plans)
 
         print('--Stage: nodeAdjMatrixEs.__estimate...')
         if self.config.debug == True:
