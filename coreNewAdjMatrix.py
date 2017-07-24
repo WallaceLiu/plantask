@@ -190,10 +190,10 @@ class coreNewAdjMatrix(coreNewAdj):
                     m(self, s, i, g, paths)
                     s.pop()
                 else:
-                    if i >= g.nodenum - 1:
-                        if _isPath(self, g, s, paths) is True:
-                            p = '->'.join(s)
-                            paths.append(p)
+                    if i >= g.nodenum - 1 and _isPath(self, g, s,
+                                                      paths) is True:
+                        p = '->'.join(s)
+                        paths.append(p)
 
         print('--Stage: coreNewAdjMatrix.__search...')
         s = []
