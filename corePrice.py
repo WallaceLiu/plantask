@@ -54,6 +54,7 @@ class corePrice(corePriceBase):
                         
                     if isProj:
                         co.append(p)
+                        
                     s.pop()
 
         print('--Stage: corePrice.getProjects...')
