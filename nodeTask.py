@@ -41,7 +41,6 @@ class nodeTask(base):
         """
         self.no = no
         self.id = ''
-        self.code = ''
         self.name = ''
         self.realId = ''
         self.desc = ''
@@ -78,7 +77,6 @@ class nodeTask(base):
         t = nodeTask()
         t.no = self.no
         t.id = self.id
-        t.code = self.code
         t.realId = self.realId
         t.name = self.name
         t.desc = self.desc
@@ -100,7 +98,6 @@ class nodeTask(base):
     def cloneLocal(self):
         t = nodeTask()
         t.no = self.no
-        t.code = self.code
         t.id = self.id
         t.realId = self.realId
         t.name = self.name
@@ -129,7 +126,6 @@ class nodeTask(base):
         """
         s = '<' + str(self.no) + '>'
         s += '\t' + str(self.id)
-        s += '\t' + str(self.code)
         s += '\t' + str(self.realId)
         s += '\t' + (self.name if len(self.name) > 0 else '-')
 
