@@ -13,8 +13,6 @@ import datetimeUtil
 
 class loadParameters(base):
     """加载参数
-    
-    包括,开始时间bDateTime,结束时间eDateTime,耗时consume
     """
 
     def __init__(self, g):

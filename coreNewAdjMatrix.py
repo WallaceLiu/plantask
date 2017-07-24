@@ -12,9 +12,6 @@ import random
 
 class coreNewAdjMatrix(coreNewAdj):
     """创建新的任务图
-    
-    根据对每个任务的最晚开始时间
-    
     """
 
     minmax = None

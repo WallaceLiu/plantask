@@ -17,10 +17,6 @@ class corePrice(corePriceBase):
 
     def model(self, g):
         """
-    
-        参数:
-        返回:
-        异常:
         """
         print('--Stage: corePrice.model...')
         print('--corePrice.model End.')
