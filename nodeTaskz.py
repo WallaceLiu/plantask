@@ -15,27 +15,32 @@ class nodeTaskz:
     def __init__(self):
         self.tasks = []
 
-    #添加任务
     def add(self, t):
+        """添加任务
+        """
         if self.isExist(t) == False:
             self.tasks.append(t)
 
-    #判断任务是否存在
     def isExist(self, t):
+        """判断任务是否存在
+        """
         for task in self.tasks:
             if t.id == task.id:
                 return True
 
         return False
 
-    # 根据任务ID查找任务
     def findRootTask(self, id):
+        """根据任务ID查找任务
+        """
         for t in self.tasks:
             if t.id == id:
                 return t
 
-    # 根据任务编号查找任务，任务编号所有节点唯一
     def findTask(self, no):
+        """根据任务编号no查找任务，任务编号所有节点唯一
+        """
+
         def find(self, p, no):
             r = None
             for n in p:
@@ -60,9 +65,6 @@ class nodeTaskz:
                         return r
 
     def clone(self):
-        """克隆
-        """
-
         def _clone(self, c):
             for t in c.childs.tasks:
                 nt = t.clone()

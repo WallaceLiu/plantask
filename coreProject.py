@@ -48,9 +48,9 @@ class coreProject(coreBase):
                 proj = nodeProject(self.__no, str(self.__no), str(self.__no))
                 cur.cproject = proj
                 cur = proj
-                
+
         print('\t--Stage: Project...')
-        if self.config.debug==True:
+        if self.config.debug == True:
             root.printer()
         print('\t--Project End.')
         return root

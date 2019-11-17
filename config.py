@@ -13,9 +13,12 @@ class config:
 
     configPath = ''
 
+    CODE = 'AAAAAAAA'
     timeStep = 600
     period = 1
-    priceDim=4
+    priceDim = 4
+
+    threshold = 0.0
 
     def __init__(self):
         pass

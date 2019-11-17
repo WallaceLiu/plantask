@@ -12,22 +12,6 @@ from stageType import stageType
 
 class nodeAdjMatrix(nodeAdjBase):
     """邻接矩阵
-    
-    a->b->c
-    a->b->d->e
-    f->e
-    
-      a b c d e f
-    a 0 1 0 0 0 0
-    b 0 0 1 1 0 0
-    c 0 0 0 0 0 0
-    d 0 0 0 0 1 0
-    e 0 0 0 0 0 0
-    f 0 0 0 0 1 0
-
-    若列全为0，则表示为根节点
-    若行全为0，则表示为终端节点，无子节点
-    
     """
 
     def __init__(self):
@@ -117,32 +101,33 @@ class nodeAdjMatrix(nodeAdjBase):
         1，初始化path
         """
 
-        def isPath(self, path):
+        def isPath(self, path, paths):
             """是否为一个任务路径
             """
-            for p in self.path:
+            for p in paths:
                 if path in p:
                     return True
             return False
 
-        def path(self, s, r):
-            for i in range(self.nodenum):
+        def path(self, s, r, nodenum, m, tasksIndex, paths):
+            for i in range(nodenum):
                 if self.map[r][i] > 0:
-                    s.append(self.tasksIndex[i])
-                    path(self, s, i)
+                    s.append(tasksIndex[i])
+                    path(self, s, i, nodenum, m, tasksIndex, paths)
                     s.pop()
                 else:
-                    if i >= self.nodenum - 1:
+                    if i >= nodenum - 1:
                         p = '->'.join(s)
-                        if isPath(self, p) == False:
-                            self.path.append(p)
+                        if isPath(self, p, paths) == False:
+                            paths.append(p)
 
         s = []
         for r in range(len(self.rTask)):
             s.clear()
             if self.rTask[r] == 0:
                 s.append(self.tasksIndex[r])
-                path(self, s, r)
+                path(self, s, r, self.nodenum, self.map, self.tasksIndex,
+                     self.path)
 
         print('--Stage: nodeAdjMatrix.searchPath...')
         if self.config.debug == True:
@@ -202,13 +187,6 @@ class nodeAdjMatrix(nodeAdjBase):
         for i in range(len(self.tasksIndex)):
             if id == self.tasksIndex[i]:
                 return i
-
-    def __isOutRange(self, x):
-        try:
-            if x >= self.nodenum or x <= 0:
-                raise IndexError
-        except IndexError:
-            print("节点下标出界")
 
     def addEdge(self, x, y, weight):
         """添加边
@@ -311,39 +289,6 @@ class nodeAdjMatrix(nodeAdjBase):
 
         return n
 
-    # 广度遍历
-    def BreadthFirstSearch(self):
-        def BFS(self, i):
-            print(i)
-            visited[i] = 1
-            for k in range(self.getNodeNum()):
-                if self.map[i][k] == 1 and visited[k] == 0:
-                    BFS(self, k)
-
-        visited = [0] * self.getNodeNum()
-        for i in range(self.getNodeNum()):
-            if visited[i] is 0:
-                BFS(self, i)
-
-    # 深度遍历
-    def DepthFirstSearch(self):
-        def DFS(self, i, queue):
-
-            queue.append(i)
-            print(i)
-            visited[i] = 1
-            if len(queue) != 0:
-                w = queue.pop()
-                for k in range(self.getNodeNum()):
-                    if self.map[w][k] is 1 and visited[k] is 0:
-                        DFS(self, k, queue)
-
-        visited = [0] * self.getNodeNum()
-        queue = []
-        for i in range(self.getNodeNum()):
-            if visited[i] is 0:
-                DFS(self, i, queue)
-
     def clone(self):
         g = nodeAdjMatrix()
         g.tasksIndex = self.tasksIndex.copy()
@@ -358,11 +303,10 @@ class nodeAdjMatrix(nodeAdjBase):
         g.lastOccurTime = self.lastOccurTime
         return g
 
-    '''
+    """
     打印
-    '''
+    """
 
-    # 输出
     def printGraph(self):
         print("\t-Task Number:<%u>, Edge Number:<%u>" %
               (self.nodenum, self.edgenum))
@@ -392,9 +336,52 @@ class nodeAdjMatrix(nodeAdjBase):
         for p in self.path:
             print(p)
 
-    '''
+    """
     暂时不实现
-    '''
+    """
+
+    # 广度遍历
+    def BreadthFirstSearch(self):
+        #        def BFS(self, i):
+        #            print(i)
+        #            visited[i] = 1
+        #            for k in range(self.getNodeNum()):
+        #                if self.map[i][k] == 1 and visited[k] == 0:
+        #                    BFS(self, k)
+        #
+        #        visited = [0] * self.getNodeNum()
+        #        for i in range(self.getNodeNum()):
+        #            if visited[i] is 0:
+        #                BFS(self, i)
+        pass
+
+    # 深度遍历
+    def DepthFirstSearch(self):
+        #        def DFS(self, i, queue):
+        #
+        #            queue.append(i)
+        #            print(i)
+        #            visited[i] = 1
+        #            if len(queue) != 0:
+        #                w = queue.pop()
+        #                for k in range(self.getNodeNum()):
+        #                    if self.map[w][k] is 1 and visited[k] is 0:
+        #                        DFS(self, k, queue)
+        #
+        #        visited = [0] * self.getNodeNum()
+        #        queue = []
+        #        for i in range(self.getNodeNum()):
+        #            if visited[i] is 0:
+        #                DFS(self, i, queue)
+        pass
+
+    def __isOutRange(self, x):
+        #        try:
+        #            if x >= self.nodenum or x <= 0:
+        #                raise IndexError
+        #        except IndexError:
+        #            print("节点下标出界")
+        pass
 
     def insertNode(self, t):
         #        for i in range(self.nodenum):

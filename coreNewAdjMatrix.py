@@ -12,9 +12,6 @@ import random
 
 class coreNewAdjMatrix(coreNewAdj):
     """创建新的任务图
-    
-    根据对每个任务的最晚开始时间
-    
     """
 
     minmax = None
@@ -132,6 +129,7 @@ class coreNewAdjMatrix(coreNewAdj):
                             ng.add(n.childs, e)
 
             ng.createMap()
+
             return ng
 
         print('\t-coreNewAdjMatrix.__create...')
@@ -159,17 +157,43 @@ class coreNewAdjMatrix(coreNewAdj):
         """查找邻接矩阵所有路径
         """
 
-        def m(self, s, r):
+        def _isPath(self, g, s, paths):
+            """是否为一个任务路径
+            """
+
+            def _isExist(self, g, s):
+                """是否已经存在
+                """
+                path = '->'.join(s)
+                for p in paths:
+                    if path in p:
+                        return True
+                return False
+
+            def _isRoot(self, g, botomm):
+                """是否为根节点
+                只有是根节点开头的才是路径
+                """
+                bl = g.isRootTask(botomm.split(':')[0])
+                if bl is False:
+                    pass  # 删除边
+
+                return bl
+
+            return _isExist(self, g, s) is False and _isRoot(self, g,
+                                                             s[0]) is True
+
+        def m(self, s, r, g, paths):
             for i in range(g.nodenum):
                 if g.map[r][i] > 0:
                     s.append(g.tasksIndex[i])
-                    m(self, s, i)
+                    m(self, s, i, g, paths)
                     s.pop()
                 else:
-                    if i >= g.nodenum - 1:
-                        if self.__isPath(g, s) is True:
-                            p = '->'.join(s)
-                            self.path.append(p)
+                    if i >= g.nodenum - 1 and _isPath(self, g, s,
+                                                      paths) is True:
+                        p = '->'.join(s)
+                        paths.append(p)
 
         print('--Stage: coreNewAdjMatrix.__search...')
         s = []
@@ -177,43 +201,14 @@ class coreNewAdjMatrix(coreNewAdj):
             s.clear()
             if g.rTask[r] == 0:
                 s.append(g.tasksIndex[r])
-                m(self, s, r)
+                m(self, s, r, g, self.path)
 
         if self.config.debug == True:
             print(self.path)
 
         print('--coreNewAdjMatrix.__search End.')
 
-    def __isPath(self, g, s):
-        """是否为一个任务路径
-        """
-
-        def _isExist(self, g, s):
-            """是否已经存在
-            """
-            path = '->'.join(s)
-            for p in self.path:
-                if path in p:
-                    return True
-            return False
-
-        def _isRoot(self, g, botomm):
-            """是否为根节点
-            只有是根节点开头的才是路径
-            """
-            bl = g.isRootTask(botomm.split(':')[0])
-            if bl is False:
-                pass  # 删除边
-
-            return bl
-
-        return _isExist(self, g, s) is False and _isRoot(self, g, s[0]) is True
-
     def __cut(self, g):
         """新创建任务图中与路径是有矛盾的，需要删除不用的边，重新创建完整正确的任务图
         """
         pass
-
-    """
-    打印
-    """

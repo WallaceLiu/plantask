@@ -15,47 +15,42 @@ class corePriceBase(coreBase):
     __regx = ':\d+'
     __no = 0
     __minmax = None
-    __stepNum = None
+    stepNum = None
     __originalPath = []
     __path = []
-    __modelGraph = []
+    modelGraph = None
     __timeSeq = []
-    __priceMatrix = []
-    __project = nodeProject()
-    __projOptional=[]
+    priceMatrix = []
+    project = nodeProject()
+    projOptional = []
 
     def __init__(self, cm, g):
         self.__minmax = cm.minmax
         self.__originalPath = g.path
         self.__path = cm.path
-        self.__modelGraph = cm.modelGraph
+        self.modelGraph = cm.modelGraph
 
         print('--Stage: corePrice...')
 
         self.__initStepNum(self.config.timeStep, self.config.period)
         self.__initTimeSeq(self.config.timeStep, self.__minmax)
 
-        self.__priceMatrix = self.initMatrix2(0, self.__stepNum, self.config.priceDim)
+        self.priceMatrix = self.__initpriceMatrix(
+            0, self.stepNum, self.config.priceDim, self.__timeSeq)
 
         self.__createProject(self.__originalPath, self.__path)
-
-    def price():
-        """代价计算
-        """
-        pass
 
     def __createProject(self, opaths, paths):
         """创建方案结构
         """
         cp = coreProject()
-        self.__project = cp.create(self.__originalPath, self.__path)
+        self.project = cp.create(self.__originalPath, self.__path)
 
     def __initStepNum(self, step, period):
         """初始化时间间隔数量
         """
-        self.__stepNum=None
-        self.__stepNum = int(period * 3600 / step) + 1
-
+        self.stepNum = None
+        self.stepNum = int(period * 3600 / step) + 1
 
     def __initTimeSeq(self, step, minmax):
         """创建时间序列矩阵
@@ -108,13 +103,20 @@ class corePriceBase(coreBase):
             e = None
             while b < mm[1]:
                 e = b + step
-                v.append({'bdt': b, 'edt': e})
+                v.append((b, e))
                 b = e + 1
             return v
 
-        self.__timeSeq.clear()   
-        self.__timeSeq.append(createTimeSeqVector(self, minmax, step))
+        self.__timeSeq.clear()
+        self.__timeSeq = createTimeSeqVector(self, minmax, step)
 
+    def __initpriceMatrix(self, v, rn, cn, tv):
+        m = self.initMatrix2(0, self.stepNum, self.config.priceDim)
+
+        for i in range(len(tv)):
+            m[i].append(tv[i])
+
+        return m
 
     def printParameters(self):
         print('\t\t-Min And Max:')
@@ -123,31 +125,26 @@ class corePriceBase(coreBase):
              datetimeUtil.timestamp_datetime(self.__minmax[1]))))
         print('\t\t-Time Step: %d' % (self.config.timeStep))
         print('\t\t-Period: %d' % (self.config.period))
-        print('\t\t-Step Num: %d' % (self.__stepNum))
+        print('\t\t-Step Num: %d' % (self.stepNum))
         print('\t\t-Original Path:')
         print(self.__originalPath)
         print('\t\t-Path:')
         print(self.__path)
         self.__printTimeSeq(True)
         print('\t\t-Price Matrix:')
-        print(self.__priceMatrix)
+        print(self.priceMatrix)
         #print('\t\t-coreNewAdjMatrix.estimate.modelGraph:')
-        #print(self.__modelGraph.printGraph())
+        #print(self.modelGraph.printGraph())
         print('\t\t-projects:')
-        self.__project.printer()
+        self.project.printer()
 
     def __printTimeSeq(self, isReadable):
         """打印时间矩阵
         """
         print('\t-Time Seq Vector:')
         for r in self.__timeSeq:
-            l = []
-            for c in r:
-                if isReadable:
-                    l.append('(' + datetimeUtil.timestamp_datetime(
-                        c.get('bdt')) + ',' + datetimeUtil.timestamp_datetime(
-                            c.get('edt')) + ')')
-                else:
-                    l.append(c)
-
-            print(l)
+            if isReadable:
+                print('(' + datetimeUtil.timestamp_datetime(r[0]) + ',' +
+                      datetimeUtil.timestamp_datetime(r[1]) + ')')
+            else:
+                print(r)
