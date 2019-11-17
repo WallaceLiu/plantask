@@ -29,10 +29,12 @@ class corePrice(corePriceBase):
         def proj(self, s,p,co):
             for pro in p:
                 s.append(pro)
-                proj(self,s,p)  
+                proj(self,s,p,co)  
+                co.append(s)
+                s.clear()
+                    
                 if pro.cproject==None:
-                    co.append(s)
-                    s.clear()
+                    return
         
         self.__projOptional.clear()
         
